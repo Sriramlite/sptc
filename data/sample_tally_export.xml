@@ -1,0 +1,50 @@
+<ENVELOPE>
+  <HEADER>
+    <TALLYREQUEST>Export Data</TALLYREQUEST>
+    <TYPE>Data</TYPE>
+    <ID>All Vouchers - Subramanian Polytechnic College Accounts</ID>
+  </HEADER>
+  <BODY>
+    <DESC>
+      <STATICVARIABLES>
+        <SVCURRENTCOMPANY>SUBRAMANIAN POLYTECHNIC COLLEGE - RAYAVARAM</SVCURRENTCOMPANY>
+      </STATICVARIABLES>
+    </DESC>
+    <DATA>
+      <TALLYMESSAGE xmlns:UDF="TallyUDF">
+        <VOUCHER VCHTYPE="Receipt" ACTION="Create">
+          <DATE>20240920</DATE>
+          <VOUCHERNUMBER>SPTC/TALLY/2024-25/0882</VOUCHERNUMBER>
+          <PARTYLEDGERNAME>23204014 - R. ANITHA (EEE)</PARTYLEDGERNAME>
+          <AMOUNT>21500.00</AMOUNT>
+          <NARRATION>Semester III Fees received by Cashier Counter - Migrated Legacy Ledger</NARRATION>
+          <ALLLEDGERENTRIES.LIST>
+            <LEDGERNAME>Tuition Fee Collection</LEDGERNAME>
+            <AMOUNT>-14000.00</AMOUNT>
+          </ALLLEDGERENTRIES.LIST>
+          <ALLLEDGERENTRIES.LIST>
+            <LEDGERNAME>Lab &amp; Workshop Amenities</LEDGERNAME>
+            <AMOUNT>-3000.00</AMOUNT>
+          </ALLLEDGERENTRIES.LIST>
+          <ALLLEDGERENTRIES.LIST>
+            <LEDGERNAME>Transport Bus Fee Thirumayam</LEDGERNAME>
+            <AMOUNT>-4500.00</AMOUNT>
+          </ALLLEDGERENTRIES.LIST>
+        </VOUCHER>
+      </TALLYMESSAGE>
+      <TALLYMESSAGE xmlns:UDF="TallyUDF">
+        <VOUCHER VCHTYPE="Receipt" ACTION="Create">
+          <DATE>20250110</DATE>
+          <VOUCHERNUMBER>SPTC/TALLY/2024-25/1104</VOUCHERNUMBER>
+          <PARTYLEDGERNAME>22201045 - K. VIGNESHWARAN (CSE)</PARTYLEDGERNAME>
+          <AMOUNT>10000.00</AMOUNT>
+          <NARRATION>Semester VI Partial Fee Payment received at accounts desk</NARRATION>
+          <ALLLEDGERENTRIES.LIST>
+            <LEDGERNAME>Tuition Fee Collection</LEDGERNAME>
+            <AMOUNT>-10000.00</AMOUNT>
+          </ALLLEDGERENTRIES.LIST>
+        </VOUCHER>
+      </TALLYMESSAGE>
+    </DATA>
+  </BODY>
+</ENVELOPE>

@@ -1,0 +1,14 @@
+{
+  "name": "sptc-web-fees-system",
+  "version": "1.0.0",
+  "description": "Subramanian Polytechnic College (SPTC) Official Web Portal & Student Fees Management System",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "cors": "^2.8.5"
+  }
+}
