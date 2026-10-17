@@ -120,11 +120,21 @@ const Fees = {
             </div>
           </div>
 
-          <div class="student-quick-switch">
+          <div class="student-quick-switch" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem;">
+            <div style="display: flex; gap: 0.5rem; align-items: center; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 6px;">
+              <span style="font-size: 0.75rem; color: #fce076; font-weight: 600;">Switch Student:</span>
+              <select id="bannerStudentSelect" onchange="window.onDemoStudentChange(this.value)" style="background: #0a2558; color: #ffffff; border: 1px solid #d4af37; padding: 3px 8px; border-radius: 4px; font-size: 0.775rem; font-weight: 600; cursor: pointer; outline: none;">
+                <option value="22201045" ${student.regNo === '22201045' ? 'selected' : ''}>K. Vigneshwaran (CSE)</option>
+                <option value="22202018" ${student.regNo === '22202018' ? 'selected' : ''}>M. Priya (ECE Hosteller)</option>
+                <option value="23203009" ${student.regNo === '23203009' ? 'selected' : ''}>S. Karthik (Mech Bus)</option>
+                <option value="23204014" ${student.regNo === '23204014' ? 'selected' : ''}>R. Anitha (EEE Paid)</option>
+                <option value="24205003" ${student.regNo === '24205003' ? 'selected' : ''}>A. Saravanan (Civil 1st Yr)</option>
+              </select>
+            </div>
             <button class="btn btn-gold btn-sm" onclick="Fees.openPayFeesModal()">
               💳 Pay Outstanding Fee
             </button>
-            <span style="font-size: 0.775rem; opacity: 0.8;">Instant UPI &amp; Card Receipt</span>
+            <span style="font-size: 0.75rem; opacity: 0.85;">Instant UPI &amp; Card Receipt</span>
           </div>
         </div>
 

@@ -10,8 +10,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('App init error:', err);
   }
 
+  // Navigation handler for smooth scrolling and view switching
+  window.navigateTo = function(sectionId, event) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const publicSection = document.getElementById('publicCollegeSection');
+    const studentSection = document.getElementById('studentFeesSection');
+    const cashierSection = document.getElementById('cashierDeskSection');
+
+    // Update active class on nav links
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === `#${sectionId}`) {
+        a.classList.add('active');
+      }
+    });
+
+    if (sectionId === 'fees') {
+      window.switchView('fees', true);
+      return;
+    }
+
+    if (sectionId === 'cashier') {
+      window.switchView('cashier', true);
+      return;
+    }
+
+    // Ensure public section is visible
+    publicSection.style.display = 'block';
+    studentSection.style.display = 'none';
+    cashierSection.style.display = 'none';
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('[data-view="public"]')?.classList.add('active');
+
+    if (sectionId === 'home' || !sectionId) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      history.pushState(null, null, '#home');
+    } else {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        const header = document.querySelector('.main-header');
+        const headerHeight = header ? header.offsetHeight + 15 : 85;
+        const elementPosition = el.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+        history.pushState(null, null, `#${sectionId}`);
+      }
+    }
+  };
+
   // Navigation tab switcher
-  window.switchView = function(viewName) {
+  window.switchView = function(viewName, shouldScroll = true) {
     const publicSection = document.getElementById('publicCollegeSection');
     const studentSection = document.getElementById('studentFeesSection');
     const cashierSection = document.getElementById('cashierDeskSection');
@@ -38,7 +93,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       Cashier.init();
     }
 
-    window.scrollTo({ top: 380, behavior: 'smooth' });
+    if (shouldScroll) {
+      const portalArea = document.getElementById('portal-area');
+      if (portalArea) {
+        const header = document.querySelector('.main-header');
+        const headerHeight = header ? header.offsetHeight + 10 : 80;
+        const elementPosition = portalArea.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+      }
+    }
   };
 
   // Populate Demo Student Switcher in top navigation

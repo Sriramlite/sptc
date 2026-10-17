@@ -15,7 +15,7 @@
     <div class="container top-bar-inner">
       <div class="top-bar-left">
         <div class="top-bar-item">
-          📍 <span>Rayavaram, Pudukkottai District, TN – 622 506</span>
+          📍 <span>Rayavaram, Pudukkottai – 622 506</span>
         </div>
         <div class="top-bar-item">
           📞 <span>+91 6382391625 / 04333-272226</span>
@@ -26,11 +26,11 @@
       </div>
       <div class="top-bar-right">
         <div class="top-bar-item">
-          🏛️ <strong>DOTE Code: 331</strong> | AICTE Approved
+          🏛️ <strong>DOTE: 331</strong> | AICTE Approved
         </div>
-        <div class="top-bar-item" style="background: rgba(255,255,255,0.1); padding: 0.2rem 0.6rem; border-radius: 4px;">
-          <span>Quick Switch Student:</span>
-          <select id="demoStudentSelect" onchange="window.onDemoStudentChange(this.value)" style="background: #071739; color: #fce076; border: 1px solid #d4af37; border-radius: 4px; font-size: 0.775rem; padding: 2px 6px; cursor: pointer;">
+        <div class="top-bar-item" style="display: flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.08); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid rgba(212,175,55,0.3);">
+          <span style="font-size: 0.725rem; color: #fce076; font-weight: 600;">Student Demo:</span>
+          <select id="demoStudentSelect" onchange="window.onDemoStudentChange(this.value)" style="background: #071739; color: #ffffff; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; outline: none; max-width: 170px;">
             <!-- Populated via JS -->
           </select>
         </div>
@@ -41,31 +41,31 @@
   <!-- ======================== 2. MAIN HEADER & NAVBAR ======================== -->
   <header class="main-header">
     <div class="container navbar">
-      <a href="#home" class="brand-link" onclick="window.switchView('public')">
+      <a href="#home" class="brand-link" onclick="window.navigateTo('home', event)">
         <img src="/assets/logo.svg" alt="SPTC Crest" class="brand-logo-img">
         <div class="brand-text">
           <h1>Subramanian Polytechnic College</h1>
-          <p>Rayavaram, Pudukkottai • Estd. 1983 (40+ Years of Excellence)</p>
+          <p>Rayavaram, Pudukkottai • Estd. 1983 (DOTE Code: 331)</p>
         </div>
       </a>
 
       <nav>
         <ul class="nav-links">
-          <li><a href="#home" onclick="window.switchView('public')">Home</a></li>
-          <li><a href="#about" onclick="window.switchView('public')">About College</a></li>
-          <li><a href="#departments" onclick="window.switchView('public')">Departments</a></li>
-          <li><a href="#facilities" onclick="window.switchView('public')">Campus &amp; Bus</a></li>
-          <li><a href="#compliance" onclick="window.switchView('public')">Compliance</a></li>
-          <li><a href="#contact" onclick="window.switchView('public')">Contact</a></li>
+          <li><a href="#home" class="active" onclick="window.navigateTo('home', event)">Home</a></li>
+          <li><a href="#about" onclick="window.navigateTo('about', event)">About</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Departments</a></li>
+          <li><a href="#facilities" onclick="window.navigateTo('facilities', event)">Campus &amp; Bus</a></li>
+          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">Compliance</a></li>
+          <li><a href="#contact" onclick="window.navigateTo('contact', event)">Contact</a></li>
         </ul>
       </nav>
 
       <div class="nav-actions">
-        <button class="btn btn-primary btn-sm" onclick="window.switchView('fees')">
-          🎓 Student Fee Vault
+        <button class="btn btn-primary btn-sm" onclick="window.navigateTo('fees', event)">
+          🎓 Student Fees Vault
         </button>
-        <button class="btn btn-outline btn-sm" onclick="window.switchView('cashier')">
-          💼 Accounts Desk
+        <button class="btn btn-outline btn-sm" onclick="window.navigateTo('cashier', event)">
+          💼 Cashier Desk
         </button>
         <button class="btn btn-gold btn-sm" onclick="window.openAdmissionModal()">
           Admission 2026-27
@@ -100,14 +100,14 @@
         </p>
 
         <div class="hero-actions">
-          <button class="btn btn-gold" onclick="window.switchView('fees')">
+          <button class="btn btn-gold" onclick="window.navigateTo('fees')">
             💳 Access Student Fee Vault
           </button>
-          <button class="btn btn-primary" onclick="window.openAdmissionModal()">
-            📝 Online Admission Enquiry
+          <button class="btn btn-primary" onclick="window.navigateTo('cashier')">
+            💼 Office Accounts / Tally Desk
           </button>
-          <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: #fff;" onclick="window.switchView('cashier')">
-            🖥️ Office Accounts / Tally Desk
+          <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.5); color: #fff;" onclick="window.openAdmissionModal()">
+            📝 Online Admission Enquiry
           </button>
         </div>
 
@@ -520,23 +520,23 @@
       <div class="footer-col">
         <h4>Academic Wings</h4>
         <ul class="footer-links">
-          <li><a href="#departments">Computer Engineering</a></li>
-          <li><a href="#departments">Mechanical Engineering</a></li>
-          <li><a href="#departments">Electrical &amp; Electronics</a></li>
-          <li><a href="#departments">Electronics &amp; Communication</a></li>
-          <li><a href="#departments">Civil Engineering</a></li>
-          <li><a href="#departments">Basic Engineering (1st Year)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Computer Engineering</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Mechanical Engineering</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electrical &amp; Electronics</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electronics &amp; Communication</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Civil Engineering</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Basic Engineering (1st Year)</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4>Quick Portals</h4>
         <ul class="footer-links">
-          <li><a href="#portal-area" onclick="window.switchView('fees')">Student Fee Vault</a></li>
-          <li><a href="#portal-area" onclick="window.switchView('cashier')">Accounts Cashier Desk</a></li>
-          <li><a href="#portal-area" onclick="window.switchView('cashier')">Tally Migration Tool</a></li>
-          <li><a href="#compliance">AICTE EOA Reports</a></li>
-          <li><a href="#compliance">Anti-Ragging Helpline</a></li>
+          <li><a href="#portal-area" onclick="window.navigateTo('fees', event)">Student Fee Vault</a></li>
+          <li><a href="#portal-area" onclick="window.navigateTo('cashier', event)">Accounts Cashier Desk</a></li>
+          <li><a href="#portal-area" onclick="window.navigateTo('cashier', event)">Tally Migration Tool</a></li>
+          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">AICTE EOA Reports</a></li>
+          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">Anti-Ragging Helpline</a></li>
         </ul>
       </div>
 
