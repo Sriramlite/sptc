@@ -3,25 +3,24 @@
 const Auth = {
   currentUser: null,
 
-  init() {
+  async init() {
     try {
       const saved = localStorage.getItem('sptc_auth_session');
       if (saved) {
         this.currentUser = JSON.parse(saved);
-      } else {
-        // Default initialized session for seamless preview
-        this.currentUser = {
-          role: 'STUDENT',
-          userType: 'STUDENT',
-          token: 'demo_token_vignesh',
-          profile: {
-            regNo: '22201045',
-            name: 'K. Vigneshwaran',
-            department: 'Computer Engineering',
-            currentYear: 3,
-            currentSemester: 6
+        // Verify session validity with backend
+        const verification = await API.verifySession();
+        if (!verification.authenticated) {
+          console.warn('Stored session is expired or invalidated.');
+          this.currentUser = null;
+          localStorage.removeItem('sptc_auth_session');
+        } else {
+          if (verification.profile) {
+            this.currentUser.profile = verification.profile;
           }
-        };
+        }
+      } else {
+        this.currentUser = null;
       }
     } catch (e) {
       console.warn('Failed to parse saved auth session:', e);
@@ -50,7 +49,9 @@ const Auth = {
           window.location.href = '/dashboard.html';
         }
 
-        window.closeLoginModal();
+        if (typeof window.closeLoginModal === 'function') {
+          window.closeLoginModal();
+        }
         return { success: true };
       } else {
         alert(res.error || 'Authentication failed. Please verify credentials.');
@@ -63,11 +64,16 @@ const Auth = {
     }
   },
 
-  logout() {
+  async logout() {
+    try {
+      await API.logout();
+    } catch (e) {
+      console.warn('Logout server notice:', e);
+    }
     this.currentUser = null;
     localStorage.removeItem('sptc_auth_session');
     this.updateAuthUi();
-    window.location.href = '/login.html';
+    window.location.href = '/login.html?reason=logged_out';
   },
 
   updateAuthUi() {
@@ -75,11 +81,18 @@ const Auth = {
     const heroProfileWidget = document.getElementById('heroProfileWidget');
     if (!authStatusContainer) return;
 
-    if (this.currentUser) {
+    if (this.currentUser && this.currentUser.profile) {
       const isStaff = this.currentUser.userType === 'STAFF';
+      const name = this.currentUser.profile.name || 'User';
       const shortSubtitle = isStaff 
         ? `${this.currentUser.profile.title || 'Staff'}` 
         : `Reg: ${this.currentUser.profile.regNo}`;
+      const subtitle = isStaff 
+        ? (this.currentUser.profile.title || 'Accounts Officer') 
+        : `DOTE Reg: ${this.currentUser.profile.regNo} (${this.currentUser.profile.department})`;
+      const roleBadge = isStaff 
+        ? '<span class="badge badge-primary">STAFF</span>' 
+        : '<span class="badge badge-gold">STUDENT</span>';
 
       const dashboardUrl = isStaff ? '/cashier-dashboard.html' : '/dashboard.html';
 
@@ -145,20 +158,8 @@ window.Auth = Auth;
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Initialize Auth
-  Auth.init();
-
-  // Initialize Core Services
-  try {
-    const studentRegNo = Auth.currentUser && Auth.currentUser.userType === 'STUDENT'
-      ? Auth.currentUser.profile.regNo
-      : '22201045';
-
-    await Fees.init(studentRegNo);
-    await Cashier.init();
-    populateDemoStudentSwitcher();
-  } catch (err) {
-    console.error('App init error:', err);
-  }
+  await Auth.init();
+});
 
   // Navigation handler for smooth scrolling and view switching
   window.navigateTo = function(sectionId, event) {

@@ -28,8 +28,8 @@
         <div class="top-bar-item">
           🏛️ <strong>DOTE Institution: 331</strong> | AICTE Approved
         </div>
-        <div class="top-bar-item" style="display: flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.08); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid rgba(212,175,55,0.3);">
-          <span style="font-size: 0.725rem; color: #fce076; font-weight: 600;">Student Demo:</span>
+        <div class="top-bar-item" id="dashboardStudentSelectWrap" style="display: flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.08); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid rgba(212,175,55,0.3);">
+          <span style="font-size: 0.725rem; color: #fce076; font-weight: 600;">Student:</span>
           <select id="dashboardStudentSelect" onchange="switchStudentAccount(this.value)" style="background: #071739; color: #ffffff; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; outline: none; max-width: 175px;">
             <!-- Populated dynamically via JS -->
           </select>
@@ -140,72 +140,103 @@
   <script src="/js/receipts.js"></script>
   <script src="/js/fees.js"></script>
   <script>
-    // Initialize Dashboard Session
-    let activeRegNo = '22201045'; // default fallback
+    // Strict Dashboard Session & Route Guard
+    let activeRegNo = null;
     let currentAuth = null;
 
-    try {
-      const savedAuth = localStorage.getItem('sptc_auth_session');
-      if (savedAuth) {
-        currentAuth = JSON.parse(savedAuth);
-        if (currentAuth.profile && currentAuth.profile.regNo) {
-          activeRegNo = currentAuth.profile.regNo;
-        }
-      }
-    } catch (e) {
-      console.warn('Error reading auth session:', e);
-    }
+    async function guardAndInitDashboard() {
+      const container = document.getElementById('studentFeesDashboardContainer');
 
-    async function initDashboard() {
-      // 1. Populate demo student dropdown
-      try {
-        const students = await API.getAllStudents();
-        const select = document.getElementById('dashboardStudentSelect');
-        if (select) {
-          select.innerHTML = students.map(s => `
-            <option value="${s.regNo}" ${s.regNo === activeRegNo ? 'selected' : ''}>
-              ${s.regNo} - ${s.name} (${s.department.substring(0, 10)})
-            </option>
-          `).join('');
+      // 1. Strict Server Session Verification
+      const session = await API.verifySession();
+      if (!session || !session.authenticated) {
+        if (container) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 4rem 1rem; color: #b91c1c;">
+              <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🔒</div>
+              <h3 style="font-family: var(--font-heading); color: #b91c1c;">Authentication Required</h3>
+              <p style="color: #64748b; margin-top: 0.5rem;">Access to student fee records requires an active session. Redirecting to institutional sign in...</p>
+            </div>
+          `;
         }
-      } catch (err) {
-        console.warn('Failed to load students for demo dropdown:', err);
+        setTimeout(() => {
+          window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname) + '&reason=auth_required');
+        }, 600);
+        return;
       }
 
-      // 2. Load the student fee data
+      currentAuth = session;
+
+      // 2. Role-based Setup
+      const selectWrap = document.getElementById('dashboardStudentSelectWrap');
+      if (session.userType === 'STUDENT') {
+        // Students strictly view their own account
+        activeRegNo = session.profile.regNo;
+        if (selectWrap) selectWrap.style.display = 'none';
+      } else if (session.userType === 'STAFF') {
+        // Staff can inspect any student ledger
+        if (selectWrap) selectWrap.style.display = 'flex';
+        try {
+          const students = await API.getAllStudents();
+          if (Array.isArray(students) && students.length > 0) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramReg = urlParams.get('regNo');
+            activeRegNo = paramReg || students[0].regNo;
+
+            const select = document.getElementById('dashboardStudentSelect');
+            if (select) {
+              select.innerHTML = students.map(s => `
+                <option value="${s.regNo}" ${s.regNo === activeRegNo ? 'selected' : ''}>
+                  ${s.regNo} - ${s.name} (${s.department.substring(0, 10)})
+                </option>
+              `).join('');
+            }
+          }
+        } catch (err) {
+          console.warn('Failed to load students for staff view:', err);
+        }
+      }
+
+      if (!activeRegNo) {
+        activeRegNo = session.profile?.regNo;
+      }
+
+      // 3. Load Student Fee Data
       await Fees.init(activeRegNo);
 
-      // 3. Update header user card
+      // 4. Update Header User Badge
       updateHeaderBadge();
     }
 
     function updateHeaderBadge() {
       const container = document.getElementById('studentHeaderBadge');
-      if (!container) return;
+      if (!container || !currentAuth) return;
 
-      const student = Fees.currentFeeData ? Fees.currentFeeData.student : null;
-      if (student) {
-        container.innerHTML = `
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-accent-gold); color: #0a2558; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
-            ${student.name.charAt(0)}
+      const profile = currentAuth.profile || {};
+      const isStaff = currentAuth.userType === 'STAFF';
+      const name = profile.name || 'User';
+
+      container.innerHTML = `
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: ${isStaff ? 'var(--color-primary)' : 'var(--color-accent-gold)'}; color: ${isStaff ? '#fff' : '#0a2558'}; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+          ${name.charAt(0)}
+        </div>
+        <div style="line-height: 1.15; text-align: left;">
+          <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
+            <span>${name}</span>
+            <span class="badge ${isStaff ? 'badge-primary' : 'badge-gold'}" style="font-size: 0.65rem;">${isStaff ? 'STAFF' : 'STUDENT'}</span>
           </div>
-          <div style="line-height: 1.15; text-align: left;">
-            <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558;">
-              ${student.name}
-            </div>
-            <div style="font-size: 0.7rem; color: #64748b;">
-              DOTE: ${student.regNo} (${student.department})
-            </div>
+          <div style="font-size: 0.7rem; color: #64748b;">
+            ${isStaff ? (profile.title || 'Accounts Desk') : `DOTE: ${profile.regNo} (${profile.department || ''})`}
           </div>
-        `;
-      } else {
-        container.innerHTML = `
-          <span style="font-size: 0.825rem; font-weight: 600; color: #0a2558;">Student Portal</span>
-        `;
-      }
+        </div>
+      `;
     }
 
     function switchStudentAccount(regNo) {
+      if (currentAuth && currentAuth.userType === 'STUDENT' && currentAuth.profile.regNo !== regNo) {
+        alert('Access Restricted: Students are only permitted to view their own fee accounts.');
+        return;
+      }
       activeRegNo = regNo;
       Fees.init(regNo).then(() => {
         updateHeaderBadge();
@@ -219,14 +250,24 @@
       if (sel) sel.value = regNo;
     };
 
-    function handleLogout() {
-      localStorage.removeItem('sptc_auth_session');
-      window.location.href = '/login.html';
+    // Strict Server-Side Logout
+    async function handleLogout() {
+      const btn = event?.currentTarget;
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = 'Signing Out...';
+      }
+      try {
+        await API.logout();
+      } catch (e) {
+        console.warn('Logout error:', e);
+      }
+      window.location.replace('/login.html?reason=logged_out');
     }
 
-    // Run initialization on load
+    // Run strict route guard on load
     document.addEventListener('DOMContentLoaded', () => {
-      initDashboard();
+      guardAndInitDashboard();
     });
   </script>
 </body>

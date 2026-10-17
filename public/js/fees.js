@@ -24,8 +24,33 @@ const Fees = {
       `;
 
       const data = await API.getStudentFees(this.currentStudentRegNo);
+      if (!data || data.success === false || data.unauthorized) {
+        if (data && data.unauthorized) {
+          window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname) + '&reason=auth_required');
+          return;
+        }
+        container.innerHTML = `
+          <div style="text-align: center; padding: 4rem 1rem; color: #b91c1c;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚠️</div>
+            <h3 style="font-family: var(--font-heading); color: #b91c1c;">Unable to Load Student Records</h3>
+            <p style="color: #64748b; margin-top: 0.5rem;">${data?.error || 'Student records could not be retrieved from institutional database.'}</p>
+          </div>
+        `;
+        return;
+      }
+
       this.currentFeeData = data;
       const { student, summary, bills, receipts } = data;
+
+      // Check if logged in user is staff
+      let isStaffUser = false;
+      try {
+        const savedSession = localStorage.getItem('sptc_auth_session');
+        if (savedSession) {
+          const parsed = JSON.parse(savedSession);
+          isStaffUser = parsed && parsed.userType === 'STAFF';
+        }
+      } catch (e) {}
 
       // Sort receipts latest first
       receipts.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -121,16 +146,18 @@ const Fees = {
           </div>
 
           <div class="student-quick-switch" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.6rem;">
-            <div style="display: flex; gap: 0.5rem; align-items: center; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 6px;">
-              <span style="font-size: 0.75rem; color: #fce076; font-weight: 600;">Switch Student:</span>
-              <select id="bannerStudentSelect" onchange="window.onDemoStudentChange(this.value)" style="background: #0a2558; color: #ffffff; border: 1px solid #d4af37; padding: 3px 8px; border-radius: 4px; font-size: 0.775rem; font-weight: 600; cursor: pointer; outline: none;">
-                <option value="22201045" ${student.regNo === '22201045' ? 'selected' : ''}>K. Vigneshwaran (CSE)</option>
-                <option value="22202018" ${student.regNo === '22202018' ? 'selected' : ''}>M. Priya (ECE Hosteller)</option>
-                <option value="23203009" ${student.regNo === '23203009' ? 'selected' : ''}>S. Karthik (Mech Bus)</option>
-                <option value="23204014" ${student.regNo === '23204014' ? 'selected' : ''}>R. Anitha (EEE Paid)</option>
-                <option value="24205003" ${student.regNo === '24205003' ? 'selected' : ''}>A. Saravanan (Civil 1st Yr)</option>
-              </select>
-            </div>
+            ${isStaffUser ? `
+              <div style="display: flex; gap: 0.5rem; align-items: center; background: rgba(0,0,0,0.2); padding: 4px 8px; border-radius: 6px;">
+                <span style="font-size: 0.75rem; color: #fce076; font-weight: 600;">Staff Switch Student:</span>
+                <select id="bannerStudentSelect" onchange="window.onDemoStudentChange(this.value)" style="background: #0a2558; color: #ffffff; border: 1px solid #d4af37; padding: 3px 8px; border-radius: 4px; font-size: 0.775rem; font-weight: 600; cursor: pointer; outline: none;">
+                  <option value="22201045" ${student.regNo === '22201045' ? 'selected' : ''}>K. Vigneshwaran (CSE)</option>
+                  <option value="22202018" ${student.regNo === '22202018' ? 'selected' : ''}>M. Priya (ECE Hosteller)</option>
+                  <option value="23203009" ${student.regNo === '23203009' ? 'selected' : ''}>S. Karthik (Mech Bus)</option>
+                  <option value="23204014" ${student.regNo === '23204014' ? 'selected' : ''}>R. Anitha (EEE Paid)</option>
+                  <option value="24205003" ${student.regNo === '24205003' ? 'selected' : ''}>A. Saravanan (Civil 1st Yr)</option>
+                </select>
+              </div>
+            ` : ''}
             <button class="btn btn-gold btn-sm" onclick="Fees.openPayFeesModal()">
               💳 Pay Outstanding Fee
             </button>
@@ -360,6 +387,13 @@ const Fees = {
       };
 
       const result = await API.submitPayment(paymentData);
+      if (!result || !result.success) {
+        alert(result?.error || 'Payment processing failed. Please sign in again or contact college accounts.');
+        btn.disabled = false;
+        btn.innerHTML = 'Confirm &amp; Generate Instant Receipt';
+        return;
+      }
+
       this.closePaymentModal();
 
       // Refresh dashboard

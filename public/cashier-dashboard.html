@@ -140,41 +140,72 @@
   <script src="/js/receipts.js"></script>
   <script src="/js/cashier.js"></script>
   <script>
-    // Initialize session check
-    try {
-      const savedAuth = localStorage.getItem('sptc_auth_session');
-      if (savedAuth) {
-        const auth = JSON.parse(savedAuth);
-        if (auth.profile) {
-          const badge = document.getElementById('cashierHeaderBadge');
-          if (badge) {
-            badge.innerHTML = `
-              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
-                ${auth.profile.name.charAt(0)}
-              </div>
-              <div style="line-height: 1.15; text-align: left;">
-                <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
-                  <span>${auth.profile.name}</span>
-                  <span class="badge badge-primary">${auth.role || 'STAFF'}</span>
-                </div>
-                <div style="font-size: 0.7rem; color: #64748b;">${auth.profile.title || 'Accounts Officer'}</div>
-              </div>
-            `;
-          }
+    // Strict Cashier Desk Guard & Route Protection
+    let currentStaffSession = null;
+
+    async function guardAndInitCashier() {
+      const container = document.getElementById('cashierDeskContainer');
+
+      // 1. Strict Server Session Verification
+      const session = await API.verifySession();
+      if (!session || !session.authenticated || session.userType !== 'STAFF') {
+        if (container) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 4rem 1rem; color: #b91c1c;">
+              <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🛡️</div>
+              <h3 style="font-family: var(--font-heading); color: #b91c1c;">Administrative Staff Access Required</h3>
+              <p style="color: #64748b; margin-top: 0.5rem;">The Cashier Counter and Legacy Tally desk is restricted to authorized college accounts personnel. Redirecting to staff sign in...</p>
+            </div>
+          `;
         }
+        setTimeout(() => {
+          window.location.replace('/login.html?role=staff&redirect=' + encodeURIComponent(window.location.pathname) + '&reason=staff_required');
+        }, 700);
+        return;
       }
-    } catch (e) {
-      console.warn('Session parse error:', e);
-    }
 
-    function handleCashierLogout() {
-      localStorage.removeItem('sptc_auth_session');
-      window.location.href = '/login.html?role=staff';
-    }
+      currentStaffSession = session;
 
-    // Initialize Cashier Terminal
-    document.addEventListener('DOMContentLoaded', () => {
+      // 2. Update Header Badge with Authenticated Staff Profile
+      const badge = document.getElementById('cashierHeaderBadge');
+      if (badge && session.profile) {
+        const p = session.profile;
+        badge.innerHTML = `
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+            ${p.name.charAt(0)}
+          </div>
+          <div style="line-height: 1.15; text-align: left;">
+            <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
+              <span>${p.name}</span>
+              <span class="badge badge-primary">${session.role || 'STAFF'}</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #64748b;">${p.title || 'Accounts Officer'}</div>
+          </div>
+        `;
+      }
+
+      // 3. Initialize Cashier Module
       Cashier.init();
+    }
+
+    // Strict Server-Side Logout
+    async function handleCashierLogout() {
+      const btn = event?.currentTarget;
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = 'Signing Out...';
+      }
+      try {
+        await API.logout();
+      } catch (e) {
+        console.warn('Logout notice:', e);
+      }
+      window.location.replace('/login.html?role=staff&reason=logged_out');
+    }
+
+    // Execute route guard on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+      guardAndInitCashier();
     });
   </script>
 </body>

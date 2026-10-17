@@ -152,10 +152,45 @@
   <script>
     let currentRole = 'STUDENT';
 
-    // Parse URL query parameter (e.g. /login?role=staff)
+    // Parse URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('role') === 'staff' || urlParams.get('role') === 'cashier') {
+    const requestedRole = urlParams.get('role');
+    const redirectUrl = urlParams.get('redirect');
+    const reason = urlParams.get('reason');
+
+    if (requestedRole === 'staff' || requestedRole === 'cashier' || reason === 'staff_required') {
       switchLoginRole('STAFF');
+    }
+
+    // Display banner for specific reason codes
+    if (reason === 'logged_out') {
+      showAlert('You have been securely signed out of the SPTC Institutional Portal.', false);
+    } else if (reason === 'auth_required') {
+      showAlert('Authentication Required: Please sign in to access your student fee records.', true);
+    } else if (reason === 'staff_required') {
+      showAlert('Restricted Area: Administrative staff or cashier credentials are required.', true);
+    } else if (reason === 'session_expired') {
+      showAlert('Security Session Expired: Please enter your credentials to resume.', true);
+    } else if (reason === 'unauthorized') {
+      showAlert('Access Denied: You do not have permission to view that page.', true);
+    }
+
+    // Check if user is already signed in (skip if explicitly logged out)
+    if (reason !== 'logged_out') {
+      API.verifySession().then(res => {
+        if (res && res.authenticated) {
+          showAlert(`Welcome back, ${res.profile.name}! Redirecting to your active portal...`, false);
+          setTimeout(() => {
+            if (redirectUrl && redirectUrl.startsWith('/')) {
+              window.location.href = redirectUrl;
+            } else if (res.userType === 'STAFF') {
+              window.location.href = '/cashier-dashboard.html';
+            } else {
+              window.location.href = '/dashboard.html';
+            }
+          }, 800);
+        }
+      }).catch(() => {});
     }
 
     function switchLoginRole(role) {
@@ -164,8 +199,6 @@
       const tabStaff = document.getElementById('tabStaff');
       const studentForm = document.getElementById('studentLoginForm');
       const staffForm = document.getElementById('staffLoginForm');
-      const alertBox = document.getElementById('authAlert');
-      if (alertBox) alertBox.style.display = 'none';
 
       if (role === 'STUDENT') {
         tabStudent.classList.add('active');
@@ -198,6 +231,7 @@
 
     function showAlert(message, isError = true) {
       const alertBox = document.getElementById('authAlert');
+      if (!alertBox) return;
       alertBox.style.display = 'block';
       alertBox.style.background = isError ? '#fef2f2' : '#ecfdf5';
       alertBox.style.border = isError ? '1.5px solid #fecaca' : '1.5px solid #a7f3d0';
@@ -208,7 +242,7 @@
     async function handleLoginSubmit(event, role) {
       event.preventDefault();
       const alertBox = document.getElementById('authAlert');
-      alertBox.style.display = 'none';
+      if (alertBox) alertBox.style.display = 'none';
 
       let identifier, password;
       const btn = role === 'STUDENT' ? document.getElementById('btnStudentSubmit') : document.getElementById('btnStaffSubmit');
@@ -229,7 +263,7 @@
         if (res.success) {
           showAlert(res.message || 'Login successful! Redirecting to your dashboard...', false);
           
-          // Save session
+          // Save verified session
           const sessionData = {
             role: res.role,
             userType: res.userType,
@@ -239,7 +273,9 @@
           localStorage.setItem('sptc_auth_session', JSON.stringify(sessionData));
 
           setTimeout(() => {
-            if (res.userType === 'STAFF') {
+            if (redirectUrl && redirectUrl.startsWith('/')) {
+              window.location.href = redirectUrl;
+            } else if (res.userType === 'STAFF') {
               window.location.href = '/cashier-dashboard.html';
             } else {
               window.location.href = '/dashboard.html';

@@ -12,16 +12,25 @@ const Cashier = {
 
   async loadAllStudents() {
     try {
-      this.allStudents = await API.getAllStudents();
+      const data = await API.getAllStudents();
+      if (Array.isArray(data)) {
+        this.allStudents = data;
+      } else {
+        console.warn('getAllStudents returned non-array:', data);
+        this.allStudents = [];
+      }
     } catch (err) {
       console.error('Error loading students for cashier:', err);
+      this.allStudents = [];
     }
   },
 
   async loadCashBookReport() {
     try {
       const report = await API.getCashBookReport();
-      this.renderCashBookReport(report);
+      if (report && !report.error) {
+        this.renderCashBookReport(report);
+      }
     } catch (err) {
       console.error('Error loading cash book:', err);
     }
@@ -31,9 +40,10 @@ const Cashier = {
     const container = document.getElementById('cashierDeskContainer');
     if (!container) return;
 
-    let studentOptions = this.allStudents.map(s => `
+    const studentsList = Array.isArray(this.allStudents) ? this.allStudents : [];
+    let studentOptions = studentsList.map(s => `
       <option value="${s.regNo}">
-        ${s.regNo} - ${s.name} (${s.department} Year ${s.currentYear}) - Due: ₹${s.balanceDue.toLocaleString('en-IN')}
+        ${s.regNo} - ${s.name} (${s.department} Year ${s.currentYear}) - Due: ₹${(s.balanceDue || 0).toLocaleString('en-IN')}
       </option>
     `).join('');
 
@@ -212,6 +222,12 @@ const Cashier = {
       };
 
       const result = await API.submitPayment(paymentData);
+      if (!result || !result.success) {
+        alert(result?.error || 'Failed to record counter payment. Please check authorization.');
+        btn.disabled = false;
+        btn.innerHTML = '🖨️ Collect Fee &amp; Print Official Receipt';
+        return;
+      }
 
       // Refresh data
       await this.loadAllStudents();

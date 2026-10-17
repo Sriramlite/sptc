@@ -92,6 +92,10 @@ const Receipts = {
   async showReceiptModal(receiptNo) {
     try {
       const data = await API.getReceiptDetails(receiptNo);
+      if (!data || !data.receipt) {
+        alert(data?.error || 'Receipt could not be retrieved from the college records.');
+        return;
+      }
       const { college, student, receipt } = data;
 
       const modalContainer = document.getElementById('receiptModalContent');

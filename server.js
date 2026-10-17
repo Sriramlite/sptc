@@ -6,43 +6,299 @@ const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
+const NODE_ENV = process.env.NODE_ENV || 'production';
 const DB_FILE = path.join(__dirname, 'data', 'database.json');
+const SESSIONS_FILE = path.join(__dirname, 'data', 'sessions.json');
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+// ======================== SECURITY & MIDDLEWARE ========================
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 
-// Helper to load database
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Deployment Security Headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Disable caching on API endpoints
+  if (req.path.startsWith('/api/')) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+  next();
+});
+
+// Static assets with standard cache control
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: NODE_ENV === 'production' ? '1h' : '0'
+}));
+
+// ======================== DATABASE HELPERS ========================
 function loadDb() {
   try {
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
     return JSON.parse(raw);
   } catch (err) {
     console.error('Error loading database:', err);
-    return { college: {}, departments: [], students: [], feeBilledItems: [], receipts: [] };
+    return { college: {}, departments: [], students: [], feeBilledItems: [], receipts: [], staff: [] };
   }
 }
 
-// Helper to save database
+// Atomic safe save to prevent JSON corruption on sudden restarts
 function saveDb(data) {
   try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    const tmpFile = `${DB_FILE}.tmp.${Date.now()}`;
+    fs.writeFileSync(tmpFile, JSON.stringify(data, null, 2), 'utf-8');
+    fs.renameSync(tmpFile, DB_FILE);
     return true;
   } catch (err) {
-    console.error('Error saving database:', err);
-    return false;
+    console.error('Atomic database save failed, attempting direct write:', err);
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+      return true;
+    } catch (e) {
+      console.error('Fatal database save error:', e);
+      return false;
+    }
   }
 }
 
-// Helper to generate verification hash
 function generateReceiptHash(receiptNo, regNo, amount, date) {
   return crypto.createHash('sha256').update(`${receiptNo}-${regNo}-${amount}-${date}-SPTC-RAYAVARAM`).digest('hex').substring(0, 16);
 }
 
+// ======================== SERVER-SIDE SESSION STORE ========================
+const SessionManager = {
+  sessions: new Map(), // token -> sessionObj
+
+  init() {
+    try {
+      if (fs.existsSync(SESSIONS_FILE)) {
+        const raw = fs.readFileSync(SESSIONS_FILE, 'utf-8');
+        const data = JSON.parse(raw);
+        const now = Date.now();
+        for (const [token, session] of Object.entries(data)) {
+          if (session.expiresAt && session.expiresAt > now) {
+            this.sessions.set(token, session);
+          }
+        }
+        console.log(`[AUTH] Restored ${this.sessions.size} active sessions from storage.`);
+      }
+    } catch (e) {
+      console.warn('[AUTH] Could not restore existing sessions:', e.message);
+    }
+
+    // Periodic cleanup of expired sessions every 15 minutes
+    setInterval(() => this.cleanup(), 15 * 60 * 1000);
+  },
+
+  persist() {
+    try {
+      const obj = Object.fromEntries(this.sessions);
+      const tmpFile = `${SESSIONS_FILE}.tmp.${Date.now()}`;
+      fs.writeFileSync(tmpFile, JSON.stringify(obj, null, 2), 'utf-8');
+      fs.renameSync(tmpFile, SESSIONS_FILE);
+    } catch (e) {
+      console.error('[AUTH] Error persisting sessions:', e.message);
+    }
+  },
+
+  createSession(profile, userType, role, req) {
+    // Cryptographically secure 256-bit token
+    const token = crypto.randomBytes(32).toString('hex');
+    const now = Date.now();
+    const session = {
+      token,
+      userType,
+      role,
+      id: profile.regNo || profile.id || profile.username,
+      profile,
+      createdAt: new Date(now).toISOString(),
+      expiresAt: now + (24 * 60 * 60 * 1000), // 24-hour validity
+      lastActive: new Date(now).toISOString(),
+      ip: req?.ip || req?.socket?.remoteAddress || 'unknown',
+      userAgent: req?.headers['user-agent'] || 'unknown'
+    };
+
+    this.sessions.set(token, session);
+    this.persist();
+    return session;
+  },
+
+  get(token) {
+    if (!token) return null;
+    const session = this.sessions.get(token);
+    if (!session) return null;
+
+    if (session.expiresAt && session.expiresAt < Date.now()) {
+      this.sessions.delete(token);
+      this.persist();
+      return null;
+    }
+
+    session.lastActive = new Date().toISOString();
+    return session;
+  },
+
+  destroy(token) {
+    if (!token) return false;
+    const existed = this.sessions.delete(token);
+    if (existed) {
+      this.persist();
+      console.log(`[AUTH] Session ${token.substring(0, 8)}... invalidated.`);
+    }
+    return existed;
+  },
+
+  cleanup() {
+    const now = Date.now();
+    let changed = false;
+    for (const [token, session] of this.sessions.entries()) {
+      if (session.expiresAt && session.expiresAt < now) {
+        this.sessions.delete(token);
+        changed = true;
+      }
+    }
+    if (changed) {
+      this.persist();
+      console.log(`[AUTH] Expired sessions purged. Active count: ${this.sessions.size}`);
+    }
+  }
+};
+
+SessionManager.init();
+
+// ======================== BRUTE-FORCE RATE LIMITER ========================
+const LoginRateLimiter = {
+  attempts: new Map(), // key -> { count, firstAttempt, lockedUntil }
+
+  check(key) {
+    const record = this.attempts.get(key);
+    if (!record) return { allowed: true };
+    const now = Date.now();
+    if (record.lockedUntil && record.lockedUntil > now) {
+      const waitSeconds = Math.ceil((record.lockedUntil - now) / 1000);
+      return { allowed: false, waitSeconds };
+    }
+    // Reset window after 10 minutes of inactivity
+    if (now - record.firstAttempt > 10 * 60 * 1000 && !record.lockedUntil) {
+      this.attempts.delete(key);
+      return { allowed: true };
+    }
+    return { allowed: true };
+  },
+
+  recordFailure(key) {
+    const now = Date.now();
+    let record = this.attempts.get(key);
+    if (!record || (record.lockedUntil && record.lockedUntil <= now)) {
+      record = { count: 0, firstAttempt: now, lockedUntil: 0 };
+    }
+    record.count++;
+    if (record.count >= 5) {
+      record.lockedUntil = now + (15 * 60 * 1000); // 15-minute lock
+      console.warn(`[SECURITY] Excessive failed logins for ${key}. Locked for 15 minutes.`);
+    }
+    this.attempts.set(key, record);
+    return record;
+  },
+
+  recordSuccess(key) {
+    this.attempts.delete(key);
+  }
+};
+
+// ======================== AUTHENTICATION MIDDLEWARE ========================
+function extractToken(req) {
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.substring(7).trim();
+  }
+  return req.headers['x-session-token'] || req.query.token || null;
+}
+
+// 1. Strict Authenticate Middleware
+function authenticate(req, res, next) {
+  const token = extractToken(req);
+  if (!token) {
+    return res.status(401).json({ 
+      error: 'Authentication required. Please sign in.', 
+      code: 'UNAUTHORIZED' 
+    });
+  }
+
+  const session = SessionManager.get(token);
+  if (!session) {
+    return res.status(401).json({ 
+      error: 'Invalid or expired session. Please sign in again.', 
+      code: 'SESSION_EXPIRED' 
+    });
+  }
+
+  req.user = session;
+  next();
+}
+
+// 2. Strict Staff-Only Middleware
+function requireStaff(req, res, next) {
+  authenticate(req, res, () => {
+    if (req.user.userType !== 'STAFF') {
+      return res.status(403).json({ 
+        error: 'Access denied. Administrative staff credentials required.', 
+        code: 'FORBIDDEN' 
+      });
+    }
+    next();
+  });
+}
+
+// 3. Strict Student or Staff Middleware
+function requireStudentOrStaff(req, res, next) {
+  authenticate(req, res, () => {
+    if (req.user.userType === 'STAFF') {
+      return next(); // Staff can view any student ledger
+    }
+
+    if (req.user.userType === 'STUDENT') {
+      const requestedRegNo = req.params.regNo || req.body.regNo;
+      if (requestedRegNo && req.user.profile.regNo !== requestedRegNo) {
+        return res.status(403).json({ 
+          error: 'Access forbidden. Students may only view and pay their own student fee records.', 
+          code: 'FORBIDDEN' 
+        });
+      }
+      return next();
+    }
+
+    return res.status(403).json({ error: 'Access denied.', code: 'FORBIDDEN' });
+  });
+}
+
 // ======================== API ROUTES ========================
 
-// 1. College Info & Departments
+// Health & Deployment Status Endpoint
+app.get(['/health', '/api/health'], (req, res) => {
+  res.json({
+    status: 'UP',
+    college: 'Subramanian Polytechnic College (SPTC)',
+    location: 'Rayavaram, Pudukkottai District, Tamil Nadu – 622 506',
+    doteCode: '331',
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+    activeSessions: SessionManager.sessions.size,
+    environment: NODE_ENV
+  });
+});
+
+// 1. College Info & Departments (Public)
 app.get('/api/college-info', (req, res) => {
   const db = loadDb();
   res.json({
@@ -51,8 +307,8 @@ app.get('/api/college-info', (req, res) => {
   });
 });
 
-// 2. All Students (for Cashier & Demo Switcher)
-app.get('/api/students', (req, res) => {
+// 2. All Students (Protected: Strictly Staff Only)
+app.get('/api/students', requireStaff, (req, res) => {
   const db = loadDb();
   const studentsWithDues = db.students.map(s => {
     const studentBills = db.feeBilledItems.filter(b => b.regNo === s.regNo);
@@ -72,12 +328,25 @@ app.get('/api/students', (req, res) => {
   res.json(studentsWithDues);
 });
 
-// 3. Unified Authentication (Student & Staff/Faculty)
+// 3. Strict Unified Authentication (Student & Staff/Faculty)
 app.post('/api/auth/login', (req, res) => {
   const { identifier, password, roleType } = req.body;
 
   if (!identifier || !password) {
     return res.status(400).json({ error: 'Please enter both your login identifier and password.' });
+  }
+
+  const clientIp = req.ip || req.socket.remoteAddress || 'unknown';
+  const rateLimitKey = `${clientIp}_${identifier.trim().toLowerCase()}`;
+
+  // Check rate limit lockout
+  const rateCheck = LoginRateLimiter.check(rateLimitKey);
+  if (!rateCheck.allowed) {
+    return res.status(429).json({ 
+      error: `Too many failed login attempts. Account temporarily locked for security. Please try again in ${rateCheck.waitSeconds} seconds.`,
+      code: 'RATE_LIMITED',
+      retryAfter: rateCheck.waitSeconds
+    });
   }
 
   const db = loadDb();
@@ -91,30 +360,38 @@ app.post('/api/auth/login', (req, res) => {
     );
 
     if (!staffMember) {
+      LoginRateLimiter.recordFailure(rateLimitKey);
       return res.status(404).json({ error: 'Staff account not found. Please verify your employee username or email.' });
     }
 
     if (staffMember.password !== password.trim()) {
+      LoginRateLimiter.recordFailure(rateLimitKey);
       return res.status(401).json({ error: 'Incorrect staff password. Please try again or contact IT support.' });
     }
 
-    const token = crypto.createHash('sha256').update(`${staffMember.id}-${staffMember.role}-${Date.now()}-SPTC-STAFF`).digest('hex');
+    // Success: Reset rate limit counter and generate server-side session
+    LoginRateLimiter.recordSuccess(rateLimitKey);
+
+    const safeProfile = {
+      id: staffMember.id,
+      username: staffMember.username,
+      email: staffMember.email,
+      name: staffMember.name,
+      role: staffMember.role,
+      title: staffMember.title,
+      department: staffMember.department,
+      phone: staffMember.phone
+    };
+
+    const session = SessionManager.createSession(safeProfile, 'STAFF', staffMember.role, req);
 
     return res.json({
       success: true,
       role: staffMember.role,
       userType: 'STAFF',
-      token,
-      profile: {
-        id: staffMember.id,
-        username: staffMember.username,
-        email: staffMember.email,
-        name: staffMember.name,
-        role: staffMember.role,
-        title: staffMember.title,
-        department: staffMember.department,
-        phone: staffMember.phone
-      },
+      token: session.token,
+      profile: safeProfile,
+      expiresAt: session.expiresAt,
       message: `Welcome, ${staffMember.name} (${staffMember.title})`
     });
   }
@@ -127,127 +404,191 @@ app.post('/api/auth/login', (req, res) => {
   );
 
   if (!student) {
+    LoginRateLimiter.recordFailure(rateLimitKey);
     return res.status(404).json({ error: 'Student registration number not found in SPTC records.' });
   }
 
   // Verify PIN / Password
   if (student.pin && student.pin !== password.trim()) {
+    LoginRateLimiter.recordFailure(rateLimitKey);
     return res.status(401).json({ error: 'Invalid PIN / Date of Birth. Default format: DDMMYYYY' });
   }
 
-  const token = crypto.createHash('sha256').update(`${student.regNo}-STUDENT-${Date.now()}-SPTC-STUDENT`).digest('hex');
+  // Success: Reset rate limit counter and generate server-side session
+  LoginRateLimiter.recordSuccess(rateLimitKey);
+
+  const safeProfile = {
+    regNo: student.regNo,
+    admissionNo: student.admissionNo,
+    name: student.name,
+    department: student.department,
+    deptCode: student.deptCode,
+    currentYear: student.currentYear,
+    currentSemester: student.currentSemester,
+    quota: student.quota,
+    isHosteller: student.isHosteller,
+    busRoute: student.busRoute,
+    parentName: student.parentName,
+    parentPhone: student.parentPhone,
+    email: student.email,
+    concessionType: student.concessionType,
+    concessionAmount: student.concessionAmount
+  };
+
+  const session = SessionManager.createSession(safeProfile, 'STUDENT', 'STUDENT', req);
 
   return res.json({
     success: true,
     role: 'STUDENT',
     userType: 'STUDENT',
-    token,
-    profile: {
-      regNo: student.regNo,
-      admissionNo: student.admissionNo,
-      name: student.name,
-      department: student.department,
-      deptCode: student.deptCode,
-      currentYear: student.currentYear,
-      currentSemester: student.currentSemester,
-      quota: student.quota,
-      isHosteller: student.isHosteller,
-      busRoute: student.busRoute,
-      parentName: student.parentName,
-      parentPhone: student.parentPhone,
-      email: student.email,
-      concessionType: student.concessionType,
-      concessionAmount: student.concessionAmount
-    },
+    token: session.token,
+    profile: safeProfile,
+    expiresAt: session.expiresAt,
     message: `Welcome, ${student.name} (${student.department})`
   });
 });
 
-// Backward-compatible student login endpoint
-app.post('/api/auth/student-login', (req, res) => {
-  const { regNo, pin } = req.body;
-  req.body.identifier = regNo;
-  req.body.password = pin;
-  req.body.roleType = 'STUDENT';
-  
+// Student Self-Registration Endpoint
+app.post('/api/auth/register-student', (req, res) => {
+  const {
+    regNo, name, department, currentYear, currentSemester,
+    quota, admissionNo, isHosteller, busRoute,
+    parentName, parentPhone, email, password
+  } = req.body;
+
+  if (!regNo || !name || !department || !password) {
+    return res.status(400).json({ error: 'Registration number, name, department, and password/PIN are required.' });
+  }
+
   const db = loadDb();
-  const student = db.students.find(s => s.regNo.trim() === regNo?.trim());
-  if (!student) {
-    return res.status(404).json({ error: 'Student registration number not found in SPTC records.' });
+  const existing = db.students.find(s => s.regNo.trim() === regNo.trim());
+  if (existing) {
+    return res.status(400).json({ error: `Student with DOTE Reg. No ${regNo} is already registered. Please sign in instead.` });
   }
-  if (pin && student.pin && student.pin !== pin.trim()) {
-    return res.status(401).json({ error: 'Invalid PIN / Date of Birth. Format: DDMMYYYY' });
-  }
+
+  const deptCodes = {
+    'Computer Engineering': 'CSE',
+    'Mechanical Engineering': 'MECH',
+    'Electrical and Electronics Engineering': 'EEE',
+    'Electronics and Communication Engineering': 'ECE',
+    'Civil Engineering': 'CIVIL'
+  };
+  const deptCode = deptCodes[department] || 'DIPLOMA';
+
+  const newStudent = {
+    regNo: regNo.trim(),
+    name: name.trim(),
+    admissionNo: admissionNo ? admissionNo.trim() : `SPTC/${new Date().getFullYear()}/${Math.floor(100 + Math.random() * 900)}`,
+    department,
+    deptCode,
+    currentYear: parseInt(currentYear) || 1,
+    currentSemester: parseInt(currentSemester) || 1,
+    quota: quota || 'Government',
+    isHosteller: !!isHosteller,
+    busRoute: busRoute || (isHosteller ? 'None (Hosteller)' : 'Pudukkottai Town (Route 1)'),
+    parentName: parentName ? parentName.trim() : 'Parent / Guardian',
+    parentPhone: parentPhone ? parentPhone.trim() : '9840000000',
+    email: email ? email.trim() : `student_${regNo}@sptc.org.in`,
+    pin: password.trim(),
+    concessionType: 'None',
+    concessionAmount: 0
+  };
+
+  db.students.push(newStudent);
+
+  // Initialize standard semester fee bill
+  const tuitionFee = (quota === 'Government') ? 14000 : 22000;
+  const labFee = 3500;
+  const busFee = (!isHosteller && busRoute && !busRoute.includes('None')) ? 6500 : 0;
+  const hostelFee = isHosteller ? 18000 : 0;
+  const netPayable = tuitionFee + labFee + busFee + hostelFee;
+
+  db.feeBilledItems.push({
+    id: `BILL-${newStudent.regNo}-S${newStudent.currentSemester}`,
+    regNo: newStudent.regNo,
+    semester: `Semester ${newStudent.currentSemester}`,
+    academicYear: '2025-2026',
+    tuitionFee,
+    labFee,
+    busFee,
+    hostelFee,
+    concession: 0,
+    netPayable,
+    dueDate: '2026-11-30'
+  });
+
+  saveDb(db);
+
+  const safeProfile = {
+    regNo: newStudent.regNo,
+    admissionNo: newStudent.admissionNo,
+    name: newStudent.name,
+    department: newStudent.department,
+    deptCode: newStudent.deptCode,
+    currentYear: newStudent.currentYear,
+    currentSemester: newStudent.currentSemester,
+    quota: newStudent.quota,
+    isHosteller: newStudent.isHosteller,
+    busRoute: newStudent.busRoute,
+    parentName: newStudent.parentName,
+    parentPhone: newStudent.parentPhone,
+    email: newStudent.email,
+    concessionType: newStudent.concessionType,
+    concessionAmount: newStudent.concessionAmount
+  };
+
+  const session = SessionManager.createSession(safeProfile, 'STUDENT', 'STUDENT', req);
 
   res.json({
     success: true,
-    message: 'Authentication successful',
     role: 'STUDENT',
-    student: {
-      regNo: student.regNo,
-      admissionNo: student.admissionNo,
-      name: student.name,
-      department: student.department,
-      deptCode: student.deptCode,
-      currentYear: student.currentYear,
-      currentSemester: student.currentSemester,
-      quota: student.quota,
-      isHosteller: student.isHosteller,
-      busRoute: student.busRoute,
-      parentName: student.parentName,
-      parentPhone: student.parentPhone,
-      email: student.email,
-      concessionType: student.concessionType,
-      concessionAmount: student.concessionAmount
-    }
+    userType: 'STUDENT',
+    token: session.token,
+    profile: safeProfile,
+    expiresAt: session.expiresAt,
+    message: `Account enrolled successfully. Welcome, ${newStudent.name}!`
   });
 });
 
-// Get Current User Session Info
+// Strict Session Verification Endpoint (/api/auth/me)
 app.get('/api/auth/me', (req, res) => {
-  const { regNo, username } = req.query;
-  const db = loadDb();
-
-  if (username) {
-    const staff = (db.staff || []).find(s => s.username === username || s.email === username);
-    if (staff) {
-      return res.json({
-        authenticated: true,
-        userType: 'STAFF',
-        role: staff.role,
-        profile: {
-          id: staff.id,
-          username: staff.username,
-          email: staff.email,
-          name: staff.name,
-          role: staff.role,
-          title: staff.title,
-          department: staff.department
-        }
-      });
-    }
+  const token = extractToken(req);
+  if (!token) {
+    return res.status(401).json({ authenticated: false, error: 'No active session token provided.' });
   }
 
-  if (regNo) {
-    const student = db.students.find(s => s.regNo === regNo);
-    if (student) {
-      return res.json({
-        authenticated: true,
-        userType: 'STUDENT',
-        role: 'STUDENT',
-        profile: student
-      });
-    }
+  const session = SessionManager.get(token);
+  if (!session) {
+    return res.status(401).json({ authenticated: false, error: 'Session expired or invalidated. Please sign in again.' });
   }
 
-  res.json({ authenticated: false, message: 'No active session' });
+  res.json({
+    authenticated: true,
+    userType: session.userType,
+    role: session.role,
+    user: session.profile,
+    profile: session.profile,
+    expiresAt: session.expiresAt
+  });
 });
 
-// Change Password for Student or Staff
-app.post('/api/auth/change-password', (req, res) => {
-  const { identifier, currentPassword, newPassword, userType } = req.body;
-  if (!identifier || !currentPassword || !newPassword) {
-    return res.status(400).json({ error: 'All fields are required.' });
+// Strict Server-Side Logout Endpoint (/api/auth/logout)
+app.post('/api/auth/logout', (req, res) => {
+  const token = extractToken(req);
+  if (token) {
+    SessionManager.destroy(token);
+  }
+  res.json({
+    success: true,
+    message: 'You have been securely signed out of the SPTC Institutional Portal.'
+  });
+});
+
+// Change Password (Strictly Protected)
+app.post('/api/auth/change-password', authenticate, (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'Both current password and new password are required.' });
   }
 
   if (newPassword.length < 4) {
@@ -255,27 +596,28 @@ app.post('/api/auth/change-password', (req, res) => {
   }
 
   const db = loadDb();
+  const session = req.user;
 
-  if (userType === 'STAFF') {
-    const staff = (db.staff || []).find(s => s.username === identifier || s.email === identifier);
+  if (session.userType === 'STAFF') {
+    const staff = (db.staff || []).find(s => s.username === session.profile.username || s.id === session.profile.id);
     if (!staff || staff.password !== currentPassword) {
-      return res.status(401).json({ error: 'Invalid current password.' });
+      return res.status(401).json({ error: 'Current staff password is incorrect.' });
     }
     staff.password = newPassword;
     saveDb(db);
-    return res.json({ success: true, message: 'Staff password updated successfully.' });
+    return res.json({ success: true, message: 'Staff administrative password updated successfully.' });
   } else {
-    const student = db.students.find(s => s.regNo === identifier);
+    const student = db.students.find(s => s.regNo === session.profile.regNo);
     if (!student || student.pin !== currentPassword) {
-      return res.status(401).json({ error: 'Invalid current PIN/password.' });
+      return res.status(401).json({ error: 'Current student PIN is incorrect.' });
     }
     student.pin = newPassword;
     saveDb(db);
-    return res.json({ success: true, message: 'Student PIN updated successfully.' });
+    return res.json({ success: true, message: 'Student portal PIN updated successfully.' });
   }
 });
 
-// Get Staff Directory (public/admin)
+// Staff Directory (Public Sanitized)
 app.get('/api/staff', (req, res) => {
   const db = loadDb();
   const sanitizedStaff = (db.staff || []).map(s => ({
@@ -289,14 +631,14 @@ app.get('/api/staff', (req, res) => {
   res.json(sanitizedStaff);
 });
 
-// 4. Student Fee Status & Ledger Breakdown
-app.get('/api/student/:regNo/fees', (req, res) => {
+// 4. Student Fee Status & Ledger Breakdown (Protected: Student or Staff)
+app.get('/api/student/:regNo/fees', requireStudentOrStaff, (req, res) => {
   const { regNo } = req.params;
   const db = loadDb();
   const student = db.students.find(s => s.regNo === regNo);
 
   if (!student) {
-    return res.status(404).json({ error: 'Student not found' });
+    return res.status(404).json({ error: 'Student record not found in college ledger.' });
   }
 
   const bills = db.feeBilledItems.filter(b => b.regNo === regNo);
@@ -306,14 +648,10 @@ app.get('/api/student/:regNo/fees', (req, res) => {
   const totalPaid = receipts.reduce((acc, r) => acc + (r.amount || 0), 0);
   const outstandingBalance = Math.max(0, totalBilled - totalPaid);
 
-  // Group bills by semester
-  const semesterBills = bills.map(b => {
-    // Find receipts linked to this bill or calculate payment coverage
-    return {
-      ...b,
-      status: totalPaid >= totalBilled ? 'PAID' : (b.dueDate < new Date().toISOString() ? 'OVERDUE' : 'PENDING')
-    };
-  });
+  const semesterBills = bills.map(b => ({
+    ...b,
+    status: totalPaid >= totalBilled ? 'PAID' : (b.dueDate < new Date().toISOString() ? 'OVERDUE' : 'PENDING')
+  }));
 
   res.json({
     student,
@@ -329,19 +667,18 @@ app.get('/api/student/:regNo/fees', (req, res) => {
   });
 });
 
-// 5. Student Receipt Vault (Current & Migrated Tally Receipts)
-app.get('/api/student/:regNo/receipts', (req, res) => {
+// 5. Student Receipt Vault (Protected: Student or Staff)
+app.get('/api/student/:regNo/receipts', requireStudentOrStaff, (req, res) => {
   const { regNo } = req.params;
   const db = loadDb();
   const receipts = db.receipts.filter(r => r.regNo === regNo);
 
   // Sort descending by date
   receipts.sort((a, b) => new Date(b.date) - new Date(a.date));
-
   res.json(receipts);
 });
 
-// 6. Single Receipt by Receipt Number
+// 6. Single Receipt by Receipt Number (Public/Printable Verification)
 app.get('/api/receipts/:receiptNo', (req, res) => {
   const { receiptNo } = req.params;
   const db = loadDb();
@@ -349,10 +686,10 @@ app.get('/api/receipts/:receiptNo', (req, res) => {
   const receipt = db.receipts.find(r => r.receiptNo === decodedNo || r.receiptNo === receiptNo);
 
   if (!receipt) {
-    return res.status(404).json({ error: 'Receipt not found' });
+    return res.status(404).json({ error: 'Official receipt voucher not found.' });
   }
 
-  const student = db.students.find(s => s.regNo === receipt.regNo) || { name: 'Unknown', department: 'SPTC' };
+  const student = db.students.find(s => s.regNo === receipt.regNo) || { name: 'Student', department: 'SPTC' };
 
   res.json({
     college: db.college,
@@ -361,12 +698,17 @@ app.get('/api/receipts/:receiptNo', (req, res) => {
   });
 });
 
-// 7. Process New Payment (Student UPI/Card or Cashier Counter)
-app.post('/api/payments/create', (req, res) => {
+// 7. Process New Payment (Protected: Authenticated Student or Staff)
+app.post('/api/payments/create', authenticate, (req, res) => {
   const { regNo, amount, paymentMode, transactionRef, remarks, breakdown, billId } = req.body;
 
   if (!regNo || !amount || amount <= 0) {
     return res.status(400).json({ error: 'Registration number and a valid amount are required.' });
+  }
+
+  // Authorization check: Students can only pay their own fees
+  if (req.user.userType === 'STUDENT' && req.user.profile.regNo !== regNo) {
+    return res.status(403).json({ error: 'Access forbidden. You cannot submit payments for another student.' });
   }
 
   const db = loadDb();
@@ -384,22 +726,25 @@ app.post('/api/payments/create', (req, res) => {
   const receiptNo = `SPTC/REC/${yearSeq}/${countThisYear.toString().padStart(4, '0')}`;
   const verificationHash = generateReceiptHash(receiptNo, regNo, numericAmount, dateStr);
 
+  const isStaffPayment = req.user.userType === 'STAFF';
   const newReceipt = {
     receiptNo,
     regNo,
     billId: billId || `BILL-${regNo}-SEM${student.currentSemester}`,
     date: dateStr,
     amount: numericAmount,
-    paymentMode: paymentMode || 'UPI / Student Portal',
+    paymentMode: paymentMode || (isStaffPayment ? 'Cashier Desk Counter Collection' : 'UPI Online Payment'),
     transactionRef: transactionRef || `TXN-${Date.now().toString().slice(-8)}`,
     academicYear: `${now.getFullYear()}-${now.getFullYear() + 1}`,
     semester: `Semester ${student.currentSemester}`,
-    source: paymentMode.includes('Cashier') ? 'SPTC Cashier Counter #1' : 'SPTC Student Online Portal',
+    source: isStaffPayment 
+      ? `SPTC Accounts Office Counter (Officer: ${req.user.profile.name})` 
+      : 'SPTC Student Online Payment Gateway',
     breakdown: breakdown || {
-      'Tuition Fee Payment': numericAmount
+      'Fee Collection Credit': numericAmount
     },
     verificationHash,
-    remarks: remarks || 'Payment processed and verified'
+    remarks: remarks || (isStaffPayment ? 'Counter POS payment collected at Accounts Office' : 'Online student self-service fee payment')
   };
 
   db.receipts.push(newReceipt);
@@ -412,12 +757,11 @@ app.post('/api/payments/create', (req, res) => {
   });
 });
 
-// 8. Import from Legacy Tally (XML / File Simulation)
-app.post('/api/tally/import-xml', (req, res) => {
+// 8. Import from Legacy Tally (Strictly Protected: Staff Only)
+app.post('/api/tally/import-xml', requireStaff, (req, res) => {
   const { xmlContent } = req.body;
   const db = loadDb();
 
-  // Read provided XML or fallback to sample Tally export
   let content = xmlContent;
   if (!content) {
     const samplePath = path.join(__dirname, 'data', 'sample_tally_export.xml');
@@ -428,7 +772,6 @@ app.post('/api/tally/import-xml', (req, res) => {
     }
   }
 
-  // Parse Tally Vouchers
   const voucherMatches = content.match(/<VOUCHER[\s\S]*?<\/VOUCHER>/gi) || [];
   const importedReceipts = [];
 
@@ -444,16 +787,13 @@ app.post('/api/tally/import-xml', (req, res) => {
       const party = partyMatch[1].trim();
       const rawAmount = Math.abs(parseFloat(amountMatch[1]));
       let rawDate = dateMatch ? dateMatch[1].trim() : '20240901';
-      // format YYYY-MM-DD
       const formattedDate = rawDate.length === 8 
         ? `${rawDate.slice(0, 4)}-${rawDate.slice(4, 6)}-${rawDate.slice(6, 8)}`
         : '2024-09-01';
 
-      // Extract RegNo from party name (e.g. "23204014 - R. ANITHA (EEE)")
       const regMatch = party.match(/\b\d{8}\b/);
       const regNo = regMatch ? regMatch[0] : '22201045';
 
-      // Check if already imported
       const exists = db.receipts.some(r => r.receiptNo === vchNo);
       if (!exists) {
         const receiptObj = {
@@ -490,8 +830,8 @@ app.post('/api/tally/import-xml', (req, res) => {
   });
 });
 
-// 9. Daily Cash-Book & Cashier Audit Summary
-app.get('/api/reports/cash-book', (req, res) => {
+// 9. Daily Cash-Book & Cashier Audit Summary (Strictly Protected: Staff Only)
+app.get('/api/reports/cash-book', requireStaff, (req, res) => {
   const db = loadDb();
   const receipts = db.receipts;
 
@@ -504,7 +844,6 @@ app.get('/api/reports/cash-book', (req, res) => {
     totalCollections += r.amount;
   });
 
-  // Calculate Defaulters list
   const defaulters = [];
   db.students.forEach(s => {
     const studentBills = db.feeBilledItems.filter(b => b.regNo === s.regNo);
@@ -550,15 +889,12 @@ app.get('/api/verify/:hash', (req, res) => {
     });
   }
 
-  const student = db.students.find(s => s.regNo === receipt.regNo) || { name: 'Verified Student' };
+  const student = db.students.find(s => s.regNo === receipt.regNo) || { name: 'Student', department: 'SPTC' };
 
   res.json({
     valid: true,
-    message: 'Official Tamper-Proof Fee Receipt Verified by SPTC Accounts & DOTE Cell',
-    details: {
-      institution: db.college.name,
-      doteCode: db.college.code,
-      location: db.college.location,
+    message: 'Official Subramanian Polytechnic College fee receipt verified successfully.',
+    receipt: {
       receiptNo: receipt.receiptNo,
       date: receipt.date,
       studentName: student.name,
@@ -639,15 +975,17 @@ app.post('/api/auth/register-student', (req, res) => {
 
   saveDb(db);
 
-  const token = crypto.createHash('sha256').update(`${newStudent.regNo}-STUDENT-${Date.now()}-SPTC-STUDENT`).digest('hex');
+  // Create active session in session store
+  const session = SessionManager.createSession(newStudent, 'STUDENT', 'STUDENT', req);
 
   res.json({
     success: true,
     message: 'Student portal account registered successfully!',
     role: 'STUDENT',
     userType: 'STUDENT',
-    token,
-    profile: newStudent
+    token: session.token,
+    profile: newStudent,
+    expiresAt: session.expiresAt
   });
 });
 
@@ -681,10 +1019,25 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.listen(PORT, () => {
+// Start Server
+const server = app.listen(PORT, HOST, () => {
   console.log(`=======================================================`);
   console.log(`🏛️  Subramanian Polytechnic College (SPTC) Web Portal`);
   console.log(`💳  Students Fees Management System running at:`);
   console.log(`👉  http://localhost:${PORT}`);
+  console.log(`🔒  Strict Session Management & Rate Limiter: ACTIVE`);
   console.log(`=======================================================`);
 });
+
+// Graceful Shutdown Handler
+function handleGracefulShutdown(signal) {
+  console.log(`\n[SHUTDOWN] Received ${signal}. Gracefully shutting down SPTC server...`);
+  SessionManager.persist();
+  server.close(() => {
+    console.log('[SHUTDOWN] HTTP server closed. State preserved safely.');
+    process.exit(0);
+  });
+}
+
+process.on('SIGINT', () => handleGracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => handleGracefulShutdown('SIGTERM'));
