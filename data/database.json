@@ -566,6 +566,23 @@
       },
       "verificationHash": "f6e43d319682034f",
       "remarks": "Demo online exam fee payment"
+    },
+    {
+      "receiptNo": "SPTC/REC/2026-27/0002",
+      "regNo": "22201045",
+      "billId": "BILL-22201045-SEM6",
+      "date": "2026-10-17",
+      "amount": 10000,
+      "paymentMode": "Cash Counter",
+      "transactionRef": "CTR-836448",
+      "academicYear": "2026-2027",
+      "semester": "Semester 6",
+      "source": "SPTC Student Online Portal",
+      "breakdown": {
+        "Tuition Fee Payment": 10000
+      },
+      "verificationHash": "c1e19446348ab003",
+      "remarks": "Office counter fee collection"
     }
   ],
   "staff": [

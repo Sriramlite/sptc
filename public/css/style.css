@@ -64,6 +64,9 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 
 body {
@@ -72,6 +75,10 @@ body {
   color: var(--color-text-main);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  position: relative;
 }
 
 img, svg {
@@ -98,15 +105,18 @@ button {
    ========================================================================== */
 .container {
   width: 100%;
-  max-width: 1360px;
+  max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  box-sizing: border-box;
 }
 
 .section {
-  padding: 5rem 0;
+  padding: 4.5rem 0;
+  width: 100%;
+  overflow-x: clip;
 }
 
 .section-title-wrap {
@@ -150,9 +160,11 @@ button {
 .top-bar {
   background: var(--color-primary-dark);
   color: rgba(255, 255, 255, 0.85);
-  font-size: 0.8rem;
-  padding: 0.45rem 0;
+  font-size: 0.775rem;
+  padding: 0.4rem 0;
   border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  width: 100%;
+  overflow: hidden;
 }
 
 .top-bar-inner {
@@ -160,23 +172,26 @@ button {
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
-  gap: 1.5rem;
+  gap: 1rem;
+  width: 100%;
 }
 
 .top-bar-left {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 0.775rem;
 }
 
 .top-bar-right {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 0.75rem;
   flex-shrink: 0;
+  font-size: 0.775rem;
 }
 
 .top-bar-item {
@@ -195,6 +210,7 @@ button {
   position: sticky;
   top: 0;
   z-index: 999;
+  width: 100%;
   transition: all var(--transition-normal);
 }
 
@@ -202,26 +218,28 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.65rem 0;
-  gap: 1.5rem;
+  padding: 0.55rem 0;
+  gap: 1rem;
+  width: 100%;
 }
 
 .brand-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.65rem;
   flex-shrink: 0;
 }
 
 .brand-logo-img {
-  width: 46px;
-  height: 46px;
+  width: 42px;
+  height: 42px;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  flex-shrink: 0;
 }
 
 .brand-text h1 {
   font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--color-primary);
   line-height: 1.15;
@@ -229,7 +247,7 @@ button {
 }
 
 .brand-text p {
-  font-size: 0.725rem;
+  font-size: 0.68rem;
   font-weight: 500;
   color: var(--color-text-muted);
   white-space: nowrap;
@@ -238,17 +256,17 @@ button {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .nav-links a {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--color-text-main);
-  padding: 0.4rem 0.65rem;
+  padding: 0.35rem 0.55rem;
   border-radius: var(--radius-sm);
   transition: all var(--transition-fast);
   white-space: nowrap;
@@ -262,8 +280,63 @@ button {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.5rem;
   flex-shrink: 0;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 0.25rem 0.55rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.user-profile-badge a {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.user-avatar-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-accent-gold);
+  color: #0a2558;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.user-avatar-sm.staff {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn-logout-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.2rem;
+  font-size: 0.9rem;
+  color: #b91c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-fast);
+}
+
+.btn-logout-icon:hover {
+  transform: scale(1.15);
 }
 
 /* Buttons */
@@ -475,8 +548,10 @@ button {
 .news-ticker-bar {
   background: #0f172a;
   color: #fff;
-  padding: 0.65rem 0;
+  padding: 0.5rem 0;
   border-bottom: 2px solid var(--color-accent-gold);
+  overflow: hidden;
+  width: 100%;
 }
 
 .news-ticker-inner {
@@ -484,6 +559,7 @@ button {
   align-items: center;
   gap: 1rem;
   overflow: hidden;
+  width: 100%;
 }
 
 .ticker-label {
@@ -1410,27 +1486,44 @@ button {
    ========================================================================== */
 @media (max-width: 1280px) {
   .navbar {
-    gap: 1rem;
+    gap: 0.75rem;
   }
   .nav-links {
-    gap: 0.5rem;
+    gap: 0.35rem;
   }
   .nav-links a {
-    font-size: 0.825rem;
-    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.45rem;
   }
   .nav-actions {
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
   .btn-sm {
-    padding: 0.35rem 0.7rem;
+    padding: 0.35rem 0.65rem;
     font-size: 0.775rem;
   }
   .brand-text h1 {
-    font-size: 1.05rem;
+    font-size: 0.98rem;
   }
   .brand-text p {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 1120px) {
+  .nav-links a {
+    font-size: 0.78rem;
+    padding: 0.25rem 0.4rem;
+  }
+  .brand-logo-img {
+    width: 36px;
+    height: 36px;
+  }
+  .brand-text h1 {
+    font-size: 0.92rem;
+  }
+  .brand-text p {
+    display: none;
   }
 }
 

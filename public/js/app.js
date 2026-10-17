@@ -77,33 +77,29 @@ const Auth = {
 
     if (this.currentUser) {
       const isStaff = this.currentUser.userType === 'STAFF';
-      const name = this.currentUser.profile.name;
-      const subtitle = isStaff 
-        ? `${this.currentUser.profile.title || 'College Staff'}` 
-        : `DOTE Reg: ${this.currentUser.profile.regNo} (${this.currentUser.profile.department})`;
-
-      const roleBadge = isStaff
-        ? `<span class="badge ${this.currentUser.role === 'PRINCIPAL' ? 'badge-gold' : 'badge-primary'}">${this.currentUser.role}</span>`
-        : `<span class="badge badge-success">STUDENT</span>`;
+      const shortSubtitle = isStaff 
+        ? `${this.currentUser.profile.title || 'Staff'}` 
+        : `Reg: ${this.currentUser.profile.regNo}`;
 
       const dashboardUrl = isStaff ? '/cashier-dashboard.html' : '/dashboard.html';
 
       authStatusContainer.innerHTML = `
-        <div class="user-profile-badge" style="display: flex; align-items: center; gap: 0.65rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 0.35rem 0.75rem; border-radius: 8px;">
-          <a href="${dashboardUrl}" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
-            <div style="width: 32px; height: 32px; border-radius: 50%; background: ${isStaff ? 'var(--color-primary)' : 'var(--color-accent-gold)'}; color: ${isStaff ? '#fff' : '#0a2558'}; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+        <div class="user-profile-badge">
+          <a href="${dashboardUrl}" style="display: flex; align-items: center; gap: 0.45rem; text-decoration: none;" title="Open Your Dashboard">
+            <div class="user-avatar-sm ${isStaff ? 'staff' : ''}">
               ${name.charAt(0)}
             </div>
             <div style="line-height: 1.15; text-align: left;">
-              <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
-                <span>${name}</span>
-                ${roleBadge}
+              <div style="font-size: 0.8rem; font-weight: 700; color: #0a2558; white-space: nowrap;">
+                ${name}
               </div>
-              <div style="font-size: 0.7rem; color: #64748b;">${subtitle}</div>
+              <div style="font-size: 0.68rem; color: #64748b; white-space: nowrap;">
+                ${shortSubtitle}
+              </div>
             </div>
           </a>
-          <button onclick="Auth.logout()" class="btn btn-sm btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.725rem; border-color: #cbd5e1; color: #b91c1c; margin-left: 0.25rem;" title="Sign Out">
-            🚪 Logout
+          <button onclick="Auth.logout()" class="btn-logout-icon" title="Sign Out">
+            🚪
           </button>
         </div>
       `;
