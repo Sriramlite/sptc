@@ -28,11 +28,12 @@
         <div class="top-bar-item">
           🏛️ <strong>DOTE: 331</strong> | AICTE Approved
         </div>
-        <div class="top-bar-item" style="display: flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.08); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid rgba(212,175,55,0.3);">
-          <span style="font-size: 0.725rem; color: #fce076; font-weight: 600;">Student Demo:</span>
-          <select id="demoStudentSelect" onchange="window.onDemoStudentChange(this.value)" style="background: #071739; color: #ffffff; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; outline: none; max-width: 170px;">
-            <!-- Populated via JS -->
-          </select>
+        <div class="top-bar-item" style="display: flex; align-items: center; gap: 0.65rem;">
+          <a href="/dashboard.html" style="color: #fce076; font-weight: 600; font-size: 0.775rem;">🎓 Student Dashboard</a>
+          <span style="color: rgba(255,255,255,0.3);">|</span>
+          <a href="/cashier-dashboard.html" style="color: #ffffff; font-weight: 600; font-size: 0.775rem;">💼 Cashier Desk</a>
+          <span style="color: rgba(255,255,255,0.3);">|</span>
+          <a href="/login.html" style="color: #93c5fd; font-weight: 600; font-size: 0.775rem;">🔐 Login</a>
         </div>
       </div>
     </div>
@@ -61,17 +62,22 @@
       </nav>
 
       <div class="nav-actions">
-        <button class="btn btn-primary btn-sm" onclick="window.navigateTo('fees', event)">
+        <a href="/dashboard.html" class="btn btn-primary btn-sm">
           🎓 Student Fees
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="window.navigateTo('cashier', event)">
+        </a>
+        <a href="/cashier-dashboard.html" class="btn btn-outline btn-sm">
           💼 Cashier Desk
-        </button>
+        </a>
         <button class="btn btn-gold btn-sm" onclick="window.openAdmissionModal()">
           Admission
         </button>
         <div id="navbarAuthContainer" style="display: flex; align-items: center; gap: 0.5rem;">
-          <!-- Rendered by Auth.updateAuthUi() -->
+          <a href="/login.html" class="btn btn-sm btn-outline" style="border-color: #cbd5e1; color: var(--color-primary);">
+            Sign In
+          </a>
+          <a href="/register.html" class="btn btn-sm btn-gold">
+            Register
+          </a>
         </div>
       </div>
     </div>
@@ -103,12 +109,12 @@
         </p>
 
         <div class="hero-actions">
-          <button class="btn btn-gold" onclick="window.navigateTo('fees')">
+          <a href="/dashboard.html" class="btn btn-gold">
             💳 Access Student Fee Vault
-          </button>
-          <button class="btn btn-primary" onclick="window.navigateTo('cashier')">
+          </a>
+          <a href="/cashier-dashboard.html" class="btn btn-primary">
             💼 Office Accounts / Tally Desk
-          </button>
+          </a>
           <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.5); color: #fff;" onclick="window.openAdmissionModal()">
             📝 Online Admission Enquiry
           </button>
@@ -139,67 +145,56 @@
         <div class="portal-card-header">
           <div class="portal-card-icon">🏛️</div>
           <div>
-            <h3>Student Fee &amp; Receipt Vault</h3>
-            <p>Fast self-service access for students &amp; parents</p>
+            <h3>SPTC Cloud Portal Access</h3>
+            <p>Dedicated self-service hubs for students &amp; staff</p>
           </div>
         </div>
 
         <div style="font-size: 0.875rem; color: #475569; margin-bottom: 1.25rem; line-height: 1.5;">
-          Log in with your <strong>DOTE Registration Number</strong> to view term-by-term fee balances, apply government concessions, and download official verified PDF receipts (including past records migrated from the legacy Tally system).
+          Log in with your <strong>DOTE Registration Number</strong> to view term-by-term fee balances, apply government concessions, and download official verified PDF receipts (including records migrated from the legacy Tally desktop system).
         </div>
 
-        <div id="heroProfileWidget" style="background: #f1f5f9; padding: 1rem; border-radius: 8px; margin-bottom: 1.25rem;">
-          <!-- Rendered dynamically by Auth.updateAuthUi() -->
+        <!-- 3 Prominent Dedicated Portal Cards -->
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem;">
+          <a href="/dashboard.html" style="display: flex; align-items: center; justify-content: space-between; background: #eff6ff; border: 1.5px solid #bfdbfe; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.borderColor='#1a56db'" onmouseout="this.style.borderColor='#bfdbfe'">
+            <div>
+              <strong style="color: #0a2558; font-size: 0.9rem; display: block;">🎓 Student Fees Dashboard</strong>
+              <span style="font-size: 0.75rem; color: #64748b;">View semester ledgers &amp; download receipts</span>
+            </div>
+            <span style="color: #1a56db; font-size: 1.1rem; font-weight: bold;">→</span>
+          </a>
+
+          <a href="/login.html" style="display: flex; align-items: center; justify-content: space-between; background: #fdf4ff; border: 1.5px solid #f0abfc; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.borderColor='#c026d3'" onmouseout="this.style.borderColor='#f0abfc'">
+            <div>
+              <strong style="color: #701a75; font-size: 0.9rem; display: block;">🔐 Dedicated Login Portal</strong>
+              <span style="font-size: 0.75rem; color: #64748b;">Sign in with DOTE Reg No or Staff ID</span>
+            </div>
+            <span style="color: #c026d3; font-size: 1.1rem; font-weight: bold;">→</span>
+          </a>
+
+          <a href="/register.html" style="display: flex; align-items: center; justify-content: space-between; background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.borderColor='#16a34a'" onmouseout="this.style.borderColor='#bbf7d0'">
+            <div>
+              <strong style="color: #14532d; font-size: 0.9rem; display: block;">📝 New Student Registration</strong>
+              <span style="font-size: 0.75rem; color: #64748b;">Enroll DOTE Reg No &amp; activate ledger</span>
+            </div>
+            <span style="color: #16a34a; font-size: 1.1rem; font-weight: bold;">→</span>
+          </a>
         </div>
 
         <div style="display: flex; gap: 0.75rem;">
-          <button class="btn btn-primary" style="flex: 1;" onclick="window.navigateTo('fees')">
-            View Live Ledger &amp; Receipts
-          </button>
-          <button class="btn btn-outline" onclick="window.openLoginModal('student')">
-            Switch / Sign In
-          </button>
+          <a href="/cashier-dashboard.html" class="btn btn-outline" style="flex: 1; text-align: center; font-size: 0.85rem; justify-content: center;">
+            💼 Accounts / Cashier Desk
+          </a>
+          <a href="/login.html" class="btn btn-gold" style="font-size: 0.85rem; justify-content: center;">
+            Sign In
+          </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ======================== 5. PORTAL VIEW SELECTOR ======================== -->
-  <section class="fees-app-section" id="portal-area">
-    <div class="container">
-      
-      <!-- View Switcher Tabs -->
-      <div class="portal-tabs-nav">
-        <button class="tab-btn active" data-view="public" onclick="window.switchView('public')">
-          🏛️ College Web Portal
-        </button>
-        <button class="tab-btn" data-view="fees" onclick="window.switchView('fees')">
-          🎓 Student Fees Management &amp; Receipts Vault
-        </button>
-        <button class="tab-btn" data-view="cashier" onclick="window.switchView('cashier')">
-          💼 Cashier Counter Desk &amp; Tally Migration
-        </button>
-      </div>
-
-      <!-- VIEW A: STUDENT FEES & RECEIPT VAULT (Requested by User) -->
-      <div id="studentFeesSection" style="display: none;">
-        <div id="studentFeesDashboardContainer">
-          <!-- Populated by fees.js -->
-        </div>
-      </div>
-
-      <!-- VIEW B: OFFICE CASHIER & TALLY REPLACEMENT (Requested by User) -->
-      <div id="cashierDeskSection" style="display: none;">
-        <div id="cashierDeskContainer">
-          <!-- Populated by cashier.js -->
-        </div>
-      </div>
-
-      <!-- VIEW C: PUBLIC COLLEGE SHOWCASE -->
-      <div id="publicCollegeSection">
-        
-        <!-- ABOUT COLLEGE SECTION -->
-        <section class="section" id="about" style="padding-top: 1rem;">
+  <!-- ======================== 5. ABOUT COLLEGE SECTION ======================== -->
+  <section class="section" id="about" style="padding-top: 3.5rem;">
           <div class="section-title-wrap">
             <span class="section-tag">About Subramanian Polytechnic College</span>
             <h2 class="section-title">A Legacy of Technical Excellence in Rayavaram</h2>
@@ -448,10 +443,6 @@
           </div>
         </section>
 
-      </div>
-    </div>
-  </section>
-
   <!-- ======================== 6. CONTACT & LOCATION ======================== -->
   <section class="section" id="contact" style="background: #ffffff;">
     <div class="container">
@@ -533,11 +524,11 @@
       <div class="footer-col">
         <h4>Quick Portals</h4>
         <ul class="footer-links">
-          <li><a href="#portal-area" onclick="window.navigateTo('fees', event)">Student Fee Vault</a></li>
-          <li><a href="#portal-area" onclick="window.navigateTo('cashier', event)">Accounts Cashier Desk</a></li>
-          <li><a href="#portal-area" onclick="window.navigateTo('cashier', event)">Tally Migration Tool</a></li>
-          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">AICTE EOA Reports</a></li>
-          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">Anti-Ragging Helpline</a></li>
+          <li><a href="/dashboard.html">🎓 Student Fees Dashboard</a></li>
+          <li><a href="/cashier-dashboard.html">💼 Accounts &amp; Cashier Desk</a></li>
+          <li><a href="/login.html">🔐 Institutional Sign In</a></li>
+          <li><a href="/register.html">📝 Student Portal Registration</a></li>
+          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">AICTE &amp; DOTE Compliance</a></li>
         </ul>
       </div>
 

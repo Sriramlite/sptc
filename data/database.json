@@ -151,6 +151,25 @@
       "concessionType": "First Generation Graduate (FGG)",
       "concessionAmount": 5000,
       "status": "Active"
+    },
+    {
+      "regNo": "24209999",
+      "admissionNo": "SPTC/26/736",
+      "pin": "pass1792237713530",
+      "name": "T. Subhashree",
+      "department": "Computer Engineering",
+      "deptCode": "cse",
+      "currentYear": 1,
+      "currentSemester": 2,
+      "quota": "Government",
+      "isHosteller": false,
+      "busRoute": "Route 1 (Pudukkottai - Rayavaram)",
+      "parentName": "M. Thirunavukkarasu",
+      "parentPhone": "9842500000",
+      "email": "24209999@sptc.org.in",
+      "concessionType": "None",
+      "concessionAmount": 0,
+      "status": "Active"
     }
   ],
   "feeBilledItems": [
@@ -321,6 +340,20 @@
       "concession": 2500,
       "netPayable": 27200,
       "dueDate": "2025-02-28"
+    },
+    {
+      "id": "BILL-24209999-SEM2",
+      "regNo": "24209999",
+      "academicYear": "2026-2027",
+      "semester": "Semester 2",
+      "tuitionFee": 12500,
+      "labFee": 2500,
+      "examFee": 1200,
+      "busFee": 4500,
+      "hostelFee": 0,
+      "concession": 0,
+      "netPayable": 20700,
+      "dueDate": "2026-12-31"
     }
   ],
   "receipts": [

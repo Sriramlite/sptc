@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Fees &amp; Receipts Dashboard | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description" content="Dedicated Student Fees Management and Digital Receipts Vault for Subramanian Polytechnic College, Rayavaram. View semester balances and download verified receipts.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Institutional Bar -->
+  <aside class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="top-bar-item">
+          📍 <span>Rayavaram, Pudukkottai – 622 506</span>
+        </div>
+        <div class="top-bar-item">
+          📞 <span>Accounts Desk: +91 6382391625 / 04333-272226</span>
+        </div>
+        <div class="top-bar-item">
+          ✉️ <span>accounts@sptc.org.in</span>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-bar-item">
+          🏛️ <strong>DOTE Institution: 331</strong> | AICTE Approved
+        </div>
+        <div class="top-bar-item" style="display: flex; align-items: center; gap: 0.35rem; background: rgba(255,255,255,0.08); padding: 0.15rem 0.5rem; border-radius: 4px; border: 1px solid rgba(212,175,55,0.3);">
+          <span style="font-size: 0.725rem; color: #fce076; font-weight: 600;">Student Demo:</span>
+          <select id="dashboardStudentSelect" onchange="switchStudentAccount(this.value)" style="background: #071739; color: #ffffff; border: none; font-size: 0.75rem; font-weight: 600; cursor: pointer; outline: none; max-width: 175px;">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Dedicated Dashboard Navigation Header -->
+  <header class="dashboard-header-dedicated">
+    <div class="container dashboard-header-inner">
+      <a href="/" class="brand-link" style="display: flex; align-items: center; gap: 0.85rem;">
+        <img src="/assets/logo.svg" alt="SPTC Crest" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-accent-gold);">
+        <div>
+          <h1 style="font-size: 1.15rem; font-family: var(--font-heading); color: var(--color-primary); line-height: 1.2;">
+            Subramanian Polytechnic College
+          </h1>
+          <p style="font-size: 0.75rem; color: #64748b;">
+            Rayavaram • 🎓 Student Fees &amp; Receipts Vault
+          </p>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div id="studentHeaderBadge" class="dashboard-user-card">
+          <!-- Populated by JS -->
+        </div>
+        <a href="/" class="btn btn-outline btn-sm" title="Go to College Main Web Portal">
+          🏛️ College Portal
+        </a>
+        <button onclick="handleLogout()" class="btn btn-sm btn-outline" style="border-color: #cbd5e1; color: #b91c1c;" title="Sign out from portal">
+          🚪 Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Notice Ticker -->
+  <div class="news-ticker-bar" style="background: #061738; padding: 0.4rem 0;">
+    <div class="container news-ticker-inner">
+      <span class="ticker-label" style="background: var(--color-accent-gold); color: #061738;">🎓 Fee Notification</span>
+      <div class="ticker-marquee" style="font-size: 0.8rem; color: #ffffff;">
+        Even Semester Fee Payment window is now open. Verify your past receipts migrated from the legacy Tally 9 desktop system. For any discrepancies in scholarship fee concessions, contact the Accounts Counter Desk.
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Student Dashboard Container -->
+  <main class="container" style="padding: 2rem 1.5rem 4rem;">
+    <!-- Render Target for fees.js -->
+    <div id="studentFeesDashboardContainer">
+      <div style="text-align: center; padding: 4rem 1rem; color: #64748b;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⏳</div>
+        <h3 style="color: var(--color-primary);">Loading Your Fee Records...</h3>
+        <p>Connecting to SPTC Rayavaram Institutional Accounts Database</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======================== PAYMENT SIMULATION MODAL ======================== -->
+  <div class="custom-modal-backdrop" id="paymentModal">
+    <div class="custom-modal">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem;">
+          💳 SPTC Student Fee Online Payment
+        </h3>
+        <button class="modal-close" onclick="Fees.closePayFeesModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="paymentModalContent">
+        <!-- Rendered by fees.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== VERIFIED RECEIPT MODAL ======================== -->
+  <div class="custom-modal-backdrop" id="receiptModal">
+    <div class="custom-modal receipt-modal-wrap" style="max-width: 820px;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #0a2558;">
+          🏛️ Subramanian Polytechnic College – Official Fee Receipt
+        </h3>
+        <button class="modal-close" onclick="Receipts.closeReceiptModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="receiptModalContent">
+        <!-- Rendered dynamically by receipts.js -->
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.75rem; padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0;">
+        <button class="btn btn-outline btn-sm" onclick="Receipts.closeReceiptModal()">
+          Close
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="Receipts.printReceipt()">
+          🖨️ Print / Download Verified A4 PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="main-footer" style="margin-top: 3rem;">
+    <div class="container footer-bottom" style="border-top: none; padding-top: 0;">
+      <p>© 2026 Subramanian Polytechnic College, Rayavaram, Pudukkottai – 622 506. (DOTE Code: 331). All Rights Reserved.</p>
+      <p style="margin-top: 0.25rem; font-size: 0.775rem;">SPTC Central Fees Ledger &amp; Digital Receipts Vault System • Powered by Node.js &amp; Express</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/data-store.js"></script>
+  <script src="/js/receipts.js"></script>
+  <script src="/js/fees.js"></script>
+  <script>
+    // Initialize Dashboard Session
+    let activeRegNo = '22201045'; // default fallback
+    let currentAuth = null;
+
+    try {
+      const savedAuth = localStorage.getItem('sptc_auth_session');
+      if (savedAuth) {
+        currentAuth = JSON.parse(savedAuth);
+        if (currentAuth.profile && currentAuth.profile.regNo) {
+          activeRegNo = currentAuth.profile.regNo;
+        }
+      }
+    } catch (e) {
+      console.warn('Error reading auth session:', e);
+    }
+
+    async function initDashboard() {
+      // 1. Populate demo student dropdown
+      try {
+        const students = await API.getAllStudents();
+        const select = document.getElementById('dashboardStudentSelect');
+        if (select) {
+          select.innerHTML = students.map(s => `
+            <option value="${s.regNo}" ${s.regNo === activeRegNo ? 'selected' : ''}>
+              ${s.regNo} - ${s.name} (${s.department.substring(0, 10)})
+            </option>
+          `).join('');
+        }
+      } catch (err) {
+        console.warn('Failed to load students for demo dropdown:', err);
+      }
+
+      // 2. Load the student fee data
+      await Fees.init(activeRegNo);
+
+      // 3. Update header user card
+      updateHeaderBadge();
+    }
+
+    function updateHeaderBadge() {
+      const container = document.getElementById('studentHeaderBadge');
+      if (!container) return;
+
+      const student = Fees.currentFeeData ? Fees.currentFeeData.student : null;
+      if (student) {
+        container.innerHTML = `
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-accent-gold); color: #0a2558; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+            ${student.name.charAt(0)}
+          </div>
+          <div style="line-height: 1.15; text-align: left;">
+            <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558;">
+              ${student.name}
+            </div>
+            <div style="font-size: 0.7rem; color: #64748b;">
+              DOTE: ${student.regNo} (${student.department})
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <span style="font-size: 0.825rem; font-weight: 600; color: #0a2558;">Student Portal</span>
+        `;
+      }
+    }
+
+    function switchStudentAccount(regNo) {
+      activeRegNo = regNo;
+      Fees.init(regNo).then(() => {
+        updateHeaderBadge();
+      });
+    }
+
+    // Connect banner student switcher if triggered by fees.js
+    window.onDemoStudentChange = function(regNo) {
+      switchStudentAccount(regNo);
+      const sel = document.getElementById('dashboardStudentSelect');
+      if (sel) sel.value = regNo;
+    };
+
+    function handleLogout() {
+      localStorage.removeItem('sptc_auth_session');
+      window.location.href = '/login.html';
+    }
+
+    // Run initialization on load
+    document.addEventListener('DOMContentLoaded', () => {
+      initDashboard();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accounts &amp; Cashier Desk | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description" content="Dedicated Accounts Office and Cashier Desk for Subramanian Polytechnic College, Rayavaram. Counter fee collection, legacy Tally migration, and daily cash-book.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Institutional Announcement Bar -->
+  <aside class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="top-bar-item">
+          📍 <span>Rayavaram, Pudukkottai – 622 506</span>
+        </div>
+        <div class="top-bar-item">
+          🏛️ <strong>DOTE Institution: 331</strong> | AICTE Approved
+        </div>
+        <div class="top-bar-item">
+          🔐 <span>Staff Administrative Session Active</span>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-bar-item" style="color: #fce076; font-size: 0.775rem;">
+          💼 System: Cloud FMS (Migrated from Tally 9 Desktop PC)
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Dedicated Dashboard Navigation Header -->
+  <header class="dashboard-header-dedicated">
+    <div class="container dashboard-header-inner">
+      <a href="/" class="brand-link" style="display: flex; align-items: center; gap: 0.85rem;">
+        <img src="/assets/logo.svg" alt="SPTC Crest" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-accent-gold);">
+        <div>
+          <h1 style="font-size: 1.15rem; font-family: var(--font-heading); color: var(--color-primary); line-height: 1.2;">
+            Subramanian Polytechnic College
+          </h1>
+          <p style="font-size: 0.75rem; color: #64748b;">
+            Rayavaram • 💼 Accounts Office &amp; Cashier Counter Desk
+          </p>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div id="cashierHeaderBadge" class="dashboard-user-card">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+            M
+          </div>
+          <div style="line-height: 1.15; text-align: left;">
+            <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
+              <span>M. Alagappan</span>
+              <span class="badge badge-primary">CASHIER</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #64748b;">Senior Accounts Officer</div>
+          </div>
+        </div>
+
+        <a href="/" class="btn btn-outline btn-sm" title="Go to College Main Web Portal">
+          🏛️ College Portal
+        </a>
+        <button onclick="handleCashierLogout()" class="btn btn-sm btn-outline" style="border-color: #cbd5e1; color: #b91c1c;" title="Sign out from staff desk">
+          🚪 Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Cashier Desk Container -->
+  <main class="container" style="padding: 2rem 1.5rem 4rem;">
+    <!-- Overview Banner -->
+    <div style="background: linear-gradient(135deg, #0a2558, #184294); border-radius: 12px; padding: 1.5rem 2rem; color: #fff; margin-bottom: 2rem; box-shadow: var(--shadow-md); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <span class="badge badge-gold" style="margin-bottom: 0.4rem; display: inline-block;">INSTITUTIONAL ACCOUNTS TERMINAL</span>
+        <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.25rem;">
+          SPTC Accounts &amp; Legacy Tally Migration Control
+        </h2>
+        <p style="font-size: 0.85rem; color: rgba(255,255,255,0.85);">
+          Record on-the-spot fee payments, import legacy Tally XML ledgers, audit daily cash-books, and issue digitally verified receipts.
+        </p>
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-gold btn-sm" onclick="document.getElementById('cashierStudentSelect').focus(); window.scrollTo({ top: 180, behavior: 'smooth' });">
+          💵 New Counter Entry
+        </button>
+        <button class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="Cashier.loadCashBookReport()">
+          🔄 Refresh Day Ledger
+        </button>
+      </div>
+    </div>
+
+    <!-- Render Target for cashier.js -->
+    <div id="cashierDeskContainer">
+      <div style="text-align: center; padding: 4rem 1rem; color: #64748b;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⏳</div>
+        <h3 style="color: var(--color-primary);">Initializing Cashier Counter Terminal...</h3>
+        <p>Loading active student ledgers and daily reconciliation records...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======================== VERIFIED RECEIPT MODAL ======================== -->
+  <div class="custom-modal-backdrop" id="receiptModal">
+    <div class="custom-modal receipt-modal-wrap" style="max-width: 820px;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #0a2558;">
+          🏛️ Subramanian Polytechnic College – Official Fee Receipt
+        </h3>
+        <button class="modal-close" onclick="Receipts.closeReceiptModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="receiptModalContent">
+        <!-- Rendered dynamically by receipts.js -->
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.75rem; padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0;">
+        <button class="btn btn-outline btn-sm" onclick="Receipts.closeReceiptModal()">
+          Close
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="Receipts.printReceipt()">
+          🖨️ Print / Download Verified A4 PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="main-footer" style="margin-top: 3rem;">
+    <div class="container footer-bottom" style="border-top: none; padding-top: 0;">
+      <p>© 2026 Subramanian Polytechnic College, Rayavaram, Pudukkottai – 622 506. (DOTE Code: 331).</p>
+      <p style="margin-top: 0.25rem; font-size: 0.775rem;">Internal Accounts &amp; Cashier Module • Authorized College Personnel Only</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/data-store.js"></script>
+  <script src="/js/receipts.js"></script>
+  <script src="/js/cashier.js"></script>
+  <script>
+    // Initialize session check
+    try {
+      const savedAuth = localStorage.getItem('sptc_auth_session');
+      if (savedAuth) {
+        const auth = JSON.parse(savedAuth);
+        if (auth.profile) {
+          const badge = document.getElementById('cashierHeaderBadge');
+          if (badge) {
+            badge.innerHTML = `
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+                ${auth.profile.name.charAt(0)}
+              </div>
+              <div style="line-height: 1.15; text-align: left;">
+                <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
+                  <span>${auth.profile.name}</span>
+                  <span class="badge badge-primary">${auth.role || 'STAFF'}</span>
+                </div>
+                <div style="font-size: 0.7rem; color: #64748b;">${auth.profile.title || 'Accounts Officer'}</div>
+              </div>
+            `;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Session parse error:', e);
+    }
+
+    function handleCashierLogout() {
+      localStorage.removeItem('sptc_auth_session');
+      window.location.href = '/login.html?role=staff';
+    }
+
+    // Initialize Cashier Terminal
+    document.addEventListener('DOMContentLoaded', () => {
+      Cashier.init();
+    });
+  </script>
+</body>
+</html>

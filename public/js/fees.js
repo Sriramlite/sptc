@@ -332,6 +332,10 @@ const Fees = {
     if (modal) modal.classList.remove('active');
   },
 
+  closePayFeesModal() {
+    this.closePaymentModal();
+  },
+
   async handlePaymentSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('submitPaymentBtn');

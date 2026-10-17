@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Subramanian Polytechnic College (SPTC) | Rayavaram</title>
+  <meta name="description" content="Dedicated institutional login for Subramanian Polytechnic College students, cashier, accounts office, and faculty. Access fees management and digital receipt vault.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="auth-page-wrapper">
+    <!-- Auth Header Navigation -->
+    <header class="auth-nav-header">
+      <a href="/" class="brand-link">
+        <img src="/assets/logo.svg" alt="SPTC Crest" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-accent-gold);">
+        <div>
+          <h1>Subramanian Polytechnic College</h1>
+          <p>Rayavaram, Pudukkottai • Estd. 1983 (DOTE Code: 331)</p>
+        </div>
+      </a>
+      <a href="/" class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);">
+        ← Back to College Portal
+      </a>
+    </header>
+
+    <!-- Main Auth Card Container -->
+    <main class="auth-body-container">
+      <div class="auth-card login-card">
+        <div class="auth-card-header">
+          <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">🔐</div>
+          <h2>SPTC Institutional Sign In</h2>
+          <p>Secure portal access for Students, Accounts Office &amp; Faculty</p>
+        </div>
+
+        <div class="auth-card-body">
+          <!-- Role Selector Tabs -->
+          <div class="auth-role-tabs">
+            <div id="tabStudent" class="auth-role-tab active" onclick="switchLoginRole('STUDENT')">
+              <span>🎓</span> Student Portal
+            </div>
+            <div id="tabStaff" class="auth-role-tab" onclick="switchLoginRole('STAFF')">
+              <span>💼</span> Staff &amp; Cashier
+            </div>
+          </div>
+
+          <!-- Alert Container -->
+          <div id="authAlert" style="display: none; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
+
+          <!-- Form 1: Student Login -->
+          <form id="studentLoginForm" onsubmit="handleLoginSubmit(event, 'STUDENT')">
+            <div class="form-group">
+              <label class="form-label" for="studentId">DOTE Registration Number:</label>
+              <input type="text" id="studentId" class="form-control" placeholder="e.g. 22201045" required autocomplete="username" />
+              <span style="font-size: 0.75rem; color: #64748b;">Your 8-digit Directorate of Technical Education Reg. Number</span>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <label class="form-label" for="studentPin">Portal Password / PIN:</label>
+                <a href="javascript:void(0)" onclick="showPinHelp()" style="font-size: 0.75rem; color: var(--color-primary); font-weight: 600;">Forgot PIN?</a>
+              </div>
+              <input type="password" id="studentPin" class="form-control" placeholder="Default: DDMMYYYY of DOB (e.g. 12052005)" required autocomplete="current-password" />
+            </div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.825rem;">
+              <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                <input type="checkbox" id="rememberMeStudent" checked />
+                <span>Keep me signed in</span>
+              </label>
+              <span style="color: #059669; font-weight: 600;">🛡️ SSL Encrypted</span>
+            </div>
+
+            <button type="submit" id="btnStudentSubmit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center;">
+              Sign In to Student Fees Vault →
+            </button>
+
+            <!-- 1-Click Fast Fill Demo Credentials -->
+            <div class="demo-credentials-box">
+              <h4>⚡ 1-Click Demo Accounts (Fast Testing)</h4>
+              <div class="demo-pills-wrap">
+                <button type="button" class="demo-pill-btn" onclick="fillStudent('22201045', '12052005')">
+                  <strong>22201045</strong> (K. Vignesh - CSE, Due: ₹21k)
+                </button>
+                <button type="button" class="demo-pill-btn" onclick="fillStudent('22202018', '24082004')">
+                  <strong>22202018</strong> (M. Priya - ECE Hosteller)
+                </button>
+                <button type="button" class="demo-pill-btn" onclick="fillStudent('23203009', '15112005')">
+                  <strong>23203009</strong> (S. Karthik - Mech Bus)
+                </button>
+                <button type="button" class="demo-pill-btn" onclick="fillStudent('23204014', '02022006')">
+                  <strong>23204014</strong> (R. Anitha - EEE Fully Paid)
+                </button>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; font-size: 0.875rem;">
+              <span>New student? Haven't registered yet? </span>
+              <a href="/register.html" style="color: var(--color-primary); font-weight: 700; text-decoration: underline;">
+                Register Student Account Here →
+              </a>
+            </div>
+          </form>
+
+          <!-- Form 2: Staff Login -->
+          <form id="staffLoginForm" onsubmit="handleLoginSubmit(event, 'STAFF')" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" for="staffUsername">Employee Username or Official Email:</label>
+              <input type="text" id="staffUsername" class="form-control" placeholder="e.g. cashier or principal" required autocomplete="username" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="staffPassword">Administrative Password:</label>
+              <input type="password" id="staffPassword" class="form-control" placeholder="Enter staff password" required autocomplete="current-password" />
+            </div>
+
+            <button type="submit" id="btnStaffSubmit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center; margin-top: 1rem;">
+              Sign In to Accounts Desk →
+            </button>
+
+            <!-- 1-Click Fast Fill Staff Demo -->
+            <div class="demo-credentials-box">
+              <h4>⚡ 1-Click Staff Accounts</h4>
+              <div class="demo-pills-wrap">
+                <button type="button" class="demo-pill-btn" onclick="fillStaff('cashier', 'sptc@cashier2026')">
+                  💼 <strong>Cashier</strong> (M. Alagappan - Senior Accounts)
+                </button>
+                <button type="button" class="demo-pill-btn" onclick="fillStaff('principal', 'sptc@principal2026')">
+                  🎓 <strong>Principal</strong> (Thiru. R. Ramaswamy)
+                </button>
+                <button type="button" class="demo-pill-btn" onclick="fillStaff('hod_cse', 'sptc@cse2026')">
+                  💻 <strong>HOD CSE</strong> (Prof. S. Muthusamy)
+                </button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </main>
+
+    <!-- Auth Footer -->
+    <footer class="auth-footer">
+      Subramanian Polytechnic College • Rayavaram, Pudukkottai District, Tamil Nadu – 622 506<br>
+      Institutional Accounts Support: +91 6382391625 / 04333-272226 • principal@sptc.org.in
+    </footer>
+  </div>
+
+  <!-- Client Data Store & Auth Logic -->
+  <script src="/js/data-store.js"></script>
+  <script>
+    let currentRole = 'STUDENT';
+
+    // Parse URL query parameter (e.g. /login?role=staff)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('role') === 'staff' || urlParams.get('role') === 'cashier') {
+      switchLoginRole('STAFF');
+    }
+
+    function switchLoginRole(role) {
+      currentRole = role;
+      const tabStudent = document.getElementById('tabStudent');
+      const tabStaff = document.getElementById('tabStaff');
+      const studentForm = document.getElementById('studentLoginForm');
+      const staffForm = document.getElementById('staffLoginForm');
+      const alertBox = document.getElementById('authAlert');
+      if (alertBox) alertBox.style.display = 'none';
+
+      if (role === 'STUDENT') {
+        tabStudent.classList.add('active');
+        tabStaff.classList.remove('active');
+        studentForm.style.display = 'block';
+        staffForm.style.display = 'none';
+      } else {
+        tabStaff.classList.add('active');
+        tabStudent.classList.remove('active');
+        studentForm.style.display = 'none';
+        staffForm.style.display = 'block';
+      }
+    }
+
+    function fillStudent(regNo, pin) {
+      switchLoginRole('STUDENT');
+      document.getElementById('studentId').value = regNo;
+      document.getElementById('studentPin').value = pin;
+    }
+
+    function fillStaff(username, password) {
+      switchLoginRole('STAFF');
+      document.getElementById('staffUsername').value = username;
+      document.getElementById('staffPassword').value = password;
+    }
+
+    function showPinHelp() {
+      alert('Student Portal PIN Help:\n\nDefault PIN is your Date of Birth in DDMMYYYY format (e.g. 12 May 2005 = 12052005).\n\nIf you have forgotten your customized password, please contact the SPTC College Accounts Desk with your ID card.');
+    }
+
+    function showAlert(message, isError = true) {
+      const alertBox = document.getElementById('authAlert');
+      alertBox.style.display = 'block';
+      alertBox.style.background = isError ? '#fef2f2' : '#ecfdf5';
+      alertBox.style.border = isError ? '1.5px solid #fecaca' : '1.5px solid #a7f3d0';
+      alertBox.style.color = isError ? '#b91c1c' : '#047857';
+      alertBox.innerHTML = `${isError ? '⚠️' : '✅'} ${message}`;
+    }
+
+    async function handleLoginSubmit(event, role) {
+      event.preventDefault();
+      const alertBox = document.getElementById('authAlert');
+      alertBox.style.display = 'none';
+
+      let identifier, password;
+      const btn = role === 'STUDENT' ? document.getElementById('btnStudentSubmit') : document.getElementById('btnStaffSubmit');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Signing In...';
+      btn.disabled = true;
+
+      if (role === 'STUDENT') {
+        identifier = document.getElementById('studentId').value.trim();
+        password = document.getElementById('studentPin').value.trim();
+      } else {
+        identifier = document.getElementById('staffUsername').value.trim();
+        password = document.getElementById('staffPassword').value.trim();
+      }
+
+      try {
+        const res = await API.login(identifier, password, role);
+        if (res.success) {
+          showAlert(res.message || 'Login successful! Redirecting to your dashboard...', false);
+          
+          // Save session
+          const sessionData = {
+            role: res.role,
+            userType: res.userType,
+            token: res.token,
+            profile: res.profile
+          };
+          localStorage.setItem('sptc_auth_session', JSON.stringify(sessionData));
+
+          setTimeout(() => {
+            if (res.userType === 'STAFF') {
+              window.location.href = '/cashier-dashboard.html';
+            } else {
+              window.location.href = '/dashboard.html';
+            }
+          }, 600);
+        } else {
+          showAlert(res.error || 'Authentication failed. Please verify credentials.');
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error('Login submit error:', err);
+        showAlert('Could not reach SPTC server. Please verify your connection or try again.');
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

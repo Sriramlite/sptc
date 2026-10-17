@@ -45,17 +45,12 @@ const Auth = {
         
         // Route according to role
         if (res.userType === 'STAFF') {
-          window.switchView('cashier');
-          Cashier.init();
+          window.location.href = '/cashier-dashboard.html';
         } else {
-          Fees.init(res.profile.regNo);
-          window.switchView('fees');
-          const demoSelect = document.getElementById('demoStudentSelect');
-          if (demoSelect) demoSelect.value = res.profile.regNo;
+          window.location.href = '/dashboard.html';
         }
 
         window.closeLoginModal();
-        alert(res.message || 'Login successful!');
         return { success: true };
       } else {
         alert(res.error || 'Authentication failed. Please verify credentials.');
@@ -72,8 +67,7 @@ const Auth = {
     this.currentUser = null;
     localStorage.removeItem('sptc_auth_session');
     this.updateAuthUi();
-    window.switchView('public');
-    alert('You have been signed out from the SPTC Institutional Portal.');
+    window.location.href = '/login.html';
   },
 
   updateAuthUi() {
@@ -92,18 +86,22 @@ const Auth = {
         ? `<span class="badge ${this.currentUser.role === 'PRINCIPAL' ? 'badge-gold' : 'badge-primary'}">${this.currentUser.role}</span>`
         : `<span class="badge badge-success">STUDENT</span>`;
 
+      const dashboardUrl = isStaff ? '/cashier-dashboard.html' : '/dashboard.html';
+
       authStatusContainer.innerHTML = `
         <div class="user-profile-badge" style="display: flex; align-items: center; gap: 0.65rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 0.35rem 0.75rem; border-radius: 8px;">
-          <div style="width: 32px; height: 32px; border-radius: 50%; background: ${isStaff ? 'var(--color-primary)' : 'var(--color-accent-gold)'}; color: ${isStaff ? '#fff' : '#0a2558'}; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
-            ${name.charAt(0)}
-          </div>
-          <div style="line-height: 1.15; text-align: left;">
-            <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
-              <span>${name}</span>
-              ${roleBadge}
+          <a href="${dashboardUrl}" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: ${isStaff ? 'var(--color-primary)' : 'var(--color-accent-gold)'}; color: ${isStaff ? '#fff' : '#0a2558'}; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+              ${name.charAt(0)}
             </div>
-            <div style="font-size: 0.7rem; color: #64748b;">${subtitle}</div>
-          </div>
+            <div style="line-height: 1.15; text-align: left;">
+              <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
+                <span>${name}</span>
+                ${roleBadge}
+              </div>
+              <div style="font-size: 0.7rem; color: #64748b;">${subtitle}</div>
+            </div>
+          </a>
           <button onclick="Auth.logout()" class="btn btn-sm btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.725rem; border-color: #cbd5e1; color: #b91c1c; margin-left: 0.25rem;" title="Sign Out">
             🚪 Logout
           </button>
@@ -117,23 +115,30 @@ const Auth = {
             <span>${name}</span> ${roleBadge}
           </div>
           <div style="font-size: 0.8rem; color: #059669; font-weight: 600;">${subtitle}</div>
+          <a href="${dashboardUrl}" class="btn btn-sm btn-primary" style="margin-top: 0.5rem; display: inline-block;">
+            Open My Dashboard →
+          </a>
         `;
       }
     } else {
       authStatusContainer.innerHTML = `
-        <button class="btn btn-primary btn-sm" onclick="window.openLoginModal('student')">
-          🎓 Student Login
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="window.openLoginModal('staff')">
-          👔 Staff Login
-        </button>
+        <a href="/login.html" class="btn btn-sm btn-outline" style="border-color: #cbd5e1; color: var(--color-primary);">
+          Sign In
+        </a>
+        <a href="/register.html" class="btn btn-sm btn-gold">
+          Register
+        </a>
       `;
 
       if (heroProfileWidget) {
         heroProfileWidget.innerHTML = `
           <div style="font-size: 0.775rem; color: #64748b; margin-bottom: 4px;">AUTHENTICATION REQUIRED:</div>
           <div style="font-weight: 700; color: #0a2558;">Please Sign In</div>
-          <div style="font-size: 0.8rem; color: #64748b;">Sign in with your DOTE Register Number or Staff ID to view ledgers and receipts.</div>
+          <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem;">Sign in with your DOTE Register Number or Staff ID to view ledgers and receipts.</div>
+          <div style="display: flex; gap: 0.5rem;">
+            <a href="/login.html" class="btn btn-sm btn-primary" style="flex: 1; text-align: center;">Sign In</a>
+            <a href="/register.html" class="btn btn-sm btn-gold" style="flex: 1; text-align: center;">Register</a>
+          </div>
         `;
       }
     }
@@ -165,9 +170,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       event.preventDefault();
     }
 
-    const publicSection = document.getElementById('publicCollegeSection');
-    const studentSection = document.getElementById('studentFeesSection');
-    const cashierSection = document.getElementById('cashierDeskSection');
+    if (sectionId === 'fees') {
+      window.location.href = '/dashboard.html';
+      return;
+    }
+
+    if (sectionId === 'cashier') {
+      window.location.href = '/cashier-dashboard.html';
+      return;
+    }
 
     // Update active class on nav links
     document.querySelectorAll('.nav-links a').forEach(a => {
@@ -176,31 +187,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         a.classList.add('active');
       }
     });
-
-    if (sectionId === 'fees') {
-      window.switchView('fees', true);
-      return;
-    }
-
-    if (sectionId === 'cashier') {
-      // Role protection check
-      if (Auth.currentUser && Auth.currentUser.userType === 'STUDENT') {
-        const confirmSwitch = confirm('The Cashier & Accounts Desk is restricted to College Accounts Staff.\n\nWould you like to log in with an authorized Staff account (e.g. Cashier / Principal)?');
-        if (confirmSwitch) {
-          window.openLoginModal('staff');
-        }
-        return;
-      }
-      window.switchView('cashier', true);
-      return;
-    }
-
-    // Ensure public section is visible
-    publicSection.style.display = 'block';
-    studentSection.style.display = 'none';
-    cashierSection.style.display = 'none';
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector('[data-view="public"]')?.classList.add('active');
 
     if (sectionId === 'home' || !sectionId) {
       window.scrollTo({ top: 0, behavior: 'smooth' });

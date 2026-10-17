@@ -571,7 +571,112 @@ app.get('/api/verify/:hash', (req, res) => {
   });
 });
 
-// Fallback to index.html for single-page app navigation
+// 11. Student Portal Registration Endpoint
+app.post('/api/auth/register-student', (req, res) => {
+  const { regNo, name, department, currentYear, quota, isHosteller, busRoute, parentName, parentPhone, email, pin, password } = req.body;
+  const pinVal = (pin || password || '').trim();
+
+  if (!regNo || !name || !department || !pinVal) {
+    return res.status(400).json({ error: 'Registration Number, Full Name, Department, and PIN/Password are required.' });
+  }
+
+  const db = loadDb();
+  const trimmedRegNo = regNo.trim();
+
+  // Check if student already exists
+  const exists = db.students.find(s => s.regNo === trimmedRegNo);
+  if (exists) {
+    return res.status(409).json({ error: 'A student with this DOTE Registration Number is already registered.' });
+  }
+
+  const deptObj = (db.departments || []).find(d => d.name.toLowerCase().includes(department.toLowerCase()) || d.id === department.toLowerCase()) || { id: 'engg', name: department };
+  const yr = parseInt(currentYear) || 1;
+  const sem = yr * 2;
+
+  const newStudent = {
+    regNo: trimmedRegNo,
+    admissionNo: `SPTC/${new Date().getFullYear().toString().slice(-2)}/${Math.floor(100 + Math.random() * 900)}`,
+    pin: pinVal,
+    name: name.trim(),
+    department: deptObj.name,
+    deptCode: deptObj.id || 'engg',
+    currentYear: yr,
+    currentSemester: sem,
+    quota: quota || 'Government',
+    isHosteller: !!isHosteller,
+    busRoute: isHosteller ? 'Hosteller (No Bus)' : (busRoute || 'Day Scholar'),
+    parentName: parentName || 'Parent / Guardian',
+    parentPhone: parentPhone || '',
+    email: email || `${trimmedRegNo}@sptc.org.in`,
+    concessionType: 'None',
+    concessionAmount: 0,
+    status: 'Active'
+  };
+
+  db.students.push(newStudent);
+
+  // Automatically generate initial semester bills for this student
+  const baseTuition = quota === 'Management' ? 16000 : 12500;
+  const busCost = isHosteller ? 0 : 4500;
+  const hostelCost = isHosteller ? 13500 : 0;
+  const netDue = baseTuition + 2500 + 1200 + busCost + hostelCost;
+
+  const billId = `BILL-${trimmedRegNo}-SEM${sem}`;
+  db.feeBilledItems.push({
+    id: billId,
+    regNo: trimmedRegNo,
+    academicYear: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+    semester: `Semester ${sem}`,
+    tuitionFee: baseTuition,
+    labFee: 2500,
+    examFee: 1200,
+    busFee: busCost,
+    hostelFee: hostelCost,
+    concession: 0,
+    netPayable: netDue,
+    dueDate: `${new Date().getFullYear()}-12-31`
+  });
+
+  saveDb(db);
+
+  const token = crypto.createHash('sha256').update(`${newStudent.regNo}-STUDENT-${Date.now()}-SPTC-STUDENT`).digest('hex');
+
+  res.json({
+    success: true,
+    message: 'Student portal account registered successfully!',
+    role: 'STUDENT',
+    userType: 'STUDENT',
+    token,
+    profile: newStudent
+  });
+});
+
+// Dedicated HTML Page Routes
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'register.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+app.get('/student-dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+app.get('/cashier', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'cashier-dashboard.html'));
+});
+
+app.get('/cashier-dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'cashier-dashboard.html'));
+});
+
+// Fallback to index.html for main site navigation
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });

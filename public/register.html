@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description" content="Online Student Registration for Subramanian Polytechnic College, Rayavaram, Pudukkottai. Register your DOTE Reg No to access the student fee portal.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="auth-page-wrapper">
+    <!-- Auth Header Navigation -->
+    <header class="auth-nav-header">
+      <a href="/" class="brand-link">
+        <img src="/assets/logo.svg" alt="SPTC Crest" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-accent-gold);">
+        <div>
+          <h1>Subramanian Polytechnic College</h1>
+          <p>Rayavaram, Pudukkottai • Estd. 1983 (DOTE Code: 331)</p>
+        </div>
+      </a>
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <a href="/login.html" class="btn btn-gold btn-sm">
+          Already Registered? Sign In
+        </a>
+        <a href="/" class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);">
+          ← College Portal
+        </a>
+      </div>
+    </header>
+
+    <!-- Main Registration Card Container -->
+    <main class="auth-body-container">
+      <div class="auth-card register-card">
+        <div class="auth-card-header">
+          <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">📝</div>
+          <h2>Student Portal Enrollment &amp; Fee Ledger Setup</h2>
+          <p>Create your verified online student account for Subramanian Polytechnic College</p>
+        </div>
+
+        <div class="auth-card-body">
+          <!-- Alert Box -->
+          <div id="regAlert" style="display: none; padding: 0.85rem 1.25rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1.5rem;"></div>
+
+          <form id="studentRegisterForm" onsubmit="handleRegistrationSubmit(event)">
+            
+            <!-- SECTION 1: ACADEMIC DETAILS -->
+            <div class="form-section-title">
+              <span>🎓</span> Academic &amp; DOTE Credentials
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="regNo">DOTE Registration Number: *</label>
+                <input type="text" id="regNo" class="form-control" placeholder="e.g. 24206015" required />
+                <span style="font-size: 0.75rem; color: #64748b;">Your official 8-digit Directorate of Technical Education Reg No.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="studentName">Full Student Name: *</label>
+                <input type="text" id="studentName" class="form-control" placeholder="e.g. M. Manikandan" required />
+                <span style="font-size: 0.75rem; color: #64748b;">As printed on 10th / SSLC marksheet</span>
+              </div>
+            </div>
+
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label" for="department">Department / Branch: *</label>
+                <select id="department" class="form-control" required>
+                  <option value="">-- Choose Branch --</option>
+                  <option value="Computer Engineering">Computer Engineering (CSE)</option>
+                  <option value="Mechanical Engineering">Mechanical Engineering</option>
+                  <option value="Electrical and Electronics Engineering">Electrical &amp; Electronics (EEE)</option>
+                  <option value="Electronics and Communication Engineering">Electronics &amp; Comm. (ECE)</option>
+                  <option value="Civil Engineering">Civil Engineering</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="currentYear">Year of Study: *</label>
+                <select id="currentYear" class="form-control" onchange="syncSemesterOptions(this.value)" required>
+                  <option value="1">1st Year (Freshman)</option>
+                  <option value="2">2nd Year (Lateral / Senior)</option>
+                  <option value="3">3rd Year (Final Year)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="currentSemester">Current Semester: *</label>
+                <select id="currentSemester" class="form-control" required>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="quota">Admission Quota: *</label>
+                <select id="quota" class="form-control" required>
+                  <option value="Government">Government Quota (Single Window)</option>
+                  <option value="Management">Management Quota</option>
+                  <option value="Lateral Entry">Lateral Entry (Direct 2nd Year)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="admissionNo">Admission Reference No: (Optional)</label>
+                <input type="text" id="admissionNo" class="form-control" placeholder="e.g. SPTC/2026/045" />
+              </div>
+            </div>
+
+            <!-- SECTION 2: CAMPUS & LOGISTICS -->
+            <div class="form-section-title">
+              <span>🚌</span> Campus Logistics &amp; Accommodation
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Accommodation Type: *</label>
+                <div style="display: flex; gap: 1rem; margin-top: 0.35rem;">
+                  <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                    <input type="radio" name="residenceType" value="dayScholar" checked onchange="toggleBusOptions(false)" />
+                    <span>Day Scholar (Local / Bus)</span>
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
+                    <input type="radio" name="residenceType" value="hosteller" onchange="toggleBusOptions(true)" />
+                    <span>Hosteller (Campus Hostel)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group" id="busRouteGroup">
+                <label class="form-label" for="busRoute">College Bus Route:</label>
+                <select id="busRoute" class="form-control">
+                  <option value="Route 1 (Pudukkottai - Rayavaram)">Route 1: Pudukkottai Town Stand ⇄ Rayavaram</option>
+                  <option value="Route 2 (Karaikudi - Rayavaram)">Route 2: Karaikudi New Stand ⇄ Rayavaram</option>
+                  <option value="Route 3 (Aranthangi - Rayavaram)">Route 3: Aranthangi Bus Stand ⇄ Rayavaram</option>
+                  <option value="Route 4 (Tirumayam - Rayavaram)">Route 4: Tirumayam Fort ⇄ Rayavaram</option>
+                  <option value="Route 5 (Kanadukathan - Rayavaram)">Route 5: Kanadukathan / Kottaiyur ⇄ Rayavaram</option>
+                  <option value="Self Commute (Cycle/Bike)">Self Commute / Own Vehicle</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- SECTION 3: PARENT & CONTACT -->
+            <div class="form-section-title">
+              <span>📞</span> Parent / Guardian Contact Details
+            </div>
+
+            <div class="form-grid-3">
+              <div class="form-group">
+                <label class="form-label" for="parentName">Parent / Guardian Name: *</label>
+                <input type="text" id="parentName" class="form-control" placeholder="e.g. K. Murugesan" required />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="parentPhone">Parent Mobile Number: *</label>
+                <input type="tel" id="parentPhone" class="form-control" placeholder="e.g. 9842100000" pattern="[0-9]{10}" required />
+                <span style="font-size: 0.75rem; color: #64748b;">10-digit number for SMS / WhatsApp fee alerts</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="email">Student Email Address:</label>
+                <input type="email" id="email" class="form-control" placeholder="e.g. student@gmail.com" />
+              </div>
+            </div>
+
+            <!-- SECTION 4: SECURITY PIN -->
+            <div class="form-section-title">
+              <span>🔐</span> Set Portal Password / Security PIN
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label class="form-label" for="password">Choose Password / PIN: *</label>
+                <input type="password" id="password" class="form-control" placeholder="Min. 4 characters (e.g. DDMMYYYY of DOB)" required minlength="4" />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="confirmPassword">Confirm Password / PIN: *</label>
+                <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter password" required minlength="4" />
+              </div>
+            </div>
+
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.85rem 1rem; margin: 1.5rem 0; font-size: 0.825rem; color: #1e40af;">
+              ℹ️ <strong>Automatic Fee Ledger Setup:</strong> Upon registration, an official semester fee ledger item will be generated based on your branch and quota, allowing you to view and pay semester dues immediately.
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+              <button type="submit" id="btnRegisterSubmit" class="btn btn-primary" style="flex: 2; padding: 0.85rem; font-size: 1rem; justify-content: center;">
+                Complete Enrollment &amp; Open Fee Dashboard →
+              </button>
+              <button type="button" class="btn btn-outline" style="flex: 1;" onclick="fillSampleRegistration()">
+                ⚡ Auto-Fill Sample Form
+              </button>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem;">
+              Already enrolled? <a href="/login.html" style="color: var(--color-primary); font-weight: 700;">Sign in to existing account →</a>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Auth Footer -->
+    <footer class="auth-footer">
+      Subramanian Polytechnic College • Rayavaram, Pudukkottai District, Tamil Nadu – 622 506<br>
+      Admissions &amp; Accounts Desk: +91 6382391625 / 04333-272226 • principal@sptc.org.in
+    </footer>
+  </div>
+
+  <script src="/js/data-store.js"></script>
+  <script>
+    function syncSemesterOptions(yearVal) {
+      const semSelect = document.getElementById('currentSemester');
+      semSelect.innerHTML = '';
+      if (yearVal === '1') {
+        semSelect.innerHTML = '<option value="1">Semester 1</option><option value="2">Semester 2</option>';
+      } else if (yearVal === '2') {
+        semSelect.innerHTML = '<option value="3">Semester 3</option><option value="4">Semester 4</option>';
+      } else {
+        semSelect.innerHTML = '<option value="5">Semester 5</option><option value="6">Semester 6</option>';
+      }
+    }
+
+    function toggleBusOptions(isHosteller) {
+      const busGroup = document.getElementById('busRouteGroup');
+      if (isHosteller) {
+        busGroup.style.opacity = '0.4';
+        busGroup.style.pointerEvents = 'none';
+      } else {
+        busGroup.style.opacity = '1';
+        busGroup.style.pointerEvents = 'auto';
+      }
+    }
+
+    function fillSampleRegistration() {
+      const randomSuffix = Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('regNo').value = `2420${randomSuffix}`;
+      document.getElementById('studentName').value = 'M. Manikandan';
+      document.getElementById('department').value = 'Computer Engineering';
+      document.getElementById('currentYear').value = '1';
+      syncSemesterOptions('1');
+      document.getElementById('quota').value = 'Government';
+      document.getElementById('parentName').value = 'K. Murugesan';
+      document.getElementById('parentPhone').value = '9842145678';
+      document.getElementById('email').value = `mani_${randomSuffix}@gmail.com`;
+      document.getElementById('password').value = 'sptc2026';
+      document.getElementById('confirmPassword').value = 'sptc2026';
+    }
+
+    function showRegAlert(message, isError = true) {
+      const alertBox = document.getElementById('regAlert');
+      alertBox.style.display = 'block';
+      alertBox.style.background = isError ? '#fef2f2' : '#ecfdf5';
+      alertBox.style.border = isError ? '1.5px solid #fecaca' : '1.5px solid #a7f3d0';
+      alertBox.style.color = isError ? '#b91c1c' : '#047857';
+      alertBox.innerHTML = `${isError ? '⚠️' : '🎉'} ${message}`;
+      window.scrollTo({ top: 120, behavior: 'smooth' });
+    }
+
+    async function handleRegistrationSubmit(event) {
+      event.preventDefault();
+      const alertBox = document.getElementById('regAlert');
+      alertBox.style.display = 'none';
+
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        showRegAlert('Password and Confirm Password do not match. Please verify.');
+        return;
+      }
+
+      const isHosteller = document.querySelector('input[name="residenceType"]:checked').value === 'hosteller';
+      const studentData = {
+        regNo: document.getElementById('regNo').value.trim(),
+        name: document.getElementById('studentName').value.trim(),
+        department: document.getElementById('department').value,
+        currentYear: document.getElementById('currentYear').value,
+        currentSemester: document.getElementById('currentSemester').value,
+        quota: document.getElementById('quota').value,
+        admissionNo: document.getElementById('admissionNo').value.trim() || `SPTC/${new Date().getFullYear()}/${Math.floor(100 + Math.random() * 900)}`,
+        isHosteller: isHosteller,
+        busRoute: isHosteller ? 'None (Hosteller)' : document.getElementById('busRoute').value,
+        parentName: document.getElementById('parentName').value.trim(),
+        parentPhone: document.getElementById('parentPhone').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        password: password
+      };
+
+      const btn = document.getElementById('btnRegisterSubmit');
+      const origText = btn.innerHTML;
+      btn.innerHTML = 'Enrolling in College Ledger...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch('/api/auth/register-student', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(studentData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showRegAlert(`Student account enrolled successfully! Welcome, ${result.profile.name}. Initializing your fee ledger and redirecting to your dashboard...`, false);
+          
+          // Save session
+          const sessionData = {
+            role: result.role,
+            userType: result.userType,
+            token: result.token,
+            profile: result.profile
+          };
+          localStorage.setItem('sptc_auth_session', JSON.stringify(sessionData));
+
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 1000);
+        } else {
+          showRegAlert(result.error || 'Failed to complete student registration.');
+          btn.innerHTML = origText;
+          btn.disabled = false;
+        }
+      } catch (err) {
+        console.error('Registration error:', err);
+        showRegAlert('Network error occurred. Please verify your connection or try again.');
+        btn.innerHTML = origText;
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
