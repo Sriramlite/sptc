@@ -3,6 +3,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const os = require('os');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -1019,12 +1020,36 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Helper to determine Local LAN IP
+function getLanIp() {
+  try {
+    const interfaces = os.networkInterfaces();
+    // Prioritize Wi-Fi
+    if (interfaces['Wi-Fi']) {
+      const wifi = interfaces['Wi-Fi'].find(i => i.family === 'IPv4' && !i.internal);
+      if (wifi) return wifi.address;
+    }
+    for (const name of Object.keys(interfaces)) {
+      if (/vethernet|loopback|virtual|host-only/i.test(name)) continue;
+      if (name.includes('Ethernet 3')) continue; // Skip VirtualBox host-only
+      for (const iface of interfaces[name]) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          return iface.address;
+        }
+      }
+    }
+  } catch (e) {}
+  return '192.168.1.7';
+}
+
 // Start Server
 const server = app.listen(PORT, HOST, () => {
+  const lanIp = getLanIp();
   console.log(`=======================================================`);
   console.log(`🏛️  Subramanian Polytechnic College (SPTC) Web Portal`);
   console.log(`💳  Students Fees Management System running at:`);
-  console.log(`👉  http://localhost:${PORT}`);
+  console.log(`👉  Local Loopback: http://localhost:${PORT} or http://127.0.0.1:${PORT}`);
+  console.log(`👉  Local Wi-Fi IP: http://${lanIp}:${PORT}`);
   console.log(`🔒  Strict Session Management & Rate Limiter: ACTIVE`);
   console.log(`=======================================================`);
 });
