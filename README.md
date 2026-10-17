@@ -37,9 +37,10 @@ The portal will be live at:
 
 ---
 
-## 🔑 Sample Student Credentials for Testing
+## 🔑 Test Credentials (Students & Staff Login System)
 
-Use any of the following pre-loaded student profiles to test the Student Fees Vault:
+### A. Student Portal Accounts
+Students log in with their **8-digit DOTE Registration Number** and Date of Birth (PIN):
 
 | DOTE Reg No | Student Name | Department | Year / Sem | Quota / Transport | Balance Due | Old Tally Receipts in Vault |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -49,7 +50,17 @@ Use any of the following pre-loaded student profiles to test the Student Fees Va
 | **`23204014`** | R. Anitha | EEE | II Year (4th Sem) | Day Scholar (Thirumayam Route #2) | ₹0 (Paid) | **1 Tally XML Synced** |
 | **`24205003`** | A. Saravanan | Civil Engineering | I Year (2nd Sem) | Hosteller (First Gen Graduate) | ₹27,200 | **1 Cashier POS** |
 
-> *Default PIN / DOB:* `12052005` (or click the **"Quick Switch Student"** dropdown in the top bar to switch instantly).
+> *Default Student PIN / DOB:* `12052005` (or use the 1-click pills in the login modal).
+
+### B. Staff & Faculty Accounts (Role-Based Access)
+College staff log in with their **Employee Username / Email** and password:
+
+| Username | Password | Staff Name | Role | Department & Title | Access Capabilities |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`cashier`** | `sptc@cashier2026` | M. Alagappan | **`CASHIER`** | Accounts & Fee Office (Senior Accounts Officer) | • Counter Collection POS<br>• Issue A4 / Thermal Receipts<br>• Tally XML Migration Sync<br>• Send Fee Reminders |
+| **`principal`** | `sptc@principal2026` | Thiru. R. Ramaswamy | **`PRINCIPAL`** | College Administration (Principal & Trustee) | • Full Institutional Audit<br>• Daily Cash-Book Analytics<br>• Defaulters Recovery Rate<br>• DOTE Governance |
+| **`hod_cse`** | `sptc@cse2026` | Prof. S. Muthusamy | **`HOD`** | Computer Engineering (Head of Department) | • Departmental Fee Clearance<br>• Hall Ticket Clearance Audit |
+| **`hod_mech`** | `sptc@mech2026` | Prof. K. Ramesh | **`HOD`** | Mechanical Engineering (Head of Department) | • Departmental Fee Clearance<br>• Lab Equipment Maintenance Dues |
 
 ---
 

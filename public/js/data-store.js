@@ -11,12 +11,42 @@ const API = {
     return await res.json();
   },
 
-  async studentLogin(regNo, pin) {
-    const res = await fetch('/api/auth/student-login', {
+  async login(identifier, password, roleType = 'STUDENT') {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ regNo, pin })
+      body: JSON.stringify({ identifier, password, roleType })
     });
+    return await res.json();
+  },
+
+  async studentLogin(regNo, pin) {
+    return this.login(regNo, pin, 'STUDENT');
+  },
+
+  async staffLogin(usernameOrEmail, password) {
+    return this.login(usernameOrEmail, password, 'STAFF');
+  },
+
+  async checkSession(regNo, username) {
+    const params = new URLSearchParams();
+    if (regNo) params.append('regNo', regNo);
+    if (username) params.append('username', username);
+    const res = await fetch(`/api/auth/me?${params.toString()}`);
+    return await res.json();
+  },
+
+  async changePassword(identifier, currentPassword, newPassword, userType) {
+    const res = await fetch('/api/auth/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ identifier, currentPassword, newPassword, userType })
+    });
+    return await res.json();
+  },
+
+  async getStaffDirectory() {
+    const res = await fetch('/api/staff');
     return await res.json();
   },
 

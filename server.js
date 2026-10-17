@@ -72,21 +72,109 @@ app.get('/api/students', (req, res) => {
   res.json(studentsWithDues);
 });
 
-// 3. Student Authentication (Reg No + PIN/DOB)
-app.post('/api/auth/student-login', (req, res) => {
-  const { regNo, pin } = req.body;
-  if (!regNo) {
-    return res.status(400).json({ error: 'Please enter your DOTE Register Number' });
+// 3. Unified Authentication (Student & Staff/Faculty)
+app.post('/api/auth/login', (req, res) => {
+  const { identifier, password, roleType } = req.body;
+
+  if (!identifier || !password) {
+    return res.status(400).json({ error: 'Please enter both your login identifier and password.' });
   }
 
   const db = loadDb();
-  const student = db.students.find(s => s.regNo.trim() === regNo.trim());
+  const trimmedId = identifier.trim().toLowerCase();
+
+  // A. Staff Authentication Check
+  if (roleType === 'STAFF' || roleType === 'CASHIER' || roleType === 'PRINCIPAL' || roleType === 'HOD' || trimmedId.includes('@sptc.org.in') || trimmedId === 'cashier' || trimmedId === 'principal' || trimmedId.startsWith('hod')) {
+    const staffMember = (db.staff || []).find(s => 
+      s.username.toLowerCase() === trimmedId || 
+      s.email.toLowerCase() === trimmedId
+    );
+
+    if (!staffMember) {
+      return res.status(404).json({ error: 'Staff account not found. Please verify your employee username or email.' });
+    }
+
+    if (staffMember.password !== password.trim()) {
+      return res.status(401).json({ error: 'Incorrect staff password. Please try again or contact IT support.' });
+    }
+
+    const token = crypto.createHash('sha256').update(`${staffMember.id}-${staffMember.role}-${Date.now()}-SPTC-STAFF`).digest('hex');
+
+    return res.json({
+      success: true,
+      role: staffMember.role,
+      userType: 'STAFF',
+      token,
+      profile: {
+        id: staffMember.id,
+        username: staffMember.username,
+        email: staffMember.email,
+        name: staffMember.name,
+        role: staffMember.role,
+        title: staffMember.title,
+        department: staffMember.department,
+        phone: staffMember.phone
+      },
+      message: `Welcome, ${staffMember.name} (${staffMember.title})`
+    });
+  }
+
+  // B. Student Authentication Check
+  const student = db.students.find(s => 
+    s.regNo.trim() === identifier.trim() || 
+    s.admissionNo.toLowerCase() === trimmedId ||
+    (s.email && s.email.toLowerCase() === trimmedId)
+  );
 
   if (!student) {
     return res.status(404).json({ error: 'Student registration number not found in SPTC records.' });
   }
 
-  // If PIN provided, verify (or allow default if student hasn't set one)
+  // Verify PIN / Password
+  if (student.pin && student.pin !== password.trim()) {
+    return res.status(401).json({ error: 'Invalid PIN / Date of Birth. Default format: DDMMYYYY' });
+  }
+
+  const token = crypto.createHash('sha256').update(`${student.regNo}-STUDENT-${Date.now()}-SPTC-STUDENT`).digest('hex');
+
+  return res.json({
+    success: true,
+    role: 'STUDENT',
+    userType: 'STUDENT',
+    token,
+    profile: {
+      regNo: student.regNo,
+      admissionNo: student.admissionNo,
+      name: student.name,
+      department: student.department,
+      deptCode: student.deptCode,
+      currentYear: student.currentYear,
+      currentSemester: student.currentSemester,
+      quota: student.quota,
+      isHosteller: student.isHosteller,
+      busRoute: student.busRoute,
+      parentName: student.parentName,
+      parentPhone: student.parentPhone,
+      email: student.email,
+      concessionType: student.concessionType,
+      concessionAmount: student.concessionAmount
+    },
+    message: `Welcome, ${student.name} (${student.department})`
+  });
+});
+
+// Backward-compatible student login endpoint
+app.post('/api/auth/student-login', (req, res) => {
+  const { regNo, pin } = req.body;
+  req.body.identifier = regNo;
+  req.body.password = pin;
+  req.body.roleType = 'STUDENT';
+  
+  const db = loadDb();
+  const student = db.students.find(s => s.regNo.trim() === regNo?.trim());
+  if (!student) {
+    return res.status(404).json({ error: 'Student registration number not found in SPTC records.' });
+  }
   if (pin && student.pin && student.pin !== pin.trim()) {
     return res.status(401).json({ error: 'Invalid PIN / Date of Birth. Format: DDMMYYYY' });
   }
@@ -94,6 +182,7 @@ app.post('/api/auth/student-login', (req, res) => {
   res.json({
     success: true,
     message: 'Authentication successful',
+    role: 'STUDENT',
     student: {
       regNo: student.regNo,
       admissionNo: student.admissionNo,
@@ -112,6 +201,92 @@ app.post('/api/auth/student-login', (req, res) => {
       concessionAmount: student.concessionAmount
     }
   });
+});
+
+// Get Current User Session Info
+app.get('/api/auth/me', (req, res) => {
+  const { regNo, username } = req.query;
+  const db = loadDb();
+
+  if (username) {
+    const staff = (db.staff || []).find(s => s.username === username || s.email === username);
+    if (staff) {
+      return res.json({
+        authenticated: true,
+        userType: 'STAFF',
+        role: staff.role,
+        profile: {
+          id: staff.id,
+          username: staff.username,
+          email: staff.email,
+          name: staff.name,
+          role: staff.role,
+          title: staff.title,
+          department: staff.department
+        }
+      });
+    }
+  }
+
+  if (regNo) {
+    const student = db.students.find(s => s.regNo === regNo);
+    if (student) {
+      return res.json({
+        authenticated: true,
+        userType: 'STUDENT',
+        role: 'STUDENT',
+        profile: student
+      });
+    }
+  }
+
+  res.json({ authenticated: false, message: 'No active session' });
+});
+
+// Change Password for Student or Staff
+app.post('/api/auth/change-password', (req, res) => {
+  const { identifier, currentPassword, newPassword, userType } = req.body;
+  if (!identifier || !currentPassword || !newPassword) {
+    return res.status(400).json({ error: 'All fields are required.' });
+  }
+
+  if (newPassword.length < 4) {
+    return res.status(400).json({ error: 'New password/PIN must be at least 4 characters long.' });
+  }
+
+  const db = loadDb();
+
+  if (userType === 'STAFF') {
+    const staff = (db.staff || []).find(s => s.username === identifier || s.email === identifier);
+    if (!staff || staff.password !== currentPassword) {
+      return res.status(401).json({ error: 'Invalid current password.' });
+    }
+    staff.password = newPassword;
+    saveDb(db);
+    return res.json({ success: true, message: 'Staff password updated successfully.' });
+  } else {
+    const student = db.students.find(s => s.regNo === identifier);
+    if (!student || student.pin !== currentPassword) {
+      return res.status(401).json({ error: 'Invalid current PIN/password.' });
+    }
+    student.pin = newPassword;
+    saveDb(db);
+    return res.json({ success: true, message: 'Student PIN updated successfully.' });
+  }
+});
+
+// Get Staff Directory (public/admin)
+app.get('/api/staff', (req, res) => {
+  const db = loadDb();
+  const sanitizedStaff = (db.staff || []).map(s => ({
+    id: s.id,
+    name: s.name,
+    role: s.role,
+    title: s.title,
+    department: s.department,
+    email: s.email
+  }));
+  res.json(sanitizedStaff);
 });
 
 // 4. Student Fee Status & Ledger Breakdown

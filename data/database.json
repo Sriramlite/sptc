@@ -534,5 +534,51 @@
       "verificationHash": "f6e43d319682034f",
       "remarks": "Demo online exam fee payment"
     }
+  ],
+  "staff": [
+    {
+      "id": "STAFF001",
+      "username": "cashier",
+      "email": "cashier@sptc.org.in",
+      "password": "sptc@cashier2026",
+      "name": "M. Alagappan",
+      "role": "CASHIER",
+      "title": "Senior Accounts Officer & Cashier",
+      "department": "Accounts & Fee Collection Office",
+      "phone": "9443128901"
+    },
+    {
+      "id": "STAFF002",
+      "username": "principal",
+      "email": "principal@sptc.org.in",
+      "password": "sptc@principal2026",
+      "name": "Thiru. R. Ramaswamy, M.E., M.B.A.",
+      "role": "PRINCIPAL",
+      "title": "Principal & Ex-Officio Trustee",
+      "department": "College Administration",
+      "phone": "9842145610"
+    },
+    {
+      "id": "STAFF003",
+      "username": "hod_cse",
+      "email": "hod.cse@sptc.org.in",
+      "password": "sptc@cse2026",
+      "name": "Prof. S. Muthusamy, M.E.",
+      "role": "HOD",
+      "title": "Head of Department (Computer Engineering)",
+      "department": "Computer Engineering",
+      "phone": "9788123456"
+    },
+    {
+      "id": "STAFF004",
+      "username": "hod_mech",
+      "email": "hod.mech@sptc.org.in",
+      "password": "sptc@mech2026",
+      "name": "Prof. K. Ramesh, M.E.",
+      "role": "HOD",
+      "title": "Head of Department (Mechanical Engineering)",
+      "department": "Mechanical Engineering",
+      "phone": "9842789012"
+    }
   ]
 }

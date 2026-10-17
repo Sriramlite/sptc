@@ -1,9 +1,158 @@
-// SPTC Main Web Application Controller
+// SPTC Main Web Application Controller & Authentication Engine
+
+const Auth = {
+  currentUser: null,
+
+  init() {
+    try {
+      const saved = localStorage.getItem('sptc_auth_session');
+      if (saved) {
+        this.currentUser = JSON.parse(saved);
+      } else {
+        // Default initialized session for seamless preview
+        this.currentUser = {
+          role: 'STUDENT',
+          userType: 'STUDENT',
+          token: 'demo_token_vignesh',
+          profile: {
+            regNo: '22201045',
+            name: 'K. Vigneshwaran',
+            department: 'Computer Engineering',
+            currentYear: 3,
+            currentSemester: 6
+          }
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to parse saved auth session:', e);
+      this.currentUser = null;
+    }
+    this.updateAuthUi();
+  },
+
+  async login(identifier, password, roleType = 'STUDENT') {
+    try {
+      const res = await API.login(identifier, password, roleType);
+      if (res.success) {
+        this.currentUser = {
+          role: res.role,
+          userType: res.userType,
+          token: res.token,
+          profile: res.profile
+        };
+        localStorage.setItem('sptc_auth_session', JSON.stringify(this.currentUser));
+        this.updateAuthUi();
+        
+        // Route according to role
+        if (res.userType === 'STAFF') {
+          window.switchView('cashier');
+          Cashier.init();
+        } else {
+          Fees.init(res.profile.regNo);
+          window.switchView('fees');
+          const demoSelect = document.getElementById('demoStudentSelect');
+          if (demoSelect) demoSelect.value = res.profile.regNo;
+        }
+
+        window.closeLoginModal();
+        alert(res.message || 'Login successful!');
+        return { success: true };
+      } else {
+        alert(res.error || 'Authentication failed. Please verify credentials.');
+        return { success: false, error: res.error };
+      }
+    } catch (err) {
+      console.error('Auth login error:', err);
+      alert('Unable to authenticate. Please verify network connection or credentials.');
+      return { success: false, error: err.message };
+    }
+  },
+
+  logout() {
+    this.currentUser = null;
+    localStorage.removeItem('sptc_auth_session');
+    this.updateAuthUi();
+    window.switchView('public');
+    alert('You have been signed out from the SPTC Institutional Portal.');
+  },
+
+  updateAuthUi() {
+    const authStatusContainer = document.getElementById('navbarAuthContainer');
+    const heroProfileWidget = document.getElementById('heroProfileWidget');
+    if (!authStatusContainer) return;
+
+    if (this.currentUser) {
+      const isStaff = this.currentUser.userType === 'STAFF';
+      const name = this.currentUser.profile.name;
+      const subtitle = isStaff 
+        ? `${this.currentUser.profile.title || 'College Staff'}` 
+        : `DOTE Reg: ${this.currentUser.profile.regNo} (${this.currentUser.profile.department})`;
+
+      const roleBadge = isStaff
+        ? `<span class="badge ${this.currentUser.role === 'PRINCIPAL' ? 'badge-gold' : 'badge-primary'}">${this.currentUser.role}</span>`
+        : `<span class="badge badge-success">STUDENT</span>`;
+
+      authStatusContainer.innerHTML = `
+        <div class="user-profile-badge" style="display: flex; align-items: center; gap: 0.65rem; background: #f8fafc; border: 1.5px solid #cbd5e1; padding: 0.35rem 0.75rem; border-radius: 8px;">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background: ${isStaff ? 'var(--color-primary)' : 'var(--color-accent-gold)'}; color: ${isStaff ? '#fff' : '#0a2558'}; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
+            ${name.charAt(0)}
+          </div>
+          <div style="line-height: 1.15; text-align: left;">
+            <div style="font-size: 0.825rem; font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.35rem;">
+              <span>${name}</span>
+              ${roleBadge}
+            </div>
+            <div style="font-size: 0.7rem; color: #64748b;">${subtitle}</div>
+          </div>
+          <button onclick="Auth.logout()" class="btn btn-sm btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.725rem; border-color: #cbd5e1; color: #b91c1c; margin-left: 0.25rem;" title="Sign Out">
+            🚪 Logout
+          </button>
+        </div>
+      `;
+
+      if (heroProfileWidget) {
+        heroProfileWidget.innerHTML = `
+          <div style="font-size: 0.775rem; color: #64748b; margin-bottom: 4px;">CURRENTLY LOGGED IN:</div>
+          <div style="font-weight: 700; color: #0a2558; display: flex; align-items: center; gap: 0.5rem;">
+            <span>${name}</span> ${roleBadge}
+          </div>
+          <div style="font-size: 0.8rem; color: #059669; font-weight: 600;">${subtitle}</div>
+        `;
+      }
+    } else {
+      authStatusContainer.innerHTML = `
+        <button class="btn btn-primary btn-sm" onclick="window.openLoginModal('student')">
+          🎓 Student Login
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="window.openLoginModal('staff')">
+          👔 Staff Login
+        </button>
+      `;
+
+      if (heroProfileWidget) {
+        heroProfileWidget.innerHTML = `
+          <div style="font-size: 0.775rem; color: #64748b; margin-bottom: 4px;">AUTHENTICATION REQUIRED:</div>
+          <div style="font-weight: 700; color: #0a2558;">Please Sign In</div>
+          <div style="font-size: 0.8rem; color: #64748b;">Sign in with your DOTE Register Number or Staff ID to view ledgers and receipts.</div>
+        `;
+      }
+    }
+  }
+};
+
+window.Auth = Auth;
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize Auth
+  Auth.init();
+
   // Initialize Core Services
   try {
-    await Fees.init('22201045');
+    const studentRegNo = Auth.currentUser && Auth.currentUser.userType === 'STUDENT'
+      ? Auth.currentUser.profile.regNo
+      : '22201045';
+
+    await Fees.init(studentRegNo);
     await Cashier.init();
     populateDemoStudentSwitcher();
   } catch (err) {
@@ -34,6 +183,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (sectionId === 'cashier') {
+      // Role protection check
+      if (Auth.currentUser && Auth.currentUser.userType === 'STUDENT') {
+        const confirmSwitch = confirm('The Cashier & Accounts Desk is restricted to College Accounts Staff.\n\nWould you like to log in with an authorized Staff account (e.g. Cashier / Principal)?');
+        if (confirmSwitch) {
+          window.openLoginModal('staff');
+        }
+        return;
+      }
       window.switchView('cashier', true);
       return;
     }
@@ -71,6 +228,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     const studentSection = document.getElementById('studentFeesSection');
     const cashierSection = document.getElementById('cashierDeskSection');
     const tabBtns = document.querySelectorAll('.tab-btn');
+
+    // Role check when switching manually
+    if (viewName === 'cashier' && Auth.currentUser && Auth.currentUser.userType === 'STUDENT') {
+      const confirmSwitch = confirm('The Accounts Desk is reserved for authorized Accounts Office Staff.\n\nWould you like to switch to a Staff Account (e.g. Cashier / Principal)?');
+      if (confirmSwitch) {
+        window.openLoginModal('staff');
+        return;
+      }
+    }
 
     tabBtns.forEach(btn => btn.classList.remove('active'));
 
@@ -117,55 +283,104 @@ document.addEventListener('DOMContentLoaded', async () => {
       </option>
     `).join('');
 
-    select.value = Fees.currentStudentRegNo;
+    if (Auth.currentUser && Auth.currentUser.userType === 'STUDENT') {
+      select.value = Auth.currentUser.profile.regNo;
+    }
   }
 
   window.onDemoStudentChange = function(regNo) {
     Fees.init(regNo);
+    // Update current active student session
+    if (Auth.currentUser && Auth.currentUser.userType === 'STUDENT') {
+      Auth.currentUser.profile.regNo = regNo;
+      localStorage.setItem('sptc_auth_session', JSON.stringify(Auth.currentUser));
+      Auth.updateAuthUi();
+    }
     window.switchView('fees');
   };
 
-  // Student Login Modal Trigger
-  window.openStudentLoginModal = function() {
-    const modal = document.getElementById('studentLoginModal');
-    if (modal) modal.classList.add('active');
+  // Unified Login Modal Controls
+  window.openLoginModal = function(defaultTab = 'student') {
+    const modal = document.getElementById('portalLoginModal');
+    if (modal) {
+      modal.classList.add('active');
+      window.switchLoginTab(defaultTab);
+    }
   };
 
-  window.closeStudentLoginModal = function() {
-    const modal = document.getElementById('studentLoginModal');
+  window.closeLoginModal = function() {
+    const modal = document.getElementById('portalLoginModal');
     if (modal) modal.classList.remove('active');
   };
 
-  window.handleStudentLogin = async function(e) {
-    e.preventDefault();
-    const regNo = document.getElementById('loginRegNo').value.trim();
-    const pin = document.getElementById('loginPin').value.trim();
-    const btn = document.getElementById('loginSubmitBtn');
+  window.switchLoginTab = function(tabName) {
+    const studentTabBtn = document.getElementById('loginTabStudentBtn');
+    const staffTabBtn = document.getElementById('loginTabStaffBtn');
+    const studentForm = document.getElementById('studentLoginForm');
+    const staffForm = document.getElementById('staffLoginForm');
 
-    if (!regNo) {
-      alert('Please enter your DOTE Register Number');
+    if (tabName === 'staff') {
+      studentTabBtn?.classList.remove('active');
+      staffTabBtn?.classList.add('active');
+      if (studentForm) studentForm.style.display = 'none';
+      if (staffForm) staffForm.style.display = 'block';
+    } else {
+      studentTabBtn?.classList.add('active');
+      staffTabBtn?.classList.remove('active');
+      if (studentForm) studentForm.style.display = 'block';
+      if (staffForm) staffForm.style.display = 'none';
+    }
+  };
+
+  // Student Login Form Submission
+  window.handleStudentLoginSubmit = async function(e) {
+    e.preventDefault();
+    const regNo = document.getElementById('studentLoginRegNo').value.trim();
+    const pin = document.getElementById('studentLoginPin').value.trim();
+    const btn = document.getElementById('studentLoginBtn');
+
+    if (!regNo || !pin) {
+      alert('Please enter your DOTE Registration Number and Date of Birth / PIN');
       return;
     }
 
     btn.disabled = true;
-    btn.innerHTML = 'Verifying with SPTC Database...';
+    btn.innerHTML = 'Verifying DOTE Records...';
 
-    try {
-      const res = await API.studentLogin(regNo, pin);
-      if (res.success) {
-        closeStudentLoginModal();
-        Fees.init(regNo);
-        window.switchView('fees');
-        document.getElementById('demoStudentSelect').value = regNo;
-      } else {
-        alert(res.error || 'Authentication failed. Please verify credentials.');
-      }
-    } catch (err) {
-      alert('Login error. Please check DOTE Reg No (e.g., 22201045)');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = 'Sign In to Student Vault';
+    await Auth.login(regNo, pin, 'STUDENT');
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In as Student';
+  };
+
+  // Staff Login Form Submission
+  window.handleStaffLoginSubmit = async function(e) {
+    e.preventDefault();
+    const username = document.getElementById('staffLoginUsername').value.trim();
+    const password = document.getElementById('staffLoginPassword').value.trim();
+    const btn = document.getElementById('staffLoginBtn');
+
+    if (!username || !password) {
+      alert('Please enter your employee username and password');
+      return;
     }
+
+    btn.disabled = true;
+    btn.innerHTML = 'Authenticating Staff Access...';
+
+    await Auth.login(username, password, 'STAFF');
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In to Staff Desk';
+  };
+
+  // 1-Click Quick Demo Credentials Helper
+  window.quickFillStudent = function(regNo, pin) {
+    document.getElementById('studentLoginRegNo').value = regNo;
+    document.getElementById('studentLoginPin').value = pin;
+  };
+
+  window.quickFillStaff = function(username, password) {
+    document.getElementById('staffLoginUsername').value = username;
+    document.getElementById('staffLoginPassword').value = password;
   };
 
   // Admission Enquiry Modal
