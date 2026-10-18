@@ -10,7 +10,15 @@
   flex: 1.45;
   padding: 2.5rem 3.5rem;
   overflow-y: auto;
-  max-height: 100vh;
+  background-color: #f8fafc;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 1025px) {
+  .auth-interaction-pane.register-pane {
+    height: 100vh;
+    max-height: 100vh;
+  }
 }
 
 .auth-card-unified.register-form-card {

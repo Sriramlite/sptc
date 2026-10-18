@@ -60,14 +60,14 @@
         <a href="/dashboard.html" class="btn btn-primary btn-sm">
           🎓 Student Fees
         </a>
-        <button class="btn btn-gold btn-sm" onclick="window.openAdmissionModal()">
+        <button class="btn btn-gold btn-sm hide-on-mobile" onclick="window.openAdmissionModal()">
           Admission
         </button>
         <div id="navbarAuthContainer" style="display: flex; align-items: center; gap: 0.5rem;">
           <a href="/login.html" class="btn btn-sm btn-outline" style="border-color: #cbd5e1; color: var(--color-primary);">
             Sign In
           </a>
-          <a href="/register.html" class="btn btn-sm btn-gold">
+          <a href="/register.html" class="btn btn-sm btn-gold hide-on-mobile">
             Register
           </a>
         </div>
@@ -78,9 +78,13 @@
   <!-- ======================== 3. LIVE ANNOUNCEMENTS TICKER ======================== -->
   <div class="news-ticker-bar">
     <div class="container news-ticker-inner">
-      <span class="ticker-label">📢 College Notice</span>
-      <div class="ticker-marquee">
-        Admissions Open for Diploma Courses 2026-27 (Civil, Mech, EEE, ECE, CSE) | First Generation Graduate (FGG) Govt. Scholarship Fee Waivers Available | New Online Student Fees Management &amp; Migrated Tally Receipt Vault is Now Fully Active | Campus Placements Drive Ongoing with TI Metals &amp; Lucas TVS.
+      <div class="ticker-badge-wrap">
+        <span class="ticker-label">📢 College Notice</span>
+      </div>
+      <div class="ticker-track">
+        <div class="ticker-marquee">
+          Admissions Open for Diploma Courses 2026-27 (Civil, Mech, EEE, ECE, CSE) • First Generation Graduate (FGG) Govt. Scholarship Fee Waivers Available • New Online Student Fees Management &amp; Migrated Tally Receipt Vault is Now Fully Active • Campus Placements Drive Ongoing with TI Metals &amp; Lucas TVS.
+        </div>
       </div>
     </div>
   </div>
@@ -196,7 +200,7 @@
         </p>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-bottom: 2rem;">
+      <div class="about-grid">
         <div>
           <h3 style="font-family: var(--font-heading); font-size: 1.75rem; color: var(--color-primary); margin-bottom: 1rem;">
             Empowering Rural Youth with Future-Ready Technical Skills
@@ -204,7 +208,7 @@
           <p style="color: var(--color-text-muted); margin-bottom: 1.25rem;">
             Subramanian Polytechnic College is approved by AICTE, New Delhi, and operates under the Directorate of Technical Education (DOTE), Chennai. Situated in Rayavaram, Pudukkottai District, the college boasts high-end engineering workshops, computer labs, an Entrepreneurship Development Cell (EDC), and active student wings like NSS and Youth Red Cross.
           </p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem;">
+          <div class="about-feature-grid">
             <div style="background: #fff; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-accent-gold); box-shadow: var(--shadow-sm);">
               <strong style="color: var(--color-primary);">MAM Palaniappa Chettiar Auditorium</strong>
               <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Grand air-conditioned hall for national symposiums and convocation.</p>
@@ -387,7 +391,7 @@
               <h4 style="font-family: var(--font-heading); color: var(--color-primary); font-size: 1.15rem; margin-bottom: 0.75rem;">
                 🚌 Daily College Bus Routes &amp; Coverage (Rayavaram Junction):
               </h4>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; font-size: 0.85rem;">
+              <div class="bus-routes-grid">
                 <div><strong>Route 1:</strong> Pudukkottai New Bus Stand ➔ Namnasamudram ➔ Rayavaram (Dept 8:15 AM)</div>
                 <div><strong>Route 2:</strong> Karaikudi Old Bus Stand ➔ Kottaiyur ➔ Kandanur ➔ Rayavaram (Dept 8:10 AM)</div>
                 <div><strong>Route 3:</strong> Thirumayam ➔ Konapet ➔ Kadiapatti ➔ Rayavaram (Dept 8:25 AM)</div>
@@ -407,7 +411,7 @@
               </p>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+            <div class="compliance-grid">
               <div style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">📑</div>
                 <h4 style="font-size: 1rem; color: var(--color-primary);">AICTE EOA Reports</h4>

@@ -18,16 +18,24 @@
   --auth-input-bg: #f8fafc;
 }
 
-/* Full Page Split Viewport */
+/* Full Page Split Viewport - Auto-adjusts to 100% display height with zero gap below */
 .auth-split-viewport {
   min-height: 100vh;
   width: 100%;
   display: flex;
-  background-color: var(--auth-navy-deep);
+  background-color: #f8fafc;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--auth-text-dark);
   overflow-x: hidden;
   position: relative;
+}
+
+@media (min-width: 1025px) {
+  .auth-split-viewport {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
 }
 
 /* ==========================================================================
@@ -45,8 +53,16 @@
   justify-content: space-between;
   padding: 3rem 4rem;
   color: #ffffff;
-  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (min-width: 1025px) {
+  .auth-brand-showcase {
+    height: 100vh;
+    max-height: 100vh;
+  }
 }
 
 /* Ambient micro-grid background texture */
@@ -312,13 +328,21 @@
    ========================================================================== */
 .auth-interaction-pane {
   flex: 1;
-  background-color: #ffffff;
+  background-color: #f8fafc;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 2.5rem 3.5rem;
   position: relative;
   overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 1025px) {
+  .auth-interaction-pane {
+    height: 100vh;
+    max-height: 100vh;
+  }
 }
 
 .auth-pane-top-nav {
