@@ -170,6 +170,24 @@
       "concessionType": "None",
       "concessionAmount": 0,
       "status": "Active"
+    },
+    {
+      "regNo": "24208811",
+      "name": "S. Soundararajan",
+      "admissionNo": "SPTC/2026/888",
+      "department": "Computer Engineering",
+      "deptCode": "CSE",
+      "currentYear": 1,
+      "currentSemester": 1,
+      "quota": "Government",
+      "isHosteller": false,
+      "busRoute": "Route 1 (Pudukkottai - Rayavaram)",
+      "parentName": "M. Selvam",
+      "parentPhone": "9842199999",
+      "email": "soundar8811@gmail.com",
+      "pin": "sptc@student2026",
+      "concessionType": "None",
+      "concessionAmount": 0
     }
   ],
   "feeBilledItems": [
@@ -354,6 +372,19 @@
       "concession": 0,
       "netPayable": 20700,
       "dueDate": "2026-12-31"
+    },
+    {
+      "id": "BILL-24208811-S1",
+      "regNo": "24208811",
+      "semester": "Semester 1",
+      "academicYear": "2025-2026",
+      "tuitionFee": 14000,
+      "labFee": 3500,
+      "busFee": 6500,
+      "hostelFee": 0,
+      "concession": 0,
+      "netPayable": 24000,
+      "dueDate": "2026-11-30"
     }
   ],
   "receipts": [
@@ -633,6 +664,23 @@
         "Fee Collection Credit": 5000
       },
       "verificationHash": "e9a6f7260246b3b7",
+      "remarks": "Office counter fee collection"
+    },
+    {
+      "receiptNo": "SPTC/REC/2026-27/0006",
+      "regNo": "22202018",
+      "billId": "BILL-22202018-SEM6",
+      "date": "2026-10-18",
+      "amount": 2000,
+      "paymentMode": "Cash Counter",
+      "transactionRef": "Cash",
+      "academicYear": "2026-2027",
+      "semester": "Semester 6",
+      "source": "SPTC Accounts Office Counter (Officer: M. Alagappan)",
+      "breakdown": {
+        "Fee Collection Credit": 2000
+      },
+      "verificationHash": "86833c750a00c54b",
       "remarks": "Office counter fee collection"
     }
   ],

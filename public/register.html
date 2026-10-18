@@ -3,221 +3,531 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Registration | Subramanian Polytechnic College (SPTC)</title>
-  <meta name="description" content="Online Student Registration for Subramanian Polytechnic College, Rayavaram, Pudukkottai. Register your DOTE Reg No to access the student fee portal.">
+  <title>Student Registration &amp; Fee Ledger Setup | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description" content="Online Student Registration for Subramanian Polytechnic College, Rayavaram, Pudukkottai. Register your DOTE Reg No to access the student fee portal and digital receipts.">
   <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/register-redesign.css">
 </head>
 <body>
 
-  <div class="auth-page-wrapper">
-    <!-- Auth Header Navigation -->
-    <header class="auth-nav-header">
-      <a href="/" class="brand-link">
-        <img src="/assets/logo.svg" alt="SPTC Crest" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-accent-gold);">
-        <div>
-          <h1>Subramanian Polytechnic College</h1>
-          <p>Rayavaram, Pudukkottai • Estd. 1983 (DOTE Code: 331)</p>
-        </div>
-      </a>
-      <div style="display: flex; gap: 0.75rem; align-items: center;">
-        <a href="/login.html" class="btn btn-gold btn-sm">
-          Already Registered? Sign In
-        </a>
-        <a href="/" class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);">
-          ← College Portal
+  <!-- Full-Page Split Viewport -->
+  <div class="auth-split-viewport">
+
+    <!-- ======================== LEFT: BRAND SHOWCASE PANE ======================== -->
+    <aside class="auth-brand-showcase">
+      <!-- Header -->
+      <div class="brand-showcase-header">
+        <a href="/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+          <div class="brand-crest-box">
+            <img src="/assets/logo.svg" alt="SPTC Institutional Crest" class="brand-crest-img">
+          </div>
+          <div class="brand-showcase-title">
+            <h1>Subramanian Polytechnic College</h1>
+            <p>Rayavaram, Pudukkottai District • Tamil Nadu – 622 506</p>
+            <div class="brand-pill-badges">
+              <span class="brand-badge gold">🏛️ DOTE Code: 331</span>
+              <span class="brand-badge">⭐ AICTE Approved</span>
+              <span class="brand-badge">Estd. 1983</span>
+            </div>
+          </div>
         </a>
       </div>
-    </header>
 
-    <!-- Main Registration Card Container -->
-    <main class="auth-body-container">
-      <div class="auth-card register-card">
-        <div class="auth-card-header">
-          <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">📝</div>
-          <h2>Student Portal Enrollment &amp; Fee Ledger Setup</h2>
-          <p>Create your verified online student account for Subramanian Polytechnic College</p>
+      <!-- Center Hero Showcase -->
+      <div class="brand-showcase-hero">
+        <div class="hero-super-badge">
+          <span>🎓</span> Student Self-Service &amp; Central Fees Ledger
+        </div>
+        <h2>
+          Activate Your Official <span class="gold-gradient-text">Student Ledger</span>
+        </h2>
+        <p class="lead-p">
+          Enroll your Directorate of Technical Education (DOTE) registration number to access real-time fee balances, instant government concession tracking, and tamper-proof digital receipts.
+        </p>
+
+        <!-- 4 Feature Highlight Cards -->
+        <div class="showcase-features-list">
+          <div class="showcase-feature-item">
+            <div class="feature-icon-wrap gold">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h4>Verified DOTE Enrollment</h4>
+              <p>Directly synchronized with official Tamil Nadu Directorate of Technical Education student registry.</p>
+            </div>
+          </div>
+
+          <div class="showcase-feature-item">
+            <div class="feature-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h4>Instant Semester Fee Computation</h4>
+              <p>Automatic tuition, laboratory, and special fee assessment with direct credit for First-Generation Graduate (FGG) waivers.</p>
+            </div>
+          </div>
+
+          <div class="showcase-feature-item">
+            <div class="feature-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h4>Automated Campus Logistics</h4>
+              <p>Seamless allotment for 5 college bus routes or campus hostel accommodation linked directly to your fee account.</p>
+            </div>
+          </div>
+
+          <div class="showcase-feature-item">
+            <div class="feature-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h4>Tamper-Proof Receipts &amp; QR</h4>
+              <p>Download and print official verified A4 vouchers with 256-bit cryptographic verification hashes anytime.</p>
+            </div>
+          </div>
         </div>
 
-        <div class="auth-card-body">
-          <!-- Alert Box -->
-          <div id="regAlert" style="display: none; padding: 0.85rem 1.25rem; border-radius: 8px; font-size: 0.875rem; margin-bottom: 1.5rem;"></div>
+        <!-- Institutional Metrics -->
+        <div class="brand-metrics-bar">
+          <div class="metric-stat-box">
+            <h3>40+</h3>
+            <p>Years of Academic Excellence</p>
+          </div>
+          <div class="metric-stat-box">
+            <h3>1,200+</h3>
+            <p>Active Diploma Engineers</p>
+          </div>
+          <div class="metric-stat-box">
+            <h3>DOTE: 331</h3>
+            <p>Govt Institution Code</p>
+          </div>
+          <div class="metric-stat-box">
+            <h3>100%</h3>
+            <p>Digital Fee Ledgers</p>
+          </div>
+        </div>
+      </div>
 
+      <!-- Footer Info -->
+      <div class="brand-showcase-footer">
+        <p>🏛️ Subramanian Polytechnic College • Rayavaram, Pudukkottai – 622 506</p>
+        <p>Admissions &amp; Accounts: +91 6382391625 / 04333-272226 • principal@sptc.org.in</p>
+      </div>
+    </aside>
+
+    <!-- ======================== RIGHT: REGISTRATION FORM PANE ======================== -->
+    <main class="auth-interaction-pane register-pane">
+      
+      <!-- Top Navigation -->
+      <div class="interaction-top-nav">
+        <a href="/" class="nav-btn-outline">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>College Portal</span>
+        </a>
+        <a href="/login.html" class="nav-btn-gold">
+          <span>Already Registered? Sign In</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Main Unified Form Card -->
+      <div class="auth-card-unified register-form-card">
+        <div class="auth-card-top-accent"></div>
+
+        <div class="auth-header-block" style="text-align: left; padding: 1.75rem 2rem 1.25rem 2rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+            <div>
+              <div class="auth-title-badge">
+                <span>📝</span> DOTE Student Enrollment
+              </div>
+              <h2 style="font-size: 1.5rem; margin-top: 0.35rem;">Student Portal &amp; Fee Ledger Setup</h2>
+              <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.2rem;">Complete the form below to initialize your semester ledger account.</p>
+            </div>
+            
+            <button type="button" class="btn-autofill-demo" onclick="fillSampleRegistration()">
+              <span>⚡ Auto-Fill Sample Demo</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-card-body" style="padding: 0 2rem 2.25rem 2rem;">
+          
+          <!-- Stepper Indicator -->
+          <div class="register-stepper">
+            <div class="step-item active" id="stepIndicator1">
+              <div class="step-num">1</div>
+              <span>Academic &amp; DOTE</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item" id="stepIndicator2">
+              <div class="step-num">2</div>
+              <span>Logistics</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item" id="stepIndicator3">
+              <div class="step-num">3</div>
+              <span>Guardian</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item" id="stepIndicator4">
+              <div class="step-num">4</div>
+              <span>Security</span>
+            </div>
+          </div>
+
+          <!-- Alert Container -->
+          <div id="regAlert" style="display: none;" class="reg-alert-box"></div>
+
+          <!-- Main Registration Form -->
           <form id="studentRegisterForm" onsubmit="handleRegistrationSubmit(event)">
             
-            <!-- SECTION 1: ACADEMIC DETAILS -->
-            <div class="form-section-title">
-              <span>🎓</span> Academic &amp; DOTE Credentials
-            </div>
-
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label" for="regNo">DOTE Registration Number: *</label>
-                <input type="text" id="regNo" class="form-control" placeholder="e.g. 24206015" required />
-                <span style="font-size: 0.75rem; color: #64748b;">Your official 8-digit Directorate of Technical Education Reg No.</span>
+            <!-- ================= SECTION 1: ACADEMIC CREDENTIALS ================= -->
+            <div class="register-section-block">
+              <div class="register-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon-badge">🎓</div>
+                  <div>
+                    <h3>Academic &amp; DOTE Credentials</h3>
+                  </div>
+                </div>
+                <span class="section-badge-tag">Step 1 of 4</span>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="studentName">Full Student Name: *</label>
-                <input type="text" id="studentName" class="form-control" placeholder="e.g. M. Manikandan" required />
-                <span style="font-size: 0.75rem; color: #64748b;">As printed on 10th / SSLC marksheet</span>
-              </div>
-            </div>
-
-            <div class="form-grid-3">
-              <div class="form-group">
-                <label class="form-label" for="department">Department / Branch: *</label>
-                <select id="department" class="form-control" required>
-                  <option value="">-- Choose Branch --</option>
-                  <option value="Computer Engineering">Computer Engineering (CSE)</option>
-                  <option value="Mechanical Engineering">Mechanical Engineering</option>
-                  <option value="Electrical and Electronics Engineering">Electrical &amp; Electronics (EEE)</option>
-                  <option value="Electronics and Communication Engineering">Electronics &amp; Comm. (ECE)</option>
-                  <option value="Civil Engineering">Civil Engineering</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="currentYear">Year of Study: *</label>
-                <select id="currentYear" class="form-control" onchange="syncSemesterOptions(this.value)" required>
-                  <option value="1">1st Year (Freshman)</option>
-                  <option value="2">2nd Year (Lateral / Senior)</option>
-                  <option value="3">3rd Year (Final Year)</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="currentSemester">Current Semester: *</label>
-                <select id="currentSemester" class="form-control" required>
-                  <option value="1">Semester 1</option>
-                  <option value="2">Semester 2</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label" for="quota">Admission Quota: *</label>
-                <select id="quota" class="form-control" required>
-                  <option value="Government">Government Quota (Single Window)</option>
-                  <option value="Management">Management Quota</option>
-                  <option value="Lateral Entry">Lateral Entry (Direct 2nd Year)</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label class="form-label" for="admissionNo">Admission Reference No: (Optional)</label>
-                <input type="text" id="admissionNo" class="form-control" placeholder="e.g. SPTC/2026/045" />
-              </div>
-            </div>
-
-            <!-- SECTION 2: CAMPUS & LOGISTICS -->
-            <div class="form-section-title">
-              <span>🚌</span> Campus Logistics &amp; Accommodation
-            </div>
-
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label">Accommodation Type: *</label>
-                <div style="display: flex; gap: 1rem; margin-top: 0.35rem;">
-                  <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                    <input type="radio" name="residenceType" value="dayScholar" checked onchange="toggleBusOptions(false)" />
-                    <span>Day Scholar (Local / Bus)</span>
+              <div class="reg-grid-2">
+                <div class="reg-field-group">
+                  <label class="reg-label" for="regNo">
+                    <span>DOTE Registration Number <span class="req">*</span></span>
+                    <span style="font-size: 0.7rem; color: #2563eb; font-weight: 600;">8 Digits</span>
                   </label>
-                  <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                    <input type="radio" name="residenceType" value="hosteller" onchange="toggleBusOptions(true)" />
-                    <span>Hosteller (Campus Hostel)</span>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">🆔</span>
+                    <input type="text" id="regNo" class="reg-control" placeholder="e.g. 24206015" maxlength="10" required />
+                  </div>
+                  <span class="reg-hint">Official 8-digit Directorate of Technical Education Reg No.</span>
+                </div>
+
+                <div class="reg-field-group">
+                  <label class="reg-label" for="studentName">
+                    <span>Full Student Name <span class="req">*</span></span>
                   </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">👤</span>
+                    <input type="text" id="studentName" class="reg-control" placeholder="e.g. M. Manikandan" required />
+                  </div>
+                  <span class="reg-hint">As printed on 10th / SSLC marksheet</span>
                 </div>
               </div>
 
-              <div class="form-group" id="busRouteGroup">
-                <label class="form-label" for="busRoute">College Bus Route:</label>
-                <select id="busRoute" class="form-control">
-                  <option value="Route 1 (Pudukkottai - Rayavaram)">Route 1: Pudukkottai Town Stand ⇄ Rayavaram</option>
-                  <option value="Route 2 (Karaikudi - Rayavaram)">Route 2: Karaikudi New Stand ⇄ Rayavaram</option>
-                  <option value="Route 3 (Aranthangi - Rayavaram)">Route 3: Aranthangi Bus Stand ⇄ Rayavaram</option>
-                  <option value="Route 4 (Tirumayam - Rayavaram)">Route 4: Tirumayam Fort ⇄ Rayavaram</option>
-                  <option value="Route 5 (Kanadukathan - Rayavaram)">Route 5: Kanadukathan / Kottaiyur ⇄ Rayavaram</option>
-                  <option value="Self Commute (Cycle/Bike)">Self Commute / Own Vehicle</option>
-                </select>
+              <div class="reg-grid-3">
+                <div class="reg-field-group">
+                  <label class="reg-label" for="department">
+                    <span>Department / Branch <span class="req">*</span></span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">🏛️</span>
+                    <select id="department" class="reg-control" onchange="updateBranchBadge(this.value)" required>
+                      <option value="">-- Choose Branch --</option>
+                      <option value="Computer Engineering">Computer Engineering</option>
+                      <option value="Mechanical Engineering">Mechanical Engineering</option>
+                      <option value="Electrical and Electronics Engineering">Electrical &amp; Electronics (EEE)</option>
+                      <option value="Electronics and Communication Engineering">Electronics &amp; Comm. (ECE)</option>
+                      <option value="Civil Engineering">Civil Engineering</option>
+                    </select>
+                  </div>
+                  <div id="branchBadgeWrap" style="display: none;">
+                    <span class="branch-code-chip" id="branchBadgeText">DOTE Code: CE</span>
+                  </div>
+                </div>
+
+                <div class="reg-field-group">
+                  <label class="reg-label" for="currentYear">
+                    <span>Year of Study <span class="req">*</span></span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">📅</span>
+                    <select id="currentYear" class="reg-control" onchange="syncSemesterOptions(this.value)" required>
+                      <option value="1">1st Year (Freshman)</option>
+                      <option value="2">2nd Year (Lateral / Senior)</option>
+                      <option value="3">3rd Year (Final Year)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="reg-field-group">
+                  <label class="reg-label" for="currentSemester">
+                    <span>Current Semester <span class="req">*</span></span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">📖</span>
+                    <select id="currentSemester" class="reg-control" required>
+                      <option value="1">Semester 1</option>
+                      <option value="2">Semester 2</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="reg-grid-2">
+                <div class="reg-field-group">
+                  <label class="reg-label" for="quota">
+                    <span>Admission Quota <span class="req">*</span></span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">📋</span>
+                    <select id="quota" class="reg-control" required>
+                      <option value="Government">Government Quota (Single Window)</option>
+                      <option value="Management">Management Quota</option>
+                      <option value="Lateral Entry">Lateral Entry (Direct 2nd Year)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="reg-field-group">
+                  <label class="reg-label" for="admissionNo">
+                    <span>Admission Ref No <span style="font-weight: 400; color: #94a3b8;">(Optional)</span></span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">🔖</span>
+                    <input type="text" id="admissionNo" class="reg-control" placeholder="e.g. SPTC/2026/045" />
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- SECTION 3: PARENT & CONTACT -->
-            <div class="form-section-title">
-              <span>📞</span> Parent / Guardian Contact Details
-            </div>
-
-            <div class="form-grid-3">
-              <div class="form-group">
-                <label class="form-label" for="parentName">Parent / Guardian Name: *</label>
-                <input type="text" id="parentName" class="form-control" placeholder="e.g. K. Murugesan" required />
+            <!-- ================= SECTION 2: CAMPUS & LOGISTICS ================= -->
+            <div class="register-section-block">
+              <div class="register-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon-badge">🚌</div>
+                  <div>
+                    <h3>Campus Logistics &amp; Accommodation</h3>
+                  </div>
+                </div>
+                <span class="section-badge-tag">Step 2 of 4</span>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="parentPhone">Parent Mobile Number: *</label>
-                <input type="tel" id="parentPhone" class="form-control" placeholder="e.g. 9842100000" pattern="[0-9]{10}" required />
-                <span style="font-size: 0.75rem; color: #64748b;">10-digit number for SMS / WhatsApp fee alerts</span>
+              <label class="reg-label" style="margin-bottom: 0.65rem;">
+                <span>Accommodation &amp; Daily Commute <span class="req">*</span></span>
+              </label>
+
+              <!-- Interactive Choice Cards -->
+              <div class="residence-cards-row">
+                <label class="residence-choice-card selected" id="cardDayScholar">
+                  <input type="radio" name="residenceType" value="dayScholar" checked onchange="handleResidenceChange('dayScholar')" />
+                  <div class="residence-choice-info">
+                    <h4>🚌 Day Scholar (Commuter)</h4>
+                    <p>Commuting daily via College Bus or Personal Vehicle.</p>
+                  </div>
+                </label>
+
+                <label class="residence-choice-card" id="cardHosteller">
+                  <input type="radio" name="residenceType" value="hosteller" onchange="handleResidenceChange('hosteller')" />
+                  <div class="residence-choice-info">
+                    <h4>🏢 Campus Hosteller</h4>
+                    <p>Residing in on-campus Subramanian Polytechnic Hostel.</p>
+                  </div>
+                </label>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="email">Student Email Address:</label>
-                <input type="email" id="email" class="form-control" placeholder="e.g. student@gmail.com" />
+              <!-- Bus Route Selector (conditionally enabled) -->
+              <div class="reg-field-group" id="busRouteGroup">
+                <label class="reg-label" for="busRoute">
+                  <span>Assigned College Bus Route:</span>
+                </label>
+                <div class="reg-input-wrapper">
+                  <span class="reg-input-icon">🚏</span>
+                  <select id="busRoute" class="reg-control">
+                    <option value="Route 1 (Pudukkottai - Rayavaram)">Route 1: Pudukkottai Town Stand ⇄ Rayavaram</option>
+                    <option value="Route 2 (Karaikudi - Rayavaram)">Route 2: Karaikudi New Stand ⇄ Rayavaram</option>
+                    <option value="Route 3 (Aranthangi - Rayavaram)">Route 3: Aranthangi Bus Stand ⇄ Rayavaram</option>
+                    <option value="Route 4 (Tirumayam - Rayavaram)">Route 4: Tirumayam Fort ⇄ Rayavaram</option>
+                    <option value="Route 5 (Kanadukathan - Rayavaram)">Route 5: Kanadukathan / Kottaiyur ⇄ Rayavaram</option>
+                    <option value="Self Commute (Cycle/Bike)">Self Commute / Own Bicycle or Bike</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Hostel Info Notice (shown when hosteller selected) -->
+              <div id="hostelNotice" style="display: none; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.825rem; color: #047857; margin-top: 0.85rem;">
+                ✅ <strong>Campus Hostel Selected:</strong> Your room allotment and monthly mess fee ledger will be automatically connected to your student dashboard.
               </div>
             </div>
 
-            <!-- SECTION 4: SECURITY PIN -->
-            <div class="form-section-title">
-              <span>🔐</span> Set Portal Password / Security PIN
-            </div>
-
-            <div class="form-grid-2">
-              <div class="form-group">
-                <label class="form-label" for="password">Choose Password / PIN: *</label>
-                <input type="password" id="password" class="form-control" placeholder="Min. 4 characters (e.g. DDMMYYYY of DOB)" required minlength="4" />
+            <!-- ================= SECTION 3: PARENT & CONTACT ================= -->
+            <div class="register-section-block">
+              <div class="register-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon-badge">📞</div>
+                  <div>
+                    <h3>Parent / Guardian Contact Details</h3>
+                  </div>
+                </div>
+                <span class="section-badge-tag">Step 3 of 4</span>
               </div>
 
-              <div class="form-group">
-                <label class="form-label" for="confirmPassword">Confirm Password / PIN: *</label>
-                <input type="password" id="confirmPassword" class="form-control" placeholder="Re-enter password" required minlength="4" />
+              <div class="reg-grid-3">
+                <div class="reg-field-group">
+                  <label class="reg-label" for="parentName">
+                    <span>Parent / Guardian Name <span class="req">*</span></span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">👨‍👧</span>
+                    <input type="text" id="parentName" class="reg-control" placeholder="e.g. K. Murugesan" required />
+                  </div>
+                </div>
+
+                <div class="reg-field-group">
+                  <label class="reg-label" for="parentPhone">
+                    <span>Parent Mobile Number <span class="req">*</span></span>
+                    <span style="font-size: 0.7rem; color: #059669; font-weight: 600;">SMS/WhatsApp</span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">📱</span>
+                    <input type="tel" id="parentPhone" class="reg-control" placeholder="10-digit number (e.g. 9842145678)" pattern="[0-9]{10}" maxlength="10" required />
+                  </div>
+                  <span class="reg-hint">Used for official fee due and receipt notifications</span>
+                </div>
+
+                <div class="reg-field-group">
+                  <label class="reg-label" for="email">
+                    <span>Student Email Address</span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">✉️</span>
+                    <input type="email" id="email" class="reg-control" placeholder="e.g. student@gmail.com" />
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.85rem 1rem; margin: 1.5rem 0; font-size: 0.825rem; color: #1e40af;">
-              ℹ️ <strong>Automatic Fee Ledger Setup:</strong> Upon registration, an official semester fee ledger item will be generated based on your branch and quota, allowing you to view and pay semester dues immediately.
+            <!-- ================= SECTION 4: SECURITY CREDENTIALS ================= -->
+            <div class="register-section-block">
+              <div class="register-section-header">
+                <div class="section-title-wrap">
+                  <div class="section-icon-badge">🔐</div>
+                  <div>
+                    <h3>Portal Password &amp; Security PIN</h3>
+                  </div>
+                </div>
+                <span class="section-badge-tag">Step 4 of 4</span>
+              </div>
+
+              <div class="reg-grid-2">
+                <div class="reg-field-group">
+                  <label class="reg-label" for="password">
+                    <span>Create Password / PIN <span class="req">*</span></span>
+                    <span style="font-size: 0.7rem; color: #64748b;">Min. 4 characters</span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">🔒</span>
+                    <input type="password" id="password" class="reg-control" placeholder="e.g. DDMMYYYY or password" required minlength="4" />
+                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" title="Show/Hide Password">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="reg-field-group">
+                  <label class="reg-label" for="confirmPassword">
+                    <span>Confirm Password / PIN <span class="req">*</span></span>
+                  </label>
+                  <div class="reg-input-wrapper">
+                    <span class="reg-input-icon">🔒</span>
+                    <input type="password" id="confirmPassword" class="reg-control" placeholder="Re-enter password" required minlength="4" />
+                    <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('confirmPassword', this)" title="Show/Hide Password">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; font-size: 0.8rem; color: #475569; display: flex; align-items: center; gap: 0.65rem;">
+                <span>💡</span>
+                <span><strong>Recommendation:</strong> Use a memorable PIN or date of birth (e.g. 15082005) so you can easily sign in from home or smartphone.</span>
+              </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-              <button type="submit" id="btnRegisterSubmit" class="btn btn-primary" style="flex: 2; padding: 0.85rem; font-size: 1rem; justify-content: center;">
-                Complete Enrollment &amp; Open Fee Dashboard →
+            <!-- Notice Box -->
+            <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 10px; padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.85rem; color: #1e40af; display: flex; align-items: flex-start; gap: 0.75rem;">
+              <span style="font-size: 1.25rem; flex-shrink: 0;">ℹ️</span>
+              <div>
+                <strong>Automatic Fee Ledger Setup:</strong>
+                <p style="margin: 0.25rem 0 0 0; color: #1d4ed8; line-height: 1.4;">Upon registration, your official semester fee schedule will be automatically generated based on your department, year, and quota. You can inspect itemized breakdown and make instant payments directly on your dashboard.</p>
+              </div>
+            </div>
+
+            <!-- Submit Action Bar -->
+            <div class="reg-actions-row">
+              <button type="submit" id="btnRegisterSubmit" class="btn-submit-glow" style="flex: 2; padding: 0.95rem 1.5rem; font-size: 1rem; justify-content: center;">
+                <span>Complete Enrollment &amp; Open Fee Dashboard</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
               </button>
-              <button type="button" class="btn btn-outline" style="flex: 1;" onclick="fillSampleRegistration()">
-                ⚡ Auto-Fill Sample Form
-              </button>
             </div>
 
-            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.875rem;">
-              Already enrolled? <a href="/login.html" style="color: var(--color-primary); font-weight: 700;">Sign in to existing account →</a>
+            <!-- Bottom Redirect -->
+            <div style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem; color: #64748b;">
+              Already enrolled? <a href="/login.html" style="color: #0a2558; font-weight: 700; text-decoration: underline;">Sign in to your existing account →</a>
             </div>
 
           </form>
+
         </div>
       </div>
+
+      <!-- Footer Copy -->
+      <div class="auth-pane-bottom-copy">
+        Subramanian Polytechnic College (SPTC Rayavaram) • DOTE Institution Code: 331<br>
+        Approved by AICTE, New Delhi • Government of Tamil Nadu Technical Education
+      </div>
+
     </main>
 
-    <!-- Auth Footer -->
-    <footer class="auth-footer">
-      Subramanian Polytechnic College • Rayavaram, Pudukkottai District, Tamil Nadu – 622 506<br>
-      Admissions &amp; Accounts Desk: +91 6382391625 / 04333-272226 • principal@sptc.org.in
-    </footer>
   </div>
 
+  <!-- Scripts -->
   <script src="/js/data-store.js"></script>
   <script>
+    // Sync Semester Dropdown with Year of Study
     function syncSemesterOptions(yearVal) {
       const semSelect = document.getElementById('currentSemester');
+      if (!semSelect) return;
       semSelect.innerHTML = '';
       if (yearVal === '1') {
         semSelect.innerHTML = '<option value="1">Semester 1</option><option value="2">Semester 2</option>';
@@ -228,59 +538,147 @@
       }
     }
 
-    function toggleBusOptions(isHosteller) {
-      const busGroup = document.getElementById('busRouteGroup');
-      if (isHosteller) {
-        busGroup.style.opacity = '0.4';
-        busGroup.style.pointerEvents = 'none';
+    // Branch code badge chip updater
+    function updateBranchBadge(deptName) {
+      const wrap = document.getElementById('branchBadgeWrap');
+      const text = document.getElementById('branchBadgeText');
+      if (!wrap || !text) return;
+
+      const codes = {
+        'Computer Engineering': 'DOTE Code: CE (Intake: 60)',
+        'Mechanical Engineering': 'DOTE Code: ME (Intake: 120)',
+        'Electrical and Electronics Engineering': 'DOTE Code: EEE (Intake: 60)',
+        'Electronics and Communication Engineering': 'DOTE Code: ECE (Intake: 60)',
+        'Civil Engineering': 'DOTE Code: CIVIL (Intake: 60)'
+      };
+
+      if (codes[deptName]) {
+        text.textContent = codes[deptName];
+        wrap.style.display = 'block';
       } else {
-        busGroup.style.opacity = '1';
-        busGroup.style.pointerEvents = 'auto';
+        wrap.style.display = 'none';
       }
     }
 
+    // Residence card selection handler
+    function handleResidenceChange(type) {
+      const cardDay = document.getElementById('cardDayScholar');
+      const cardHostel = document.getElementById('cardHosteller');
+      const busGroup = document.getElementById('busRouteGroup');
+      const hostelNotice = document.getElementById('hostelNotice');
+
+      if (type === 'hosteller') {
+        if (cardHostel) cardHostel.classList.add('selected');
+        if (cardDay) cardDay.classList.remove('selected');
+        if (busGroup) {
+          busGroup.style.opacity = '0.4';
+          busGroup.style.pointerEvents = 'none';
+        }
+        if (hostelNotice) hostelNotice.style.display = 'block';
+      } else {
+        if (cardDay) cardDay.classList.add('selected');
+        if (cardHostel) cardHostel.classList.remove('selected');
+        if (busGroup) {
+          busGroup.style.opacity = '1';
+          busGroup.style.pointerEvents = 'auto';
+        }
+        if (hostelNotice) hostelNotice.style.display = 'none';
+      }
+    }
+
+    // Toggle password visibility
+    function togglePasswordVisibility(fieldId, btn) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+
+      const isPassword = field.type === 'password';
+      field.type = isPassword ? 'text' : 'password';
+
+      btn.innerHTML = isPassword ? `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+      ` : `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+      `;
+    }
+
+    // Auto-fill sample registration for effortless evaluation
     function fillSampleRegistration() {
       const randomSuffix = Math.floor(1000 + Math.random() * 9000);
       document.getElementById('regNo').value = `2420${randomSuffix}`;
       document.getElementById('studentName').value = 'M. Manikandan';
-      document.getElementById('department').value = 'Computer Engineering';
+      
+      const dept = document.getElementById('department');
+      dept.value = 'Computer Engineering';
+      updateBranchBadge('Computer Engineering');
+
       document.getElementById('currentYear').value = '1';
       syncSemesterOptions('1');
+      document.getElementById('currentSemester').value = '1';
+
       document.getElementById('quota').value = 'Government';
+      document.getElementById('admissionNo').value = `SPTC/2026/${Math.floor(100 + Math.random() * 900)}`;
+
+      handleResidenceChange('dayScholar');
+      document.querySelector('input[name="residenceType"][value="dayScholar"]').checked = true;
+      document.getElementById('busRoute').value = 'Route 1 (Pudukkottai - Rayavaram)';
+
       document.getElementById('parentName').value = 'K. Murugesan';
       document.getElementById('parentPhone').value = '9842145678';
       document.getElementById('email').value = `mani_${randomSuffix}@gmail.com`;
+
       document.getElementById('password').value = 'sptc2026';
       document.getElementById('confirmPassword').value = 'sptc2026';
+
+      showRegAlert('✨ Sample registration profile populated! Ready to submit.', false);
     }
 
+    // Alert helper
     function showRegAlert(message, isError = true) {
       const alertBox = document.getElementById('regAlert');
-      alertBox.style.display = 'block';
-      alertBox.style.background = isError ? '#fef2f2' : '#ecfdf5';
-      alertBox.style.border = isError ? '1.5px solid #fecaca' : '1.5px solid #a7f3d0';
-      alertBox.style.color = isError ? '#b91c1c' : '#047857';
-      alertBox.innerHTML = `${isError ? '⚠️' : '🎉'} ${message}`;
-      window.scrollTo({ top: 120, behavior: 'smooth' });
+      if (!alertBox) return;
+
+      alertBox.style.display = 'flex';
+      alertBox.className = `reg-alert-box ${isError ? 'error' : 'success'}`;
+      alertBox.innerHTML = `
+        <span style="font-size: 1.25rem;">${isError ? '⚠️' : '🎉'}</span>
+        <div>${message}</div>
+      `;
+
+      alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
+    // Submit handler
     async function handleRegistrationSubmit(event) {
       event.preventDefault();
       const alertBox = document.getElementById('regAlert');
-      alertBox.style.display = 'none';
+      if (alertBox) alertBox.style.display = 'none';
 
+      const regNo = document.getElementById('regNo').value.trim();
+      const studentName = document.getElementById('studentName').value.trim();
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
 
+      // Validation
+      if (!/^\d{8,10}$/.test(regNo)) {
+        showRegAlert('DOTE Registration Number must be 8 to 10 digits (e.g. 24206015).');
+        return;
+      }
+
       if (password !== confirmPassword) {
-        showRegAlert('Password and Confirm Password do not match. Please verify.');
+        showRegAlert('Password and Confirm Password do not match. Please verify your entries.');
         return;
       }
 
       const isHosteller = document.querySelector('input[name="residenceType"]:checked').value === 'hosteller';
       const studentData = {
-        regNo: document.getElementById('regNo').value.trim(),
-        name: document.getElementById('studentName').value.trim(),
+        regNo: regNo,
+        name: studentName,
         department: document.getElementById('department').value,
         currentYear: document.getElementById('currentYear').value,
         currentSemester: document.getElementById('currentSemester').value,
@@ -296,7 +694,10 @@
 
       const btn = document.getElementById('btnRegisterSubmit');
       const origText = btn.innerHTML;
-      btn.innerHTML = 'Enrolling in College Ledger...';
+      btn.innerHTML = `
+        <span class="loading-spinner-sm" style="display: inline-block; width: 16px; height: 16px; border: 2px solid #ffffff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+        <span>Enrolling in DOTE Ledger...</span>
+      `;
       btn.disabled = true;
 
       try {
@@ -309,7 +710,7 @@
         const result = await response.json();
 
         if (result.success) {
-          showRegAlert(`Student account enrolled successfully! Welcome, ${result.profile.name}. Initializing your fee ledger and redirecting to your dashboard...`, false);
+          showRegAlert(`Student account enrolled successfully! Welcome, ${result.profile?.name || studentName}. Initializing your fee ledger and redirecting to your dashboard...`, false);
           
           // Save session
           const sessionData = {
@@ -322,7 +723,7 @@
 
           setTimeout(() => {
             window.location.href = '/dashboard.html';
-          }, 1000);
+          }, 1100);
         } else {
           showRegAlert(result.error || 'Failed to complete student registration.');
           btn.innerHTML = origText;

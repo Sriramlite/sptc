@@ -1276,6 +1276,133 @@ button {
 }
 
 /* ==========================================================================
+   MOBILE & CROSS-DEVICE RESPONSIVE RECEIPT LAYOUT
+   ========================================================================== */
+@media screen and (max-width: 680px) {
+  .official-receipt-doc {
+    padding: 1.25rem 0.85rem !important;
+    border-width: 1.5px !important;
+    font-size: 0.825rem !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .receipt-watermark {
+    font-size: 2.75rem !important;
+  }
+
+  .receipt-header {
+    flex-direction: column !important;
+    text-align: center !important;
+    gap: 0.65rem !important;
+    padding-bottom: 0.85rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .receipt-logo {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .receipt-college-title h2 {
+    font-size: 1.05rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .receipt-college-title p {
+    font-size: 0.725rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .receipt-badge-title {
+    margin-bottom: 1rem !important;
+  }
+
+  .receipt-badge-title span {
+    font-size: 0.725rem !important;
+    padding: 0.25rem 0.85rem !important;
+    letter-spacing: 0.5px !important;
+  }
+
+  /* Single column full-width key-value rows on mobile */
+  .receipt-info-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.55rem !important;
+    padding: 0.75rem 0.85rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .receipt-info-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    font-size: 0.8rem !important;
+    border-bottom: 1px dashed #e2e8f0 !important;
+    padding-bottom: 0.35rem !important;
+  }
+
+  .receipt-info-row strong {
+    font-size: 0.775rem !important;
+    color: #475569 !important;
+    flex-shrink: 0 !important;
+    min-width: 105px !important;
+    max-width: 42% !important;
+  }
+
+  .receipt-info-row span {
+    text-align: right !important;
+    word-break: break-word !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Table styling on mobile */
+  .receipt-table {
+    margin-bottom: 1rem !important;
+    font-size: 0.775rem !important;
+  }
+
+  .receipt-table th, .receipt-table td {
+    padding: 0.5rem 0.55rem !important;
+  }
+
+  .receipt-table th:last-child, .receipt-table td:last-child {
+    white-space: nowrap !important;
+  }
+
+  .receipt-total-row td {
+    font-size: 0.875rem !important;
+  }
+
+  /* Stack QR code and Accounts stamp cleanly */
+  .receipt-footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    margin-top: 1rem !important;
+    padding-top: 1rem !important;
+  }
+
+  .qr-verification-box {
+    flex-direction: row !important;
+    gap: 0.75rem !important;
+    padding: 0.65rem !important;
+  }
+
+  .qr-code-canvas {
+    width: 64px !important;
+    height: 64px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .seal-stamp {
+    width: 68px !important;
+    height: 68px !important;
+    font-size: 0.58rem !important;
+  }
+}
+
+/* ==========================================================================
    AUTHENTICATION UI (LOGIN TABS, PILLS & USER STATUS)
    ========================================================================== */
 .login-tabs-nav {
