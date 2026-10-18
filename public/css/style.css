@@ -560,16 +560,17 @@ button {
   display: flex;
   align-items: center;
   position: relative;
-  overflow: hidden;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .ticker-badge-wrap {
+  position: relative;
+  z-index: 40;
   flex-shrink: 0;
-  z-index: 10;
   background: #0b1528;
-  padding-right: 0.85rem;
-  box-shadow: 12px 0 16px #0b1528;
+  padding-right: 1.25rem;
+  box-shadow: 16px 0 20px #0b1528;
   display: flex;
   align-items: center;
 }
@@ -591,28 +592,35 @@ button {
 }
 
 .ticker-track {
-  flex: 1;
-  overflow: hidden;
   position: relative;
-  mask-image: linear-gradient(90deg, transparent 0%, #000 20px, #000 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 20px, #000 100%);
+  z-index: 10;
+  flex: 1 1 0%;
+  min-width: 0;
+  overflow: hidden;
+  contain: paint;
   display: flex;
   align-items: center;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 24px, #000 calc(100% - 24px), transparent 100%);
 }
 
 .ticker-marquee {
   display: inline-block;
   white-space: nowrap;
-  animation: marquee 25s linear infinite;
+  animation: ticker-scroll 28s linear infinite;
   font-size: 0.825rem;
   color: rgba(255, 255, 255, 0.95);
   will-change: transform;
-  padding-left: 1.5rem;
+  padding-left: 100%;
 }
 
-@keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+.ticker-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker-scroll {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
 }
 
 /* Responsive Card Grids Across Home Screen */
@@ -1773,6 +1781,24 @@ button {
   .navbar {
     padding: 0.4rem 0;
     gap: 0.5rem;
+  }
+
+  .news-ticker-bar {
+    padding: 0.25rem 0;
+  }
+
+  .ticker-badge-wrap {
+    padding-right: 0.75rem;
+    box-shadow: 10px 0 14px #0b1528;
+  }
+
+  .ticker-label {
+    font-size: 0.68rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .ticker-marquee {
+    font-size: 0.78rem;
   }
 
   .brand-logo-img {

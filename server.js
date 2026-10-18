@@ -39,9 +39,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// Static assets with standard cache control
+// Static assets: serve HTML with no-cache so updates apply immediately without browser caching locks
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: NODE_ENV === 'production' ? '1h' : '0'
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    } else {
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    }
+  }
 }));
 
 // ======================== DATABASE HELPERS ========================
