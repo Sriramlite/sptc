@@ -228,13 +228,6 @@ const Receipts = {
             </div>
           ` : ''}
         </div>
-
-        <div class="receipt-actions" style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
-          <button class="btn btn-outline" onclick="Receipts.closeReceiptModal()">Close</button>
-          <button class="btn btn-primary" onclick="Receipts.printReceipt()">
-            🖨️ Print / Download Official Receipt PDF
-          </button>
-        </div>
       `;
 
       const modal = document.getElementById('receiptModal');
@@ -251,7 +244,249 @@ const Receipts = {
   },
 
   printReceipt() {
-    window.print();
+    const receiptEl = document.getElementById('printableReceiptDoc');
+    if (!receiptEl) {
+      window.print();
+      return;
+    }
+
+    try {
+      // Remove any previously created print iframe
+      let printFrame = document.getElementById('receiptPrintIframe');
+      if (printFrame) {
+        printFrame.remove();
+      }
+
+      printFrame = document.createElement('iframe');
+      printFrame.id = 'receiptPrintIframe';
+      printFrame.style.position = 'fixed';
+      printFrame.style.right = '0';
+      printFrame.style.bottom = '0';
+      printFrame.style.width = '0';
+      printFrame.style.height = '0';
+      printFrame.style.border = '0';
+      printFrame.style.visibility = 'hidden';
+      document.body.appendChild(printFrame);
+
+      const receiptHtml = receiptEl.outerHTML;
+      const frameDoc = printFrame.contentWindow || printFrame.contentDocument;
+      const doc = frameDoc.document || frameDoc;
+
+      doc.open();
+      doc.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SPTC_Official_Fee_Receipt</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm 10mm 12mm;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #ffffff;
+      color: #0f172a;
+      margin: 0;
+      padding: 0;
+    }
+    .official-receipt-doc {
+      background: #ffffff;
+      border: 2.5px solid #0a2558;
+      border-radius: 8px;
+      padding: 1.5rem 1.75rem;
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+    }
+    .receipt-watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-30deg);
+      font-family: 'Outfit', sans-serif;
+      font-size: 4.5rem;
+      font-weight: 800;
+      color: rgba(10, 37, 88, 0.05);
+      pointer-events: none;
+      text-transform: uppercase;
+      white-space: nowrap;
+      z-index: 1;
+    }
+    .receipt-header {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #d4af37;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 2;
+    }
+    .receipt-logo {
+      width: 60px;
+      height: 60px;
+      flex-shrink: 0;
+    }
+    .receipt-college-title h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      color: #0a2558;
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+    .receipt-college-title p {
+      font-size: 0.775rem;
+      color: #475569;
+      margin-top: 2px;
+    }
+    .receipt-badge-title {
+      text-align: center;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 2;
+    }
+    .receipt-badge-title span {
+      display: inline-block;
+      background: #0a2558;
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 0.3rem 1.25rem;
+      border-radius: 9999px;
+      letter-spacing: 1px;
+      font-family: 'Outfit', sans-serif;
+    }
+    .receipt-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem 1.5rem;
+      background: #f8fafc;
+      padding: 0.85rem 1.15rem;
+      border-radius: 6px;
+      margin-bottom: 1.25rem;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      z-index: 2;
+    }
+    .receipt-info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      border-bottom: 1px dashed #e2e8f0;
+      padding-bottom: 0.25rem;
+    }
+    .receipt-info-row strong {
+      color: #475569;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .badge-success { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .badge-warning { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .receipt-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.25rem;
+      position: relative;
+      z-index: 2;
+    }
+    .receipt-table th, .receipt-table td {
+      padding: 0.55rem 0.85rem;
+      border: 1px solid #cbd5e1;
+      font-size: 0.825rem;
+    }
+    .receipt-table th {
+      background: #f1f5f9;
+      font-weight: 700;
+      color: #0a2558;
+    }
+    .receipt-total-row td {
+      font-weight: 700;
+      font-size: 0.95rem;
+      background: #f8fafc;
+    }
+    .receipt-footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.5rem;
+      align-items: center;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px dashed #94a3b8;
+      position: relative;
+      z-index: 2;
+    }
+    .qr-verification-box {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: #f8fafc;
+      padding: 0.65rem;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    .qr-code-canvas {
+      width: 72px;
+      height: 72px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 3px;
+      flex-shrink: 0;
+    }
+    .signature-box {
+      text-align: center;
+    }
+    .seal-stamp {
+      width: 76px;
+      height: 76px;
+      border: 2px dashed #059669;
+      border-radius: 50%;
+      margin: 0 auto 0.4rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: #059669;
+      text-transform: uppercase;
+      transform: rotate(-10deg);
+      line-height: 1.2;
+    }
+    .receipt-actions {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  ${receiptHtml}
+</body>
+</html>`);
+      doc.close();
+
+      setTimeout(() => {
+        printFrame.contentWindow.focus();
+        printFrame.contentWindow.print();
+      }, 300);
+    } catch (e) {
+      console.warn('Iframe print error, falling back to window.print():', e);
+      window.print();
+    }
   }
 };
 

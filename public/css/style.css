@@ -1853,3 +1853,138 @@ button {
   }
 }
 
+/* ==========================================================================
+   PRINT MEDIA STYLES - SINGLE PAGE VERIFIED A4 RECEIPT OUTPUT
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 15mm 10mm 15mm;
+  }
+
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Hide background elements, navigation, dashboard widgets, and modals not needed */
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .top-bar,
+  .dashboard-header-dedicated,
+  .main-header,
+  .news-ticker-bar,
+  main,
+  .main-footer,
+  #paymentModal,
+  .modal-header,
+  .modal-footer,
+  .modal-close,
+  .receipt-actions,
+  .btn,
+  button {
+    display: none !important;
+  }
+
+  /* Unfurl the active receipt modal container into clean standard print flow */
+  #receiptModal,
+  .custom-modal-backdrop.active {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .custom-modal,
+  .receipt-modal-wrap {
+    position: static !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    background: transparent !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  .modal-body {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  .official-receipt-doc {
+    border: 2px solid #0a2558 !important;
+    border-radius: 8px !important;
+    padding: 1.5rem !important;
+    margin: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    background: #ffffff !important;
+  }
+
+  .receipt-watermark {
+    display: block !important;
+    color: rgba(10, 37, 88, 0.05) !important;
+  }
+
+  .receipt-header {
+    border-bottom: 2px solid #d4af37 !important;
+  }
+
+  .receipt-badge-title span {
+    background: #0a2558 !important;
+    color: #ffffff !important;
+  }
+
+  .receipt-info-grid {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .receipt-table {
+    border-collapse: collapse !important;
+  }
+
+  .receipt-table th {
+    background: #f1f5f9 !important;
+    color: #0a2558 !important;
+    border: 1px solid #94a3b8 !important;
+  }
+
+  .receipt-table td {
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .receipt-total-row td {
+    background: #f8fafc !important;
+  }
+
+  .qr-verification-box {
+    background: #f8fafc !important;
+    border: 1px solid #cbd5e1 !important;
+  }
+
+  .seal-stamp {
+    border: 2px dashed #059669 !important;
+    color: #059669 !important;
+  }
+}
