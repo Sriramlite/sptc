@@ -10,7 +10,18 @@
     "phone": "+91 6382391625 / 04333-272226 / 04333-272878",
     "email": "principal@sptc.org.in / admin@sptc.org.in",
     "affiliations": "Approved by AICTE, New Delhi & Affiliated to DOTE, Chennai",
-    "principal": "Thiru. R. Ramaswamy, M.E., M.B.A."
+    "principal": "Dr. R. Ramasamy (Dr. R. Meenakshisundaram Ramasamy), M.E., Ph.D.",
+    "president": "Thiru. PL. Subramanian",
+    "secretary": "Thiru. K. Subramanian",
+    "officialWebsite": "https://sptc.edu.in",
+    "trustees": [
+      "Thiru. K. Lakshmanan",
+      "Thiru. PL. Nagappan",
+      "Thiru. SP. Muthuraman",
+      "Thiru. SP. Subramanian",
+      "Thiru. AL. Muthuraman",
+      "Tmt. A. Vijaya Alagappan"
+    ]
   },
   "departments": [
     {
@@ -19,6 +30,13 @@
       "code": "CE",
       "intake": 60,
       "head": "Prof. S. Muthusamy, M.E."
+    },
+    {
+      "id": "aiml",
+      "name": "Artificial Intelligence & Machine Learning",
+      "code": "AI&ML",
+      "intake": 60,
+      "head": "Prof. K. Subramanian, M.Tech."
     },
     {
       "id": "mech",
@@ -49,10 +67,24 @@
       "head": "Prof. N. Meenakshi Sundaram, M.E."
     },
     {
+      "id": "bme",
+      "name": "Biomedical Engineering",
+      "code": "BME",
+      "intake": 60,
+      "head": "Dr. V. Kavitha, Ph.D."
+    },
+    {
+      "id": "mlt",
+      "name": "Medical Laboratory Technology",
+      "code": "MLT",
+      "intake": 60,
+      "head": "Prof. S. Geetha, M.Sc., M.Phil."
+    },
+    {
       "id": "basic",
       "name": "Basic Engineering (1st Year)",
       "code": "BE",
-      "intake": 360,
+      "intake": 480,
       "head": "Dr. T. Murugan, Ph.D."
     }
   ],

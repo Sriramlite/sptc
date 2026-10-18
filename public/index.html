@@ -6,7 +6,7 @@
   <title>Subramanian Polytechnic College (SPTC) | Rayavaram, Pudukkottai | Official Portal & Fees System</title>
   <meta name="description" content="Subramanian Polytechnic College (SPTC) in Rayavaram, Pudukkottai, Tamil Nadu. Established in 1983. AICTE Approved & DOTE Affiliated. Official web portal & cloud-based student fees management and receipt vault.">
   <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
-  <link rel="stylesheet" href="/css/style.css?v=3.5">
+  <link rel="stylesheet" href="/css/style.css?v=3.6">
 </head>
 <body>
 
@@ -83,7 +83,7 @@
       </div>
       <div class="ticker-track">
         <div class="ticker-marquee">
-          Admissions Open for Diploma Courses 2026-27 (Civil, Mech, EEE, ECE, CSE) • First Generation Graduate (FGG) Govt. Scholarship Fee Waivers Available • New Online Student Fees Management &amp; Migrated Tally Receipt Vault is Now Fully Active • Campus Placements Drive Ongoing with TI Metals &amp; Lucas TVS.
+          Admissions Open for Diploma Courses 2026-27 (AI &amp; ML, CSE, Mechanical, EEE, ECE, Civil, Biomedical, MLT) • First Generation Graduate (FGG) Govt. Scholarship Fee Waivers Available • Principal: Dr. R. Ramasamy • New Online Student Fees Management &amp; Migrated Tally Receipt Vault is Now Fully Active • Campus Placements Ongoing with TI Metals &amp; Lucas TVS.
         </div>
       </div>
     </div>
@@ -260,6 +260,54 @@
                     <li>High-Speed LAN Computing Lab</li>
                     <li>Full-Stack Web &amp; Python Programming</li>
                     <li>Hardware &amp; IoT Embedded Labs</li>
+                    <li>Annual Intake: 60 Seats</li>
+                  </ul>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+              </div>
+
+              <!-- Dept: AI & ML -->
+              <div class="dept-card">
+                <div>
+                  <div class="dept-icon">🤖</div>
+                  <h3>Artificial Intelligence &amp; ML</h3>
+                  <p>Machine learning models, neural networks, computer vision, natural language processing, and data analytics.</p>
+                  <ul class="dept-features">
+                    <li>GPU-Accelerated AI Laboratory</li>
+                    <li>Python, TensorFlow &amp; PyTorch Stacks</li>
+                    <li>Predictive Modeling &amp; Big Data</li>
+                    <li>Annual Intake: 60 Seats</li>
+                  </ul>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+              </div>
+
+              <!-- Dept: Biomedical Engineering -->
+              <div class="dept-card">
+                <div>
+                  <div class="dept-icon">🧬</div>
+                  <h3>Biomedical Engineering</h3>
+                  <p>Medical instrumentation, physiological monitoring systems, healthcare telemetry, and diagnostic equipment.</p>
+                  <ul class="dept-features">
+                    <li>Hospital Diagnostic &amp; Imaging Lab</li>
+                    <li>Biomedical Sensors &amp; Transducers</li>
+                    <li>Clinical Equipment Maintenance</li>
+                    <li>Annual Intake: 60 Seats</li>
+                  </ul>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+              </div>
+
+              <!-- Dept: Medical Laboratory Technology -->
+              <div class="dept-card">
+                <div>
+                  <div class="dept-icon">🔬</div>
+                  <h3>Medical Laboratory Tech</h3>
+                  <p>Clinical biochemistry, hematology, medical microbiology, histopathology, and diagnostic laboratory operation.</p>
+                  <ul class="dept-features">
+                    <li>Sterile Pathology &amp; Culture Lab</li>
+                    <li>Automated Hematology Analyzers</li>
+                    <li>Clinical Biochemistry Reagents</li>
                     <li>Annual Intake: 60 Seats</li>
                   </ul>
                 </div>
@@ -512,11 +560,14 @@
       <div class="footer-col">
         <h4>Academic Wings</h4>
         <ul class="footer-links">
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Computer Engineering</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Mechanical Engineering</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electrical &amp; Electronics</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electronics &amp; Communication</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Civil Engineering</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Computer Engineering (CSE)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Artificial Intelligence &amp; ML (AI&amp;ML)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Mechanical Engineering (MECH)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electrical &amp; Electronics (EEE)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electronics &amp; Communication (ECE)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Civil Engineering (CIVIL)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Biomedical Engineering (BME)</a></li>
+          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Medical Laboratory Tech (MLT)</a></li>
           <li><a href="#departments" onclick="window.navigateTo('departments', event)">Basic Engineering (1st Year)</a></li>
         </ul>
       </div>
@@ -682,10 +733,13 @@
             <label class="form-label">Preferred Diploma Department:</label>
             <select id="admDept" class="form-control" required>
               <option value="Computer Engineering">Computer Engineering (CSE)</option>
+              <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence &amp; ML (AI&amp;ML)</option>
               <option value="Mechanical Engineering">Mechanical Engineering (MECH)</option>
               <option value="Electrical & Electronics">Electrical &amp; Electronics (EEE)</option>
               <option value="Electronics & Communication">Electronics &amp; Communication (ECE)</option>
-              <option value="Civil Engineering">Civil Engineering</option>
+              <option value="Civil Engineering">Civil Engineering (CIVIL)</option>
+              <option value="Biomedical Engineering">Biomedical Engineering (BME)</option>
+              <option value="Medical Laboratory Technology">Medical Laboratory Technology (MLT)</option>
             </select>
           </div>
           <div class="form-group">

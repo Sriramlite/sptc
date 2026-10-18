@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/css/style.css?v=3.5">
-  <link rel="stylesheet" href="/css/register-redesign.css?v=3.5">
+  <link rel="stylesheet" href="/css/style.css?v=3.6">
+  <link rel="stylesheet" href="/css/register-redesign.css?v=3.6">
 </head>
 <body>
 
@@ -255,11 +255,14 @@
                     <span class="reg-input-icon">🏛️</span>
                     <select id="department" class="reg-control" onchange="updateBranchBadge(this.value)" required>
                       <option value="">-- Choose Branch --</option>
-                      <option value="Computer Engineering">Computer Engineering</option>
-                      <option value="Mechanical Engineering">Mechanical Engineering</option>
+                      <option value="Computer Engineering">Computer Engineering (CSE)</option>
+                      <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence &amp; ML (AI&amp;ML)</option>
+                      <option value="Mechanical Engineering">Mechanical Engineering (MECH)</option>
                       <option value="Electrical and Electronics Engineering">Electrical &amp; Electronics (EEE)</option>
                       <option value="Electronics and Communication Engineering">Electronics &amp; Comm. (ECE)</option>
                       <option value="Civil Engineering">Civil Engineering</option>
+                      <option value="Biomedical Engineering">Biomedical Engineering (BME)</option>
+                      <option value="Medical Laboratory Technology">Medical Laboratory Technology (MLT)</option>
                     </select>
                   </div>
                   <div id="branchBadgeWrap" style="display: none;">
@@ -546,10 +549,13 @@
 
       const codes = {
         'Computer Engineering': 'DOTE Code: CE (Intake: 60)',
+        'Artificial Intelligence and Machine Learning': 'DOTE Code: AI&ML (Intake: 60)',
         'Mechanical Engineering': 'DOTE Code: ME (Intake: 120)',
         'Electrical and Electronics Engineering': 'DOTE Code: EEE (Intake: 60)',
         'Electronics and Communication Engineering': 'DOTE Code: ECE (Intake: 60)',
-        'Civil Engineering': 'DOTE Code: CIVIL (Intake: 60)'
+        'Civil Engineering': 'DOTE Code: CIVIL (Intake: 60)',
+        'Biomedical Engineering': 'DOTE Code: BME (Intake: 60)',
+        'Medical Laboratory Technology': 'DOTE Code: MLT (Intake: 60)'
       };
 
       if (codes[deptName]) {

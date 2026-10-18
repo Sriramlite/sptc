@@ -5,6 +5,18 @@
 
 @import url('/css/login-redesign.css');
 
+/* Ensure the left brand pane in register view never shows any middle scrollbar */
+.auth-brand-showcase {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.auth-brand-showcase::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 /* Custom tweaks specific to the registration form */
 .auth-interaction-pane.register-pane {
   flex: 1.45;
@@ -12,6 +24,24 @@
   overflow-y: auto;
   background-color: #f8fafc;
   scrollbar-width: thin;
+  scrollbar-color: rgba(10, 37, 88, 0.25) transparent;
+}
+
+.auth-interaction-pane.register-pane::-webkit-scrollbar {
+  width: 6px;
+}
+
+.auth-interaction-pane.register-pane::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.auth-interaction-pane.register-pane::-webkit-scrollbar-thumb {
+  background: rgba(10, 37, 88, 0.2);
+  border-radius: 9999px;
+}
+
+.auth-interaction-pane.register-pane::-webkit-scrollbar-thumb:hover {
+  background: rgba(10, 37, 88, 0.4);
 }
 
 @media (min-width: 1025px) {
