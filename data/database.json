@@ -583,6 +583,23 @@
       },
       "verificationHash": "c1e19446348ab003",
       "remarks": "Office counter fee collection"
+    },
+    {
+      "receiptNo": "SPTC/REC/2026-27/0003",
+      "regNo": "22201045",
+      "billId": "BILL-22201045-SEM6",
+      "date": "2026-10-17",
+      "amount": 5000,
+      "paymentMode": "Cash Counter",
+      "transactionRef": "CTR-417157",
+      "academicYear": "2026-2027",
+      "semester": "Semester 6",
+      "source": "SPTC Accounts Office Counter (Officer: Prof. S. Muthusamy, M.E.)",
+      "breakdown": {
+        "Fee Collection Credit": 5000
+      },
+      "verificationHash": "d2f78fe0945aa241",
+      "remarks": "Office counter fee collection"
     }
   ],
   "staff": [

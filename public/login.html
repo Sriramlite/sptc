@@ -3,148 +3,444 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | Subramanian Polytechnic College (SPTC) | Rayavaram</title>
+  <title>Institutional Sign In | Subramanian Polytechnic College (SPTC)</title>
   <meta name="description" content="Dedicated institutional login for Subramanian Polytechnic College students, cashier, accounts office, and faculty. Access fees management and digital receipt vault.">
   <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/login-redesign.css">
 </head>
 <body>
 
-  <div class="auth-page-wrapper">
-    <!-- Auth Header Navigation -->
-    <header class="auth-nav-header">
-      <a href="/" class="brand-link">
-        <img src="/assets/logo.svg" alt="SPTC Crest" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-accent-gold);">
-        <div>
-          <h1>Subramanian Polytechnic College</h1>
-          <p>Rayavaram, Pudukkottai • Estd. 1983 (DOTE Code: 331)</p>
-        </div>
-      </a>
-      <a href="/" class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);">
-        ← Back to College Portal
-      </a>
-    </header>
+  <!-- Full-Page Split Viewport -->
+  <div class="auth-split-viewport">
 
-    <!-- Main Auth Card Container -->
-    <main class="auth-body-container">
-      <div class="auth-card login-card">
-        <div class="auth-card-header">
-          <div style="font-size: 2.2rem; margin-bottom: 0.35rem;">🔐</div>
-          <h2>SPTC Institutional Sign In</h2>
-          <p>Secure portal access for Students, Accounts Office &amp; Faculty</p>
-        </div>
-
-        <div class="auth-card-body">
-          <!-- Role Selector Tabs -->
-          <div class="auth-role-tabs">
-            <div id="tabStudent" class="auth-role-tab active" onclick="switchLoginRole('STUDENT')">
-              <span>🎓</span> Student Portal
+    <!-- ======================== LEFT: BRAND SHOWCASE PANE ======================== -->
+    <aside class="auth-brand-showcase">
+      <!-- Header -->
+      <div class="brand-showcase-header">
+        <a href="/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
+          <div class="brand-crest-box">
+            <img src="/assets/logo.svg" alt="SPTC Institutional Crest" class="brand-crest-img">
+          </div>
+          <div class="brand-showcase-title">
+            <h1>Subramanian Polytechnic College</h1>
+            <p>Rayavaram, Pudukkottai District • Tamil Nadu – 622 506</p>
+            <div class="brand-pill-badges">
+              <span class="brand-badge gold">🏛️ DOTE Code: 331</span>
+              <span class="brand-badge">⭐ AICTE Approved</span>
+              <span class="brand-badge">Estd. 1983</span>
             </div>
-            <div id="tabStaff" class="auth-role-tab" onclick="switchLoginRole('STAFF')">
-              <span>💼</span> Staff &amp; Cashier
+          </div>
+        </a>
+      </div>
+
+      <!-- Center Hero Showcase -->
+      <div class="brand-showcase-hero">
+        <div class="hero-super-badge">
+          <span>✨</span> Central Fees Ledger &amp; Digital Receipts Vault
+        </div>
+        <h2>
+          Transparent Student Fees &amp; <span class="gold-gradient-text">Verified Digital Receipts</span>
+        </h2>
+        <p class="lead-p">
+          Empowering students, parents, and administrative accounts with an institutional self-service cloud. Real-time semester balances, instant concession validation, and tamper-proof digital vouchers.
+        </p>
+
+        <!-- 3 Feature Highlight Cards -->
+        <div class="showcase-features-list">
+          <div class="showcase-feature-item">
+            <div class="feature-icon-wrap gold">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
+            </div>
+            <div class="feature-text">
+              <h4>Cryptographic Receipt Verification</h4>
+              <p>Every receipt contains a tamper-proof 256-bit SHA verification hash and instant QR validation for college &amp; scholarship audits.</p>
             </div>
           </div>
 
-          <!-- Alert Container -->
-          <div id="authAlert" style="display: none; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
-
-          <!-- Form 1: Student Login -->
-          <form id="studentLoginForm" onsubmit="handleLoginSubmit(event, 'STUDENT')">
-            <div class="form-group">
-              <label class="form-label" for="studentId">DOTE Registration Number:</label>
-              <input type="text" id="studentId" class="form-control" placeholder="e.g. 22201045" required autocomplete="username" />
-              <span style="font-size: 0.75rem; color: #64748b;">Your 8-digit Directorate of Technical Education Reg. Number</span>
+          <div class="showcase-feature-item">
+            <div class="feature-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"/>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
             </div>
-
-            <div class="form-group">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label class="form-label" for="studentPin">Portal Password / PIN:</label>
-                <a href="javascript:void(0)" onclick="showPinHelp()" style="font-size: 0.75rem; color: var(--color-primary); font-weight: 600;">Forgot PIN?</a>
-              </div>
-              <input type="password" id="studentPin" class="form-control" placeholder="Default: DDMMYYYY of DOB (e.g. 12052005)" required autocomplete="current-password" />
+            <div class="feature-text">
+              <h4>Zero-Discrepancy Semester Ledger</h4>
+              <p>Itemized breakdown across Tuition, Laboratory, Transport &amp; Hostel dues with direct application of Government fee waivers.</p>
             </div>
+          </div>
 
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; font-size: 0.825rem;">
-              <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer;">
-                <input type="checkbox" id="rememberMeStudent" checked />
-                <span>Keep me signed in</span>
-              </label>
-              <span style="color: #059669; font-weight: 600;">🛡️ SSL Encrypted</span>
+          <div class="showcase-feature-item">
+            <div class="feature-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
             </div>
-
-            <button type="submit" id="btnStudentSubmit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center;">
-              Sign In to Student Fees Vault →
-            </button>
-
-            <!-- 1-Click Fast Fill Demo Credentials -->
-            <div class="demo-credentials-box">
-              <h4>⚡ 1-Click Demo Accounts (Fast Testing)</h4>
-              <div class="demo-pills-wrap">
-                <button type="button" class="demo-pill-btn" onclick="fillStudent('22201045', '12052005')">
-                  <strong>22201045</strong> (K. Vignesh - CSE, Due: ₹21k)
-                </button>
-                <button type="button" class="demo-pill-btn" onclick="fillStudent('22202018', '24082004')">
-                  <strong>22202018</strong> (M. Priya - ECE Hosteller)
-                </button>
-                <button type="button" class="demo-pill-btn" onclick="fillStudent('23203009', '15112005')">
-                  <strong>23203009</strong> (S. Karthik - Mech Bus)
-                </button>
-                <button type="button" class="demo-pill-btn" onclick="fillStudent('23204014', '02022006')">
-                  <strong>23204014</strong> (R. Anitha - EEE Fully Paid)
-                </button>
-              </div>
+            <div class="feature-text">
+              <h4>Legacy Tally 9 Migration</h4>
+              <p>Archival fee ledgers migrated safely from older offline counter computers into a fast, searchable cloud repository.</p>
             </div>
-
-            <div style="text-align: center; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e2e8f0; font-size: 0.875rem;">
-              <span>New student? Haven't registered yet? </span>
-              <a href="/register.html" style="color: var(--color-primary); font-weight: 700; text-decoration: underline;">
-                Register Student Account Here →
-              </a>
-            </div>
-          </form>
-
-          <!-- Form 2: Staff Login -->
-          <form id="staffLoginForm" onsubmit="handleLoginSubmit(event, 'STAFF')" style="display: none;">
-            <div class="form-group">
-              <label class="form-label" for="staffUsername">Employee Username or Official Email:</label>
-              <input type="text" id="staffUsername" class="form-control" placeholder="e.g. cashier or principal" required autocomplete="username" />
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="staffPassword">Administrative Password:</label>
-              <input type="password" id="staffPassword" class="form-control" placeholder="Enter staff password" required autocomplete="current-password" />
-            </div>
-
-            <button type="submit" id="btnStaffSubmit" class="btn btn-primary" style="width: 100%; padding: 0.85rem; font-size: 1rem; justify-content: center; margin-top: 1rem;">
-              Sign In to Accounts Desk →
-            </button>
-
-            <!-- 1-Click Fast Fill Staff Demo -->
-            <div class="demo-credentials-box">
-              <h4>⚡ 1-Click Staff Accounts</h4>
-              <div class="demo-pills-wrap">
-                <button type="button" class="demo-pill-btn" onclick="fillStaff('cashier', 'sptc@cashier2026')">
-                  💼 <strong>Cashier</strong> (M. Alagappan - Senior Accounts)
-                </button>
-                <button type="button" class="demo-pill-btn" onclick="fillStaff('principal', 'sptc@principal2026')">
-                  🎓 <strong>Principal</strong> (Thiru. R. Ramaswamy)
-                </button>
-                <button type="button" class="demo-pill-btn" onclick="fillStaff('hod_cse', 'sptc@cse2026')">
-                  💻 <strong>HOD CSE</strong> (Prof. S. Muthusamy)
-                </button>
-              </div>
-            </div>
-          </form>
-
+          </div>
         </div>
+
+        <!-- Institutional Metrics -->
+        <div class="brand-metrics-bar">
+          <div class="metric-stat-box">
+            <h3>40+</h3>
+            <p>Years of Legacy</p>
+          </div>
+          <div class="metric-stat-box">
+            <h3>6</h3>
+            <p>Disciplines</p>
+          </div>
+          <div class="metric-stat-box">
+            <h3>100%</h3>
+            <p>Placement Support</p>
+          </div>
+          <div class="metric-stat-box">
+            <h3>12</h3>
+            <p>Acre Green Campus</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Info -->
+      <div class="brand-showcase-footer">
+        <div>
+          📞 Accounts Desk: <strong style="color: #ffffff;">+91 6382391625</strong> / 04333-272226
+        </div>
+        <div>
+          ✉️ <a href="mailto:accounts@sptc.org.in">accounts@sptc.org.in</a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ======================== RIGHT: INTERACTIVE LOGIN PANE ======================== -->
+    <main class="auth-interaction-pane">
+      
+      <!-- Top Action Bar -->
+      <div class="auth-pane-top-nav">
+        <a href="/" class="btn-back-portal">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to College Portal
+        </a>
+
+        <div class="system-status-indicator">
+          <span class="status-dot"></span>
+          <span>Portal v2.4 • System Online</span>
+        </div>
+      </div>
+
+      <!-- Central Form Content -->
+      <div class="auth-form-wrapper">
+        
+        <!-- Header -->
+        <div class="auth-form-header">
+          <div class="auth-shield-emblem">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <rect x="9" y="9" width="6" height="6" rx="1"/>
+            </svg>
+          </div>
+          <h2 id="loginHeadingTitle">Institutional Sign In</h2>
+          <p id="loginHeadingSubtitle">Select your role and enter your authorized credentials to access your records.</p>
+        </div>
+
+        <!-- Segmented Role Selector -->
+        <div class="auth-segmented-tabs" role="tablist">
+          <button type="button" id="tabStudent" class="segmented-tab-btn active" onclick="switchLoginRole('STUDENT')" role="tab" aria-selected="true">
+            <span class="tab-icon">🎓</span>
+            <span>Student Portal</span>
+          </button>
+          <button type="button" id="tabStaff" class="segmented-tab-btn" onclick="switchLoginRole('STAFF')" role="tab" aria-selected="false">
+            <span class="tab-icon">💼</span>
+            <span>Staff &amp; Cashier Desk</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Context Alert Banner -->
+        <div id="authAlert" class="auth-context-alert" role="alert"></div>
+
+        <!-- ==================== FORM 1: STUDENT LOGIN ==================== -->
+        <form id="studentLoginForm" onsubmit="handleLoginSubmit(event, 'STUDENT')">
+          
+          <div class="modern-form-group">
+            <label class="modern-form-label" for="studentId">
+              <span>DOTE Registration Number: *</span>
+            </label>
+            <div class="modern-input-wrapper">
+              <span class="input-leading-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+              </span>
+              <input type="text" id="studentId" class="modern-text-input" placeholder="e.g. 22201045" required autocomplete="username" />
+            </div>
+            <span class="input-helper-note">Your 8-digit Directorate of Technical Education Reg. Number</span>
+          </div>
+
+          <div class="modern-form-group">
+            <div class="modern-form-label">
+              <label for="studentPin">Portal Password / PIN: *</label>
+              <a href="javascript:void(0)" onclick="openPinModal()" class="help-link-text">Forgot PIN / DOB?</a>
+            </div>
+            <div class="modern-input-wrapper">
+              <span class="input-leading-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <input type="password" id="studentPin" class="modern-text-input" placeholder="Default: DDMMYYYY of DOB (e.g. 12052005)" required autocomplete="current-password" />
+              <button type="button" class="input-trailing-action" onclick="togglePasswordVisibility('studentPin', this)" title="Show / Hide Password">
+                <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg class="eye-closed" style="display: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+            <span class="input-helper-note">Default PIN is your Date of Birth in DDMMYYYY format.</span>
+          </div>
+
+          <div class="auth-aux-bar">
+            <label class="custom-checkbox-label">
+              <input type="checkbox" id="rememberMeStudent" checked />
+              <span>Keep me signed in</span>
+            </label>
+            <div class="security-lock-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+              <span>256-Bit SSL Encrypted</span>
+            </div>
+          </div>
+
+          <button type="submit" id="btnStudentSubmit" class="btn-auth-submit">
+            <span>Sign In to Student Fees Vault</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+
+          <!-- 1-Click Fast Fill Student Demo -->
+          <div class="demo-accounts-card">
+            <div class="demo-card-title">
+              <h4>
+                <span>⚡</span> 1-Click Demo Accounts (Fast Testing)
+              </h4>
+              <span class="demo-pill-badge-tag">Student Vault</span>
+            </div>
+            <div class="demo-chips-grid">
+              <button type="button" class="demo-chip-btn" onclick="fillStudent('22201045', '12052005')">
+                <div class="demo-chip-header">
+                  <span>22201045</span>
+                  <span style="color: #b45309; font-size: 0.65rem;">₹21k Due</span>
+                </div>
+                <div class="demo-chip-sub">K. Vignesh • CSE 3rd Yr</div>
+              </button>
+
+              <button type="button" class="demo-chip-btn" onclick="fillStudent('22202018', '24082004')">
+                <div class="demo-chip-header">
+                  <span>22202018</span>
+                  <span style="color: #059669; font-size: 0.65rem;">Hosteller</span>
+                </div>
+                <div class="demo-chip-sub">M. Priya • ECE 3rd Yr</div>
+              </button>
+
+              <button type="button" class="demo-chip-btn" onclick="fillStudent('23203009', '15112005')">
+                <div class="demo-chip-header">
+                  <span>23203009</span>
+                  <span style="color: #0284c7; font-size: 0.65rem;">Bus Route</span>
+                </div>
+                <div class="demo-chip-sub">S. Karthik • Mech 2nd Yr</div>
+              </button>
+
+              <button type="button" class="demo-chip-btn" onclick="fillStudent('23204014', '02022006')">
+                <div class="demo-chip-header">
+                  <span>23204014</span>
+                  <span style="color: #059669; font-size: 0.65rem;">Paid Full</span>
+                </div>
+                <div class="demo-chip-sub">R. Anitha • EEE 2nd Yr</div>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-bottom-enrollment">
+            <span>New student? Haven't enrolled in the portal yet? </span>
+            <a href="/register.html">
+              Register Student Account Here →
+            </a>
+          </div>
+        </form>
+
+        <!-- ==================== FORM 2: STAFF LOGIN ==================== -->
+        <form id="staffLoginForm" onsubmit="handleLoginSubmit(event, 'STAFF')" style="display: none;">
+          
+          <div class="modern-form-group">
+            <label class="modern-form-label" for="staffUsername">
+              <span>Employee Username or Official Email: *</span>
+            </label>
+            <div class="modern-input-wrapper">
+              <span class="input-leading-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+              </span>
+              <input type="text" id="staffUsername" class="modern-text-input" placeholder="e.g. cashier or principal" required autocomplete="username" />
+            </div>
+            <span class="input-helper-note">Enter your assigned accounts desk or administrative username.</span>
+          </div>
+
+          <div class="modern-form-group">
+            <div class="modern-form-label">
+              <label for="staffPassword">Administrative Password: *</label>
+            </div>
+            <div class="modern-input-wrapper">
+              <span class="input-leading-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+              <input type="password" id="staffPassword" class="modern-text-input" placeholder="Enter staff password" required autocomplete="current-password" />
+              <button type="button" class="input-trailing-action" onclick="togglePasswordVisibility('staffPassword', this)" title="Show / Hide Password">
+                <svg class="eye-open" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <svg class="eye-closed" style="display: none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-aux-bar">
+            <label class="custom-checkbox-label">
+              <input type="checkbox" id="rememberMeStaff" checked />
+              <span>Remember employee terminal</span>
+            </label>
+            <div class="security-lock-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span>Audit Logging Active</span>
+            </div>
+          </div>
+
+          <button type="submit" id="btnStaffSubmit" class="btn-auth-submit" style="background: linear-gradient(135deg, #07193f 0%, #1a56db 100%);">
+            <span>Sign In to Accounts Desk</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+
+          <!-- 1-Click Fast Fill Staff Demo -->
+          <div class="demo-accounts-card">
+            <div class="demo-card-title">
+              <h4>
+                <span>⚡</span> 1-Click Staff Accounts
+              </h4>
+              <span class="demo-pill-badge-tag" style="background: #fdf4ff; color: #a21caf; border-color: #f0abfc;">Staff Access</span>
+            </div>
+            <div class="demo-chips-grid">
+              <button type="button" class="demo-chip-btn" onclick="fillStaff('cashier', 'sptc@cashier2026')">
+                <div class="demo-chip-header">
+                  <span>💼 Cashier</span>
+                  <span style="color: #059669; font-size: 0.65rem;">Active Desk</span>
+                </div>
+                <div class="demo-chip-sub">M. Alagappan • Senior Accounts</div>
+              </button>
+
+              <button type="button" class="demo-chip-btn" onclick="fillStaff('principal', 'sptc@principal2026')">
+                <div class="demo-chip-header">
+                  <span>🎓 Principal</span>
+                  <span style="color: #7c3aed; font-size: 0.65rem;">Admin</span>
+                </div>
+                <div class="demo-chip-sub">Thiru. R. Ramaswamy</div>
+              </button>
+
+              <button type="button" class="demo-chip-btn" onclick="fillStaff('hod_cse', 'sptc@cse2026')">
+                <div class="demo-chip-header">
+                  <span>💻 HOD CSE</span>
+                  <span style="color: #2563eb; font-size: 0.65rem;">Department</span>
+                </div>
+                <div class="demo-chip-sub">Prof. S. Muthusamy</div>
+              </button>
+
+              <button type="button" class="demo-chip-btn" onclick="fillStaff('hod_mech', 'sptc@mech2026')">
+                <div class="demo-chip-header">
+                  <span>⚙️ HOD Mech</span>
+                  <span style="color: #ea580c; font-size: 0.65rem;">Department</span>
+                </div>
+                <div class="demo-chip-sub">Prof. K. Rajasekaran</div>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <div class="auth-pane-bottom-copy">
+          Subramanian Polytechnic College • DOTE Code: 331 • Rayavaram – 622 506<br>
+          Internal Accounts Desk &amp; Self-Service FMS • Protected by TLS 1.3
+        </div>
+
       </div>
     </main>
 
-    <!-- Auth Footer -->
-    <footer class="auth-footer">
-      Subramanian Polytechnic College • Rayavaram, Pudukkottai District, Tamil Nadu – 622 506<br>
-      Institutional Accounts Support: +91 6382391625 / 04333-272226 • principal@sptc.org.in
-    </footer>
+  </div>
+
+  <!-- ==================== PIN HELP MODAL ==================== -->
+  <div class="custom-modal-backdrop" id="pinHelpModal">
+    <div class="custom-modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #0a2558; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🔑</span> Student Portal PIN Guide
+        </h3>
+        <button class="modal-close" onclick="closePinModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="font-size: 0.875rem; color: #334155; line-height: 1.6;">
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.85rem; margin-bottom: 1rem;">
+          <strong style="color: #1e40af; display: block; margin-bottom: 0.25rem;">Default PIN Format:</strong>
+          Your default password is your <strong>Date of Birth</strong> in <code>DDMMYYYY</code> format.<br>
+          <em>Example: If your birthday is 12 May 2005, your PIN is: <strong style="color: #0a2558;">12052005</strong></em>
+        </div>
+        <p style="margin-bottom: 0.75rem;">
+          If you have customized your password and forgotten it, or if your registered Date of Birth differs on the DOTE record:
+        </p>
+        <ul style="padding-left: 1.25rem; margin-bottom: 1rem;">
+          <li>Visit the <strong>SPTC College Accounts Desk</strong> in the Admin Block.</li>
+          <li>Carry your official <strong>SPTC Student Identity Card</strong>.</li>
+          <li>Call the accounts desk at <strong>+91 6382391625</strong> during working hours (9:00 AM – 4:30 PM).</li>
+        </ul>
+      </div>
+      <div class="modal-footer" style="padding: 0.85rem 1.25rem; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: right;">
+        <button class="btn btn-primary btn-sm" onclick="closePinModal()">Got It, Close</button>
+      </div>
+    </div>
   </div>
 
   <!-- Client Data Store & Auth Logic -->
@@ -164,22 +460,22 @@
 
     // Display banner for specific reason codes
     if (reason === 'logged_out') {
-      showAlert('You have been securely signed out of the SPTC Institutional Portal.', false);
+      showAlert('You have been securely signed out of the SPTC Institutional Portal.', 'success');
     } else if (reason === 'auth_required') {
-      showAlert('Authentication Required: Please sign in to access your student fee records.', true);
+      showAlert('Authentication Required: Please sign in to access your student fee records.', 'warning');
     } else if (reason === 'staff_required') {
-      showAlert('Restricted Area: Administrative staff or cashier credentials are required.', true);
+      showAlert('Restricted Area: Administrative staff or cashier credentials are required.', 'warning');
     } else if (reason === 'session_expired') {
-      showAlert('Security Session Expired: Please enter your credentials to resume.', true);
+      showAlert('Security Session Expired: Please enter your credentials to resume.', 'warning');
     } else if (reason === 'unauthorized') {
-      showAlert('Access Denied: You do not have permission to view that page.', true);
+      showAlert('Access Denied: You do not have permission to view that page.', 'error');
     }
 
     // Check if user is already signed in (skip if explicitly logged out)
     if (reason !== 'logged_out') {
       API.verifySession().then(res => {
         if (res && res.authenticated) {
-          showAlert(`Welcome back, ${res.profile.name}! Redirecting to your active portal...`, false);
+          showAlert(`Welcome back, ${res.profile.name}! Redirecting to your active portal...`, 'success');
           setTimeout(() => {
             if (redirectUrl && redirectUrl.startsWith('/')) {
               window.location.href = redirectUrl;
@@ -199,17 +495,27 @@
       const tabStaff = document.getElementById('tabStaff');
       const studentForm = document.getElementById('studentLoginForm');
       const staffForm = document.getElementById('staffLoginForm');
+      const headingTitle = document.getElementById('loginHeadingTitle');
+      const headingSubtitle = document.getElementById('loginHeadingSubtitle');
 
       if (role === 'STUDENT') {
         tabStudent.classList.add('active');
+        tabStudent.setAttribute('aria-selected', 'true');
         tabStaff.classList.remove('active');
+        tabStaff.setAttribute('aria-selected', 'false');
         studentForm.style.display = 'block';
         staffForm.style.display = 'none';
+        if (headingTitle) headingTitle.innerText = 'Student Portal Sign In';
+        if (headingSubtitle) headingSubtitle.innerText = 'Enter your DOTE Registration Number & Password/PIN to access your fee vault.';
       } else {
         tabStaff.classList.add('active');
+        tabStaff.setAttribute('aria-selected', 'true');
         tabStudent.classList.remove('active');
+        tabStudent.setAttribute('aria-selected', 'false');
         studentForm.style.display = 'none';
         staffForm.style.display = 'block';
+        if (headingTitle) headingTitle.innerText = 'Staff & Accounts Sign In';
+        if (headingSubtitle) headingSubtitle.innerText = 'Administrative Officer, Cashier Desk & Faculty login.';
       }
     }
 
@@ -217,26 +523,54 @@
       switchLoginRole('STUDENT');
       document.getElementById('studentId').value = regNo;
       document.getElementById('studentPin').value = pin;
+      document.getElementById('studentPin').focus();
     }
 
     function fillStaff(username, password) {
       switchLoginRole('STAFF');
       document.getElementById('staffUsername').value = username;
       document.getElementById('staffPassword').value = password;
+      document.getElementById('staffPassword').focus();
     }
 
-    function showPinHelp() {
-      alert('Student Portal PIN Help:\n\nDefault PIN is your Date of Birth in DDMMYYYY format (e.g. 12 May 2005 = 12052005).\n\nIf you have forgotten your customized password, please contact the SPTC College Accounts Desk with your ID card.');
+    function openPinModal() {
+      const modal = document.getElementById('pinHelpModal');
+      if (modal) modal.classList.add('active');
     }
 
-    function showAlert(message, isError = true) {
+    function closePinModal() {
+      const modal = document.getElementById('pinHelpModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const eyeOpen = btn.querySelector('.eye-open');
+      const eyeClosed = btn.querySelector('.eye-closed');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        if (eyeOpen) eyeOpen.style.display = 'none';
+        if (eyeClosed) eyeClosed.style.display = 'block';
+      } else {
+        input.type = 'password';
+        if (eyeOpen) eyeOpen.style.display = 'block';
+        if (eyeClosed) eyeClosed.style.display = 'none';
+      }
+    }
+
+    function showAlert(message, type = 'warning') {
       const alertBox = document.getElementById('authAlert');
       if (!alertBox) return;
+      alertBox.className = `auth-context-alert ${type}`;
       alertBox.style.display = 'block';
-      alertBox.style.background = isError ? '#fef2f2' : '#ecfdf5';
-      alertBox.style.border = isError ? '1.5px solid #fecaca' : '1.5px solid #a7f3d0';
-      alertBox.style.color = isError ? '#b91c1c' : '#047857';
-      alertBox.innerHTML = `${isError ? '⚠️' : '✅'} ${message}`;
+      
+      let icon = '⚠️';
+      if (type === 'success') icon = '✅';
+      if (type === 'error') icon = '🛑';
+
+      alertBox.innerHTML = `<strong>${icon}</strong> ${message}`;
     }
 
     async function handleLoginSubmit(event, role) {
@@ -247,7 +581,13 @@
       let identifier, password;
       const btn = role === 'STUDENT' ? document.getElementById('btnStudentSubmit') : document.getElementById('btnStaffSubmit');
       const originalText = btn.innerHTML;
-      btn.innerHTML = 'Signing In...';
+      btn.innerHTML = `
+        <svg class="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation: spin 1s linear infinite;">
+          <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke-linecap="round"></path>
+        </svg>
+        <span>Verifying Credentials...</span>
+      `;
       btn.disabled = true;
 
       if (role === 'STUDENT') {
@@ -261,7 +601,7 @@
       try {
         const res = await API.login(identifier, password, role);
         if (res.success) {
-          showAlert(res.message || 'Login successful! Redirecting to your dashboard...', false);
+          showAlert(res.message || 'Login successful! Opening your institutional ledger...', 'success');
           
           // Save verified session
           const sessionData = {
@@ -282,17 +622,23 @@
             }
           }, 600);
         } else {
-          showAlert(res.error || 'Authentication failed. Please verify credentials.');
+          showAlert(res.error || 'Authentication failed. Please verify credentials.', 'error');
           btn.innerHTML = originalText;
           btn.disabled = false;
         }
       } catch (err) {
         console.error('Login submit error:', err);
-        showAlert('Could not reach SPTC server. Please verify your connection or try again.');
+        showAlert('Could not reach SPTC institutional server. Please verify your connection or try again.', 'error');
         btn.innerHTML = originalText;
         btn.disabled = false;
       }
     }
   </script>
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </body>
 </html>
