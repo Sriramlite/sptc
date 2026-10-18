@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Official Fee Receipt Verification | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description" content="Official DOTE Fee Receipt Verification Portal for Subramanian Polytechnic College, Rayavaram. Verify tamper-proof digital receipts and download authentic A4 PDF vouchers.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    :root {
+      --verify-green: #059669;
+      --verify-green-light: #ecfdf5;
+      --verify-green-border: #a7f3d0;
+    }
+
+    body {
+      background: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .verify-page-wrapper {
+      flex: 1;
+      padding: 2rem 1rem 4rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Verification Status Header Card */
+    .verify-status-banner {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.5rem;
+      border: 1.5px solid var(--verify-green-border);
+      box-shadow: 0 4px 20px -2px rgba(5, 150, 105, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .verify-status-left {
+      display: flex;
+      align-items: center;
+      gap: 1.15rem;
+    }
+
+    .verify-shield-badge {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--verify-green-light);
+      border: 2px solid var(--verify-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+      animation: pulseGreen 2.5s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.35); }
+      70% { box-shadow: 0 0 0 10px rgba(5, 150, 105, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+    }
+
+    .verify-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #064e3b;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .verify-subtitle {
+      font-size: 0.85rem;
+      color: #047857;
+      line-height: 1.4;
+    }
+
+    .verify-meta-hash {
+      font-family: monospace;
+      font-size: 0.8rem;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      color: #0a2558;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.35rem;
+    }
+
+    /* Actions Bar */
+    .receipt-action-bar {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .action-group-primary {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-download-pdf {
+      background: linear-gradient(135deg, #0a2558 0%, #1e40af 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 1.6rem;
+      border-radius: var(--radius-md);
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(10, 37, 88, 0.25);
+      transition: all var(--transition-normal);
+      text-decoration: none;
+    }
+
+    .btn-download-pdf:hover {
+      background: linear-gradient(135deg, #061738 0%, #172554 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(10, 37, 88, 0.35);
+    }
+
+    .btn-copy-link, .btn-portal-back {
+      background: #ffffff;
+      border: 1.5px solid var(--color-border);
+      color: var(--color-primary);
+      padding: 0.7rem 1.15rem;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+
+    .btn-copy-link:hover, .btn-portal-back:hover {
+      border-color: var(--color-secondary-blue);
+      color: var(--color-secondary-blue);
+      background: #f8fafc;
+    }
+
+    /* Receipt Paper Container */
+    .receipt-paper-wrap {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid #cbd5e1;
+      overflow-x: auto;
+    }
+
+    /* Fallback and Error Card */
+    .verify-error-box {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 3rem 2rem;
+      text-align: center;
+      border: 1.5px solid #fecaca;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .verify-error-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .verify-error-title {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      color: #991b1b;
+      margin-bottom: 0.5rem;
+      font-weight: 800;
+    }
+
+    .verify-error-desc {
+      color: #64748b;
+      font-size: 0.95rem;
+      max-width: 500px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.5;
+    }
+
+    .lookup-input-group {
+      display: flex;
+      max-width: 480px;
+      margin: 0 auto 1rem auto;
+      gap: 0.5rem;
+    }
+
+    .lookup-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .lookup-input:focus {
+      border-color: var(--color-primary);
+    }
+
+    .demo-chips {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .demo-chip {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      color: #0a2558;
+      font-family: monospace;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .demo-chip:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+    }
+
+    /* Toast Notification */
+    .toast-pill {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #0f172a;
+      color: #ffffff;
+      padding: 0.65rem 1.4rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+    }
+
+    .toast-pill.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Mobile Sticky Download Bar */
+    .mobile-sticky-action-bar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid #cbd5e1;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+      z-index: 99;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .verify-page-wrapper {
+        padding: 1rem 0.75rem 6rem 0.75rem;
+      }
+      .verify-status-banner {
+        padding: 1.15rem;
+      }
+      .receipt-paper-wrap {
+        padding: 0.75rem;
+      }
+      .mobile-sticky-action-bar {
+        display: flex;
+      }
+      .mobile-sticky-action-bar .btn-download-pdf {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body class="verify-page-body">
+
+  <!-- Top Institutional Bar -->
+  <aside class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="top-bar-item">
+          📍 <span>Rayavaram, Pudukkottai – 622 506</span>
+        </div>
+        <div class="top-bar-item">
+          📞 <span>Accounts: +91 6382391625 / 04333-272226</span>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-bar-item">
+          🏛️ <strong>DOTE Institution Code: 331</strong> | AICTE Approved
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Clean Header -->
+  <header class="main-header" style="padding: 0.75rem 0;">
+    <div class="container navbar">
+      <a href="/" class="brand-link" style="text-decoration: none;">
+        <img src="/assets/logo.svg" alt="SPTC Logo" class="brand-logo-img" style="width: 46px; height: 46px;">
+        <div class="brand-text">
+          <h1 style="font-size: 1.15rem;">Subramanian Polytechnic College</h1>
+          <p style="font-size: 0.725rem;">Official DOTE Fee Receipt Verification Portal</p>
+        </div>
+      </a>
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <a href="/login.html" class="btn btn-outline btn-sm">Portal Sign In</a>
+        <a href="/" class="btn btn-primary btn-sm">College Home</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="verify-page-wrapper">
+    
+    <!-- Loading State -->
+    <div id="verifyLoadingState" style="text-align: center; padding: 4rem 1rem;">
+      <div style="font-size: 2.5rem; margin-bottom: 1rem; animation: pulseGreen 1.5s infinite;">🛡️</div>
+      <h3 style="font-family: var(--font-heading); color: #0a2558;">Verifying DOTE Receipt Token...</h3>
+      <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.35rem;">Connecting to Subramanian Polytechnic College Accounts Ledger...</p>
+    </div>
+
+    <!-- Verified Receipt View -->
+    <div id="verifySuccessState" style="display: none;">
+      
+      <!-- Verification Badge Banner -->
+      <div class="verify-status-banner">
+        <div class="verify-status-left">
+          <div class="verify-shield-badge">✓</div>
+          <div>
+            <div class="verify-title">
+              <span>OFFICIAL DOTE VERIFIED FEE RECEIPT</span>
+            </div>
+            <div class="verify-subtitle">
+              Authentic electronic voucher confirmed in the Central Accounts Ledger of Subramanian Polytechnic College.
+            </div>
+            <div class="verify-meta-hash">
+              <span>SHA-256 Hash:</span>
+              <span id="verifiedHashText">f6e43d319682034f</span>
+              <button onclick="copyHashOnly()" style="background: none; border: none; cursor: pointer; color: #0a2558; padding: 0 4px;" title="Copy Hash">📋</button>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: right; font-size: 0.775rem; color: #047857; font-weight: 600;">
+          <div style="background: #ecfdf5; border: 1px solid #a7f3d0; padding: 0.35rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.35rem;">
+            <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #059669;"></span>
+            <span>Tamper-Proof &amp; Valid</span>
+          </div>
+          <div id="verifiedTimestamp" style="margin-top: 0.35rem; color: #64748b; font-size: 0.725rem;"></div>
+        </div>
+      </div>
+
+      <!-- Action Bar with Download & Print Button -->
+      <div class="receipt-action-bar">
+        <div class="action-group-primary">
+          <button id="mainPrintBtn" class="btn-download-pdf" onclick="Receipts.printReceipt()">
+            🖨️ Download / Print Official Receipt PDF
+          </button>
+          <button class="btn-copy-link" onclick="copyVerificationUrl()">
+            🔗 Copy Verification Link
+          </button>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/dashboard.html" class="btn-portal-back">
+            🏛️ Student Dashboard
+          </a>
+        </div>
+      </div>
+
+      <!-- Official Printable Receipt Document -->
+      <div class="receipt-paper-wrap" id="receiptDocumentWrap">
+        <!-- Rendered dynamically by Receipts.renderReceiptDoc -->
+      </div>
+
+    </div>
+
+    <!-- Error / Invalid Hash State -->
+    <div id="verifyErrorState" style="display: none;">
+      <div class="verify-error-box">
+        <div class="verify-error-icon">⚠️</div>
+        <h2 class="verify-error-title" id="errorMessageTitle">Receipt Token Not Found</h2>
+        <p class="verify-error-desc" id="errorMessageDesc">
+          The requested receipt token or hash could not be verified in the Subramanian Polytechnic College Accounts Ledger.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="lookup-input-group">
+          <input type="text" id="manualLookupInput" class="lookup-input" placeholder="Enter Receipt No (e.g. SPTC/REC/2026-27/0001) or Hash..." />
+          <button class="btn btn-primary" onclick="handleManualLookup()">Verify Now</button>
+        </div>
+
+        <div class="demo-chips">
+          <span>Try Demo Receipt:</span>
+          <span class="demo-chip" onclick="searchDemoReceipt('f6e43d319682034f')">f6e43d319682034f</span>
+          <span class="demo-chip" onclick="searchDemoReceipt('SPTC/REC/2026-27/0001')">SPTC/REC/2026-27/0001</span>
+          <span class="demo-chip" onclick="searchDemoReceipt('ca4d84ae46b1325e')">ca4d84ae46b1325e</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Mobile Sticky Download Bar -->
+  <div class="mobile-sticky-action-bar">
+    <button class="btn-download-pdf" onclick="Receipts.printReceipt()">
+      🖨️ Download / Print Receipt (PDF)
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer" style="margin-top: auto;">
+    <div class="container footer-bottom" style="border-top: none; padding-top: 1rem; padding-bottom: 1.5rem;">
+      <p>© 2026 Subramanian Polytechnic College, Rayavaram, Pudukkottai – 622 506. (DOTE Code: 331).</p>
+      <p style="margin-top: 0.25rem; font-size: 0.775rem;">Tamper-proof SHA-256 Institutional Fee Verification Engine</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toastNotification" class="toast-pill">
+    <span id="toastMessage">Verification link copied!</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/data-store.js"></script>
+  <script src="/js/receipts.js"></script>
+  <script>
+    let currentReceiptData = null;
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      const text = document.getElementById('toastMessage');
+      if (!toast || !text) return;
+      text.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    function copyVerificationUrl() {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('✓ Verification URL copied to clipboard!');
+      }).catch(() => {
+        prompt('Copy Verification URL:', url);
+      });
+    }
+
+    function copyHashOnly() {
+      const hash = currentReceiptData?.receipt?.verificationHash || '';
+      if (!hash) return;
+      navigator.clipboard.writeText(hash).then(() => {
+        showToast('✓ Receipt SHA-256 Hash copied!');
+      });
+    }
+
+    function handleManualLookup() {
+      const input = document.getElementById('manualLookupInput');
+      const val = input ? input.value.trim() : '';
+      if (!val) {
+        alert('Please enter a valid Receipt Number or Verification Hash.');
+        return;
+      }
+      window.location.href = `/verify/${encodeURIComponent(val)}`;
+    }
+
+    function searchDemoReceipt(hash) {
+      window.location.href = `/verify/${encodeURIComponent(hash)}`;
+    }
+
+    // Extract verification hash/token from URL
+    function extractTokenFromUrl() {
+      // 1. Pathname check: /verify/:token
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      if (pathParts.length >= 2 && pathParts[0] === 'verify') {
+        return decodeURIComponent(pathParts.slice(1).join('/'));
+      }
+      // 2. Query param check: ?hash=... or ?receiptNo=...
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('hash') || urlParams.get('receiptNo') || urlParams.get('token');
+    }
+
+    async function initVerification() {
+      const token = extractTokenFromUrl();
+      const loadingState = document.getElementById('verifyLoadingState');
+      const successState = document.getElementById('verifySuccessState');
+      const errorState = document.getElementById('verifyErrorState');
+
+      if (!token) {
+        // Direct visit to /verify without token -> Show search box
+        loadingState.style.display = 'none';
+        successState.style.display = 'none';
+        errorState.style.display = 'block';
+        document.getElementById('errorMessageTitle').textContent = 'Verify SPTC Fee Receipt';
+        document.getElementById('errorMessageDesc').textContent = 'Enter the official 16-character SHA-256 verification hash or receipt number to inspect authenticity.';
+        return;
+      }
+
+      try {
+        const data = await API.verifyReceipt(token);
+        loadingState.style.display = 'none';
+
+        if (data && data.verified && data.receipt) {
+          currentReceiptData = data;
+          
+          // Populate verification meta
+          document.getElementById('verifiedHashText').textContent = data.receipt.verificationHash || 'GENUINE';
+          const verifiedDate = new Date();
+          document.getElementById('verifiedTimestamp').textContent = `Verified on ${verifiedDate.toLocaleDateString('en-IN', {
+            weekday: 'short',
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}`;
+
+          // Render the official receipt document inside the paper container
+          Receipts.renderReceiptDoc(data, 'receiptDocumentWrap');
+
+          successState.style.display = 'block';
+          errorState.style.display = 'none';
+          document.title = `Receipt ${data.receipt.receiptNo} (Verified) | SPTC Rayavaram`;
+        } else {
+          showError(data?.error || 'No matching receipt found in the college accounts records.');
+        }
+      } catch (err) {
+        console.error('Receipt verification failed:', err);
+        loadingState.style.display = 'none';
+        showError('Unable to connect to the SPTC verification server. Please ensure the server is running.');
+      }
+    }
+
+    function showError(msg) {
+      const successState = document.getElementById('verifySuccessState');
+      const errorState = document.getElementById('verifyErrorState');
+      if (successState) successState.style.display = 'none';
+      if (errorState) {
+        errorState.style.display = 'block';
+        document.getElementById('errorMessageTitle').textContent = 'Verification Unsuccessful';
+        document.getElementById('errorMessageDesc').textContent = msg;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initVerification);
+  </script>
+</body>
+</html>

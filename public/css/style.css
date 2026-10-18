@@ -1885,7 +1885,12 @@ button {
   .dashboard-header-dedicated,
   .main-header,
   .news-ticker-bar,
-  main,
+  body:not(.verify-page-body) main,
+  .verify-status-banner,
+  .receipt-action-bar,
+  .mobile-sticky-action-bar,
+  .verify-error-box,
+  #verifyLoadingState,
   .main-footer,
   #paymentModal,
   .modal-header,
@@ -1895,6 +1900,19 @@ button {
   .btn,
   button {
     display: none !important;
+  }
+
+  .verify-page-wrapper {
+    padding: 0 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .receipt-paper-wrap {
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
   }
 
   /* Unfurl the active receipt modal container into clean standard print flow */

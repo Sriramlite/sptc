@@ -153,6 +153,14 @@ const API = {
     return await res.json();
   },
 
+  // Public/Shared: Verify receipt by SHA-256 hash or token (Publicly accessible)
+  async verifyReceipt(hash) {
+    const res = await fetch(`/api/verify/${encodeURIComponent(hash)}`, {
+      headers: { 'Accept': 'application/json' }
+    });
+    return await res.json();
+  },
+
   // Protected: Submit Payment (Requires authenticated session)
   async submitPayment(paymentData) {
     const res = await fetch('/api/payments/create', {

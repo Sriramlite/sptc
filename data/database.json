@@ -600,6 +600,40 @@
       },
       "verificationHash": "d2f78fe0945aa241",
       "remarks": "Office counter fee collection"
+    },
+    {
+      "receiptNo": "SPTC/REC/2026-27/0004",
+      "regNo": "23203009",
+      "billId": "BILL-23203009-SEM4",
+      "date": "2026-10-18",
+      "amount": 2000,
+      "paymentMode": "Cash Counter",
+      "transactionRef": "Cash",
+      "academicYear": "2026-2027",
+      "semester": "Semester 4",
+      "source": "SPTC Accounts Office Counter (Officer: M. Alagappan)",
+      "breakdown": {
+        "Fee Collection Credit": 2000
+      },
+      "verificationHash": "ca4d84ae46b1325e",
+      "remarks": "Office counter fee collection"
+    },
+    {
+      "receiptNo": "SPTC/REC/2026-27/0005",
+      "regNo": "22201045",
+      "billId": "BILL-22201045-SEM6",
+      "date": "2026-10-18",
+      "amount": 5000,
+      "paymentMode": "Cash Counter",
+      "transactionRef": "CTR-708961",
+      "academicYear": "2026-2027",
+      "semester": "Semester 6",
+      "source": "SPTC Accounts Office Counter (Officer: M. Alagappan)",
+      "breakdown": {
+        "Fee Collection Credit": 5000
+      },
+      "verificationHash": "e9a6f7260246b3b7",
+      "remarks": "Office counter fee collection"
     }
   ],
   "staff": [

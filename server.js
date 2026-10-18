@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
 const os = require('os');
+const QRCode = require('qrcode');
 
 const app = express();
 app.set('trust proxy', true);
@@ -680,12 +681,41 @@ app.get('/api/student/:regNo/receipts', requireStudentOrStaff, (req, res) => {
   res.json(receipts);
 });
 
-// 6. Single Receipt by Receipt Number (Public/Printable Verification)
-app.get('/api/receipts/:receiptNo', (req, res) => {
+// Dynamic ISO-Standard QR Code Generator (High-Contrast SVG)
+app.get('/api/qr', async (req, res) => {
+  try {
+    const text = (req.query.text || '').trim();
+    if (!text) {
+      return res.status(400).send('Missing "text" query parameter.');
+    }
+    const svg = await QRCode.toString(text, {
+      type: 'svg',
+      margin: 1,
+      color: {
+        dark: '#0a2558',
+        light: '#ffffff'
+      }
+    });
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Cache-Control', 'public, max-age=86400, s-maxage=86400');
+    return res.send(svg);
+  } catch (err) {
+    console.error('QR generation error:', err);
+    return res.status(500).send('QR generation failed.');
+  }
+});
+
+// 6. Single Receipt by Receipt Number or Verification Hash (Public/Printable Verification)
+app.get('/api/receipts/:receiptNo', async (req, res) => {
   const { receiptNo } = req.params;
   const db = loadDb();
   const decodedNo = decodeURIComponent(receiptNo);
-  const receipt = db.receipts.find(r => r.receiptNo === decodedNo || r.receiptNo === receiptNo);
+  const receipt = db.receipts.find(r => 
+    r.receiptNo === decodedNo || 
+    r.receiptNo === receiptNo || 
+    r.verificationHash === receiptNo ||
+    (r.verificationHash && r.verificationHash.toLowerCase() === receiptNo.toLowerCase())
+  );
 
   if (!receipt) {
     return res.status(404).json({ error: 'Official receipt voucher not found.' });
@@ -693,11 +723,65 @@ app.get('/api/receipts/:receiptNo', (req, res) => {
 
   const student = db.students.find(s => s.regNo === receipt.regNo) || { name: 'Student', department: 'SPTC' };
 
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+  const host = req.headers['x-forwarded-host'] || req.get('host');
+  const verifyUrl = `${protocol}://${host}/verify/${receipt.verificationHash}`;
+
   res.json({
     college: db.college,
     student,
-    receipt
+    receipt,
+    verifyUrl
   });
+});
+
+// 6b. Official Public Receipt Verification API Endpoint (SHA-256 Hash / Token)
+app.get('/api/verify/:hash', async (req, res) => {
+  try {
+    const hash = (req.params.hash || '').trim();
+    if (!hash) {
+      return res.status(400).json({ success: false, verified: false, error: 'Verification hash or receipt token is required.' });
+    }
+
+    const db = loadDb();
+    const cleanHash = hash.toLowerCase();
+    const receipt = db.receipts.find(r => 
+      (r.verificationHash && r.verificationHash.toLowerCase() === cleanHash) ||
+      (r.receiptNo && r.receiptNo.toLowerCase() === cleanHash) ||
+      (r.receiptNo && r.receiptNo === decodeURIComponent(hash))
+    );
+
+    if (!receipt) {
+      return res.status(404).json({
+        success: false,
+        verified: false,
+        error: 'Verification Unsuccessful: No authentic receipt found matching this token in the SPTC Accounts Ledger.'
+      });
+    }
+
+    const student = db.students.find(s => s.regNo === receipt.regNo) || {
+      name: 'SPTC Student',
+      regNo: receipt.regNo,
+      department: 'Diploma in Engineering'
+    };
+
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+    const host = req.headers['x-forwarded-host'] || req.get('host');
+    const verifyUrl = `${protocol}://${host}/verify/${receipt.verificationHash}`;
+
+    res.json({
+      success: true,
+      verified: true,
+      college: db.college,
+      student,
+      receipt,
+      verifyUrl,
+      verifiedAt: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('Verification API error:', err);
+    res.status(500).json({ success: false, error: 'Internal server error during verification.' });
+  }
 });
 
 // 7. Process New Payment (Protected: Authenticated Student or Staff)
@@ -1014,6 +1098,11 @@ app.get('/cashier', (req, res) => {
 
 app.get('/cashier-dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'cashier-dashboard.html'));
+});
+
+// Dedicated Public Receipt Verification Route (Scanned via QR Code on phones or paper)
+app.get(['/verify', '/verify/:hash'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'verify.html'));
 });
 
 // Fallback to index.html for main site navigation
