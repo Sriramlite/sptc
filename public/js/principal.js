@@ -184,51 +184,71 @@ const Principal = {
     const recentStudents = ov.recentEnrollments || [];
     const recentTx = ov.recentCollections || [];
 
+    const deptAbbr = {
+      'Computer Engineering': 'CSE',
+      'Mechanical Engineering': 'MECH',
+      'Electrical & Electronics Engineering': 'EEE',
+      'Electronics & Communication Engineering': 'ECE',
+      'Civil Engineering': 'CIVIL',
+      'Artificial Intelligence & Machine Learning': 'AIML',
+      'Biomedical Engineering': 'BME',
+      'Medical Laboratory Technology': 'MLT',
+      'Basic Engineering (1st Year)': 'BASIC'
+    };
+
     let deptRowsHtml = '';
     if (depts.length === 0) {
       deptRowsHtml = `<tr><td colspan="5" class="empty-state">No department statistics available</td></tr>`;
     } else {
-      deptRowsHtml = depts.map(d => `
+      deptRowsHtml = depts.map(d => {
+        const code = deptAbbr[d.department] || d.deptCode || 'ENGG';
+        return `
         <tr>
-          <td>
-            <div style="font-weight: 700; color: #0a2558;">${d.department}</div>
-            <div style="font-size: 0.725rem; color: #64748b;">DOTE Approved • 3-Yr Diploma</div>
+          <td style="padding-left: 1.25rem;">
+            <div style="font-weight: 700; color: #071739; font-size: 0.885rem; line-height: 1.3;">${d.department}</div>
+            <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px;">DOTE Approved • 3-Yr Diploma</div>
+          </td>
+          <td style="text-align: center;">
+            <span class="dept-code-pill">${code.toUpperCase()}</span>
           </td>
           <td>
-            <span class="dept-exec-code">${d.deptCode.toUpperCase()}</span>
+            <div style="font-weight: 700; color: #1e293b; font-size: 0.885rem;">${d.enrolledStudents} Students</div>
+            <div style="font-size: 0.72rem; color: #64748b; margin-top: 2px; white-space: nowrap;">${d.hostellers} Hostellers • ${d.busUsers} Bus</div>
           </td>
-          <td>
-            <div style="font-weight: 700; color: #1e293b;">${d.enrolledStudents} Students</div>
-            <div style="font-size: 0.725rem; color: #64748b;">${d.hostellers} Hostellers • ${d.busUsers} Bus</div>
+          <td style="text-align: center;">
+            <span class="role-badge role-faculty" style="white-space: nowrap; font-size: 0.725rem;">${d.facultyCount} Faculty</span>
           </td>
-          <td>
-            <span class="role-badge role-faculty">${d.facultyCount} Faculty</span>
-          </td>
-          <td style="text-align: right;">
-            <button class="btn-icon-action" onclick="Principal.filterByDepartment('${d.department}')">
+          <td style="text-align: right; padding-right: 1.25rem;">
+            <button class="btn-icon-action" style="white-space: nowrap;" onclick="Principal.filterByDepartment('${d.department}')">
               <i data-lucide="eye"></i> View Registry
             </button>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     let recentStudentsHtml = '';
     if (recentStudents.length === 0) {
       recentStudentsHtml = `<div class="empty-state">No recent admissions found.</div>`;
     } else {
-      recentStudentsHtml = recentStudents.map(s => `
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9;">
-          <div>
-            <div style="font-weight: 700; color: #0a2558; font-size: 0.885rem;">${s.name}</div>
-            <div style="font-size: 0.75rem; color: #64748b;">Reg: ${s.regNo} • ${s.department} (Yr ${s.currentYear})</div>
+      recentStudentsHtml = recentStudents.map(s => {
+        const shortDept = deptAbbr[s.department] || s.department;
+        return `
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; gap: 0.75rem;">
+          <div style="min-width: 0; flex: 1;">
+            <div style="font-weight: 700; color: #071739; font-size: 0.885rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${s.name}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              Reg: <span style="font-family: monospace; font-weight: 600; color: #334155;">${s.regNo}</span> • <span style="font-weight: 600; color: #475569;">${shortDept}</span> (Yr ${s.currentYear})
+            </div>
           </div>
-          <div style="text-align: right;">
-            <span class="badge ${s.quota === 'Government' ? 'badge-primary' : 'badge-gold'}" style="font-size: 0.7rem;">${s.quota}</span>
-            <div style="font-size: 0.7rem; color: #059669; margin-top: 2px;">Admitted: ${s.admissionNo}</div>
+          <div style="text-align: right; flex-shrink: 0;">
+            <span class="badge ${s.quota === 'Government' ? 'badge-primary' : 'badge-gold'}" style="font-size: 0.685rem; font-weight: 700; padding: 0.15rem 0.5rem;">${s.quota}</span>
+            <div style="font-size: 0.7rem; color: #059669; font-weight: 600; margin-top: 2px;">Adm: ${s.admissionNo}</div>
           </div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     let recentTxHtml = '';
@@ -236,46 +256,24 @@ const Principal = {
       recentTxHtml = `<div class="empty-state">No fee receipts recorded yet.</div>`;
     } else {
       recentTxHtml = recentTx.map(t => `
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9;">
-          <div>
-            <div style="font-weight: 700; color: #0a2558; font-size: 0.885rem;">${t.receiptNo} • ${t.studentName}</div>
-            <div style="font-size: 0.75rem; color: #64748b;">${t.paymentMode} • ${t.date}</div>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid #f1f5f9; gap: 0.75rem;">
+          <div style="min-width: 0; flex: 1;">
+            <div style="font-weight: 700; color: #071739; font-size: 0.885rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${t.receiptNo} • ${t.studentName}</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">
+              <span class="badge badge-primary" style="font-size: 0.675rem; padding: 0.1rem 0.4rem;">${t.paymentMode || 'Counter Cash'}</span> • ${t.date}
+            </div>
           </div>
-          <div style="text-align: right;">
-            <div style="font-weight: 800; color: #059669; font-size: 0.925rem;">${this.formatINR(t.amountPaid)}</div>
-            <div style="font-size: 0.7rem; color: #64748b;">Cashier: ${t.cashierName || 'Accounts Desk'}</div>
+          <div style="text-align: right; flex-shrink: 0;">
+            <div style="font-weight: 800; color: #059669; font-size: 0.95rem;">${this.formatINR(t.amountPaid)}</div>
+            <div style="font-size: 0.7rem; color: #64748b; margin-top: 2px;">${t.cashierName || 'Accounts Desk'}</div>
           </div>
         </div>
       `).join('');
     }
 
     container.innerHTML = `
-      <!-- Governance Actions Banner -->
-      <div style="display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.75rem; flex-wrap: wrap; gap: 1rem;">
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-          <div style="width: 42px; height: 42px; border-radius: 10px; background: #f3e8ff; color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
-            <i data-lucide="crown"></i>
-          </div>
-          <div>
-            <h3 style="font-family: var(--font-heading); font-size: 1.05rem; color: #0a2558; margin: 0;">Institutional Executive Oversight</h3>
-            <p style="font-size: 0.775rem; color: #64748b; margin: 0;">Supervising 10 Staff Members &amp; ${this.state.students.length} Enrolled Diploma Students across 8 AICTE Programs</p>
-          </div>
-        </div>
-        <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
-          <button class="btn btn-primary btn-sm" onclick="Principal.openAddStaffModal()">
-            <i data-lucide="user-plus"></i> + Add Faculty
-          </button>
-          <button class="btn btn-gold btn-sm" onclick="Principal.openAddStudentModal()">
-            <i data-lucide="graduation-cap"></i> + Enroll Student
-          </button>
-          <button class="btn btn-outline btn-sm" onclick="Principal.refreshAllData()">
-            <i data-lucide="refresh-cw"></i> Refresh
-          </button>
-        </div>
-      </div>
-
       <!-- Main Overview Grid: Department Breakdown Left, Recent Activity Right -->
-      <div style="display: grid; grid-template-columns: 1.7fr 1.3fr; gap: 1.5rem;" class="overview-responsive-grid">
+      <div class="overview-responsive-grid">
         
         <!-- Left: Department Capacity & Faculty Strength -->
         <div class="governance-card" style="margin-bottom: 0;">
@@ -287,14 +285,14 @@ const Principal = {
           </div>
           <div class="governance-card-body" style="padding: 0;">
             <div style="overflow-x: auto;">
-              <table class="table" style="margin: 0;">
+              <table class="table" style="margin: 0; width: 100%;">
                 <thead>
                   <tr>
-                    <th>Department</th>
-                    <th>Code</th>
-                    <th>Students</th>
-                    <th>Faculty</th>
-                    <th style="text-align: right;">Action</th>
+                    <th style="width: 34%; text-align: left; padding-left: 1.25rem;">Academic Department</th>
+                    <th style="width: 14%; text-align: center;">Code</th>
+                    <th style="width: 22%; text-align: left;">Students</th>
+                    <th style="width: 16%; text-align: center;">Faculty</th>
+                    <th style="width: 14%; text-align: right; padding-right: 1.25rem;">Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -316,7 +314,7 @@ const Principal = {
               </h4>
               <button class="btn-icon-action" onclick="Principal.switchTab('students')">View All</button>
             </div>
-            <div class="governance-card-body" style="padding: 1rem 1.25rem;">
+            <div class="governance-card-body" style="padding: 0.75rem 1.25rem;">
               ${recentStudentsHtml}
             </div>
           </div>
@@ -325,11 +323,11 @@ const Principal = {
           <div class="governance-card" style="margin-bottom: 0;">
             <div class="governance-card-header">
               <h4 class="governance-card-title">
-                <i data-lucide="receipt"></i> Recent Fee Collections (Cashier Desk)
+                <i data-lucide="receipt"></i> Recent Fee Collections
               </h4>
               <a href="/transactions.html" class="btn-icon-action">Journal</a>
             </div>
-            <div class="governance-card-body" style="padding: 1rem 1.25rem;">
+            <div class="governance-card-body" style="padding: 0.75rem 1.25rem;">
               ${recentTxHtml}
             </div>
           </div>
@@ -1509,9 +1507,14 @@ const Principal = {
   },
 
   closeModal(modalId) {
-    const el = document.getElementById(modalId);
-    if (el) {
-      el.classList.remove('active');
+    if (modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.classList.remove('active');
+    } else {
+      document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+    }
+    const anyActive = document.querySelector('.modal-overlay.active');
+    if (!anyActive) {
       document.body.style.overflow = '';
     }
   },
@@ -1528,12 +1531,16 @@ const Principal = {
       });
     });
 
-    // Close modals on backdrop click or close button
+    // Close modals on backdrop click or close button (handles svg/path/line targets)
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
       overlay.addEventListener('click', (e) => {
-        if (e.target === overlay || e.target.classList.contains('close-modal-btn')) {
+        const isClose = e.target.closest('.close-modal-btn') || e.target.closest('.modal-close-btn');
+        if (e.target === overlay || isClose) {
           overlay.classList.remove('active');
-          document.body.style.overflow = '';
+          const anyActive = document.querySelector('.modal-overlay.active');
+          if (!anyActive) {
+            document.body.style.overflow = '';
+          }
         }
       });
     });
@@ -1564,3 +1571,6 @@ const Principal = {
 };
 
 window.Principal = Principal;
+window.closePrincipalModal = function(modalId) {
+  Principal.closeModal(modalId);
+};

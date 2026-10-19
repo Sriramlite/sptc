@@ -41,13 +41,12 @@
     /* Modal dialog styling overrides */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
-      background: rgba(7, 23, 57, 0.65);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
+      background: rgba(7, 23, 57, 0.72);
+      backdrop-filter: blur(5px);
+      z-index: 99999;
       display: none;
       align-items: center;
       justify-content: center;
@@ -58,20 +57,29 @@
       display: flex;
     }
     .modal-close-btn {
-      background: transparent;
-      border: none;
-      color: #ffffff;
-      font-size: 1.35rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.35rem;
-      border-radius: 6px;
-      transition: background 0.15s ease;
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.25) !important;
+      color: #ffffff !important;
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 8px !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 0 !important;
+      transition: all 0.15s ease !important;
+      flex-shrink: 0;
     }
     .modal-close-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.22) !important;
+      transform: scale(1.05);
+    }
+    .modal-close-btn svg,
+    .modal-close-btn i,
+    .modal-close-btn path,
+    .modal-close-btn line {
+      pointer-events: none !important;
     }
     .empty-state {
       text-align: center;
@@ -217,18 +225,17 @@
   </aside>
 
   <!-- Main Container -->
-  <main class="container" style="padding-top: 1.75rem; padding-bottom: 4rem;" id="principalDeskContainer">
+  <main class="container" style="padding-top: 1.5rem; padding-bottom: 4rem;" id="principalDeskContainer">
 
     <!-- Executive Hero Banner -->
     <section class="principal-hero-banner">
       <div class="principal-hero-left">
-        <span class="badge" style="background: rgba(212, 175, 55, 0.25); color: #fce076; border: 1px solid rgba(212, 175, 55, 0.5); font-weight: 700;">
+        <span class="badge" style="background: rgba(212, 175, 55, 0.25); color: #fce076; border: 1px solid rgba(212, 175, 55, 0.5); font-weight: 700; padding: 0.2rem 0.6rem; font-size: 0.725rem;">
           CENTRAL GOVERNANCE &amp; OVERSIGHT DESK
         </span>
-        <h2>Principal's Executive Administration</h2>
+        <h2><i data-lucide="crown"></i> Principal's Executive Administration</h2>
         <p>
-          Subramanian Polytechnic College (Rayavaram) • Directorate of Technical Education (DOTE Code: 331).
-          Comprehensive institutional authority to govern faculty appointments, student enrollments, fee structures, and departmental performance.
+          Subramanian Polytechnic College (Rayavaram) • DOTE Code: 331 • Institutional governance for faculty appointments, student enrollments, fee structures, and departmental performance.
         </p>
       </div>
       <div class="principal-hero-actions">
@@ -336,7 +343,7 @@
         <h3 id="staffModalTitle">
           <i data-lucide="user-plus"></i> Add New Faculty / Staff Member
         </h3>
-        <button class="modal-close-btn close-modal-btn" aria-label="Close modal">
+        <button type="button" class="modal-close-btn close-modal-btn" aria-label="Close modal" onclick="Principal.closeModal('staffModal')">
           <i data-lucide="x"></i>
         </button>
       </div>
@@ -412,7 +419,7 @@
           </div>
         </div>
         <div class="principal-modal-footer">
-          <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+          <button type="button" class="btn btn-outline close-modal-btn" onclick="Principal.closeModal('staffModal')">Cancel</button>
           <button type="submit" class="btn btn-primary" id="saveStaffBtn">Save Faculty</button>
         </div>
       </form>
@@ -426,7 +433,7 @@
     <div class="principal-modal-dialog" style="max-width: 480px;">
       <div class="principal-modal-header">
         <h3><i data-lucide="key"></i> Reset Staff Password</h3>
-        <button class="modal-close-btn close-modal-btn" aria-label="Close modal">
+        <button type="button" class="modal-close-btn close-modal-btn" aria-label="Close modal" onclick="Principal.closeModal('resetStaffPasswordModal')">
           <i data-lucide="x"></i>
         </button>
       </div>
@@ -446,7 +453,7 @@
           </div>
         </div>
         <div class="principal-modal-footer">
-          <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+          <button type="button" class="btn btn-outline close-modal-btn" onclick="Principal.closeModal('resetStaffPasswordModal')">Cancel</button>
           <button type="submit" class="btn btn-primary" id="submitResetPasswordBtn">Reset Password</button>
         </div>
       </form>
@@ -462,7 +469,7 @@
         <h3 id="studentModalTitle">
           <i data-lucide="graduation-cap"></i> Enroll New Student
         </h3>
-        <button class="modal-close-btn close-modal-btn" aria-label="Close modal">
+        <button type="button" class="modal-close-btn close-modal-btn" aria-label="Close modal" onclick="Principal.closeModal('studentModal')">
           <i data-lucide="x"></i>
         </button>
       </div>
@@ -588,7 +595,7 @@
           </div>
         </div>
         <div class="principal-modal-footer">
-          <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+          <button type="button" class="btn btn-outline close-modal-btn" onclick="Principal.closeModal('studentModal')">Cancel</button>
           <button type="submit" class="btn btn-primary" id="saveStudentBtn">Save Student</button>
         </div>
       </form>
@@ -602,7 +609,7 @@
     <div class="principal-modal-dialog" style="max-width: 840px;">
       <div class="principal-modal-header">
         <h3><i data-lucide="file-text"></i> Student Financial &amp; Academic Audit Ledger</h3>
-        <button class="modal-close-btn close-modal-btn" aria-label="Close modal">
+        <button type="button" class="modal-close-btn close-modal-btn" aria-label="Close modal" onclick="Principal.closeModal('studentAuditModal')">
           <i data-lucide="x"></i>
         </button>
       </div>
@@ -610,7 +617,7 @@
         <!-- Rendered dynamically by Principal.openAuditLedgerModal() -->
       </div>
       <div class="principal-modal-footer">
-        <button type="button" class="btn btn-outline close-modal-btn">Close Audit</button>
+        <button type="button" class="btn btn-outline close-modal-btn" onclick="Principal.closeModal('studentAuditModal')">Close Audit</button>
       </div>
     </div>
   </div>
@@ -622,7 +629,7 @@
     <div class="principal-modal-dialog" style="max-width: 480px;">
       <div class="principal-modal-header" style="background: linear-gradient(135deg, #7f1d1d, #991b1b);">
         <h3 style="color: #ffffff;"><i data-lucide="alert-triangle"></i> Confirm Permanent Deletion</h3>
-        <button class="modal-close-btn close-modal-btn" aria-label="Close modal">
+        <button type="button" class="modal-close-btn close-modal-btn" aria-label="Close modal" onclick="Principal.closeModal('deleteConfirmModal')">
           <i data-lucide="x"></i>
         </button>
       </div>
@@ -632,7 +639,7 @@
         </p>
       </div>
       <div class="principal-modal-footer">
-        <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+        <button type="button" class="btn btn-outline close-modal-btn" onclick="Principal.closeModal('deleteConfirmModal')">Cancel</button>
         <button type="button" class="btn btn-sm" id="confirmDeleteBtn" style="background: #dc2626; color: #ffffff;">Confirm Delete</button>
       </div>
     </div>
