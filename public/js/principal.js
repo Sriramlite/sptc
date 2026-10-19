@@ -19,6 +19,7 @@ const Principal = {
       studentYear: 'ALL',
       studentStatus: 'ALL'
     },
+    studentViewMode: 'batches', // 'batches' | 'list'
     activeStaffModalMode: 'add', // 'add' | 'edit'
     activeStaffId: null,
     activeStudentModalMode: 'add', // 'add' | 'edit'
@@ -34,6 +35,28 @@ const Principal = {
       currency: 'INR',
       maximumFractionDigits: 0
     }).format(amount);
+  },
+
+  // 3-Year Diploma Batch computation
+  computeBatchLabel(year) {
+    const yr = parseInt(year) || 1;
+    if (yr === 3) return 'Batch 2023–2026 (3rd Year Final)';
+    if (yr === 2) return 'Batch 2024–2027 (2nd Year Intermediate)';
+    return 'Batch 2025–2028 (1st Year Freshers)';
+  },
+
+  onModalYearChange() {
+    const yr = document.getElementById('studentYearSelect')?.value;
+    const batchInput = document.getElementById('studentBatchInput');
+    const semSelect = document.getElementById('studentSemSelect');
+    if (batchInput && yr) batchInput.value = this.computeBatchLabel(yr);
+    if (semSelect && yr) semSelect.value = parseInt(yr) * 2 - 1;
+  },
+
+  switchStudentViewMode(mode) {
+    this.state.studentViewMode = mode;
+    this.renderStudentsTab(document.getElementById('principalTabContent'));
+    if (window.initLucideIcons) window.initLucideIcons(document.getElementById('principalTabContent'));
   },
 
   // Toast Notification System
@@ -629,23 +652,125 @@ const Principal = {
       }).join('');
     }
 
+    // Check active view mode: 'batches' or 'list'
+    let contentHtml = '';
+
+    if (this.state.studentViewMode === 'batches') {
+      const b3 = filtered.filter(s => s.currentYear === 3);
+      const b2 = filtered.filter(s => s.currentYear === 2);
+      const b1 = filtered.filter(s => s.currentYear === 1 || !s.currentYear);
+
+      contentHtml = `
+        <!-- Batch 3: Final Year Seniors -->
+        <div class="batch-section-card" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 1.25rem; overflow: hidden; box-shadow: 0 2px 8px rgba(7,23,57,0.04);">
+          <div class="batch-header" style="background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%); border-left: 5px solid #a855f7; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h4 style="font-family: var(--font-heading); color: #071739; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="award" style="color: #7c3aed;"></i>
+                Batch 2023–2026 (3rd Year Final Year Seniors)
+              </h4>
+              <p style="font-size: 0.775rem; color: #64748b; margin: 0.2rem 0 0;">
+                Final Year • Semesters 5 &amp; 6 • Board Practical Exams &amp; Placement Drives
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge" style="background: #f3e8ff; color: #7e22ce; font-weight: 700;">${b3.length} Students</span>
+              <span class="badge" style="background: #eff6ff; color: #1e40af; font-weight: 700;">Govt: ${b3.filter(s => s.quota === 'Government').length} | Mgt: ${b3.filter(s => s.quota === 'Management').length}</span>
+            </div>
+          </div>
+          ${this.renderPrincipalBatchTable(b3)}
+        </div>
+
+        <!-- Batch 2: Intermediate Year -->
+        <div class="batch-section-card" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 1.25rem; overflow: hidden; box-shadow: 0 2px 8px rgba(7,23,57,0.04);">
+          <div class="batch-header" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-left: 5px solid #3b82f6; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h4 style="font-family: var(--font-heading); color: #071739; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="book-open" style="color: #2563eb;"></i>
+                Batch 2024–2027 (2nd Year Intermediate)
+              </h4>
+              <p style="font-size: 0.775rem; color: #64748b; margin: 0.2rem 0 0;">
+                Core Engineering Specializations • Semesters 3 &amp; 4 • Specialized Laboratories
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge" style="background: #dbeafe; color: #1e40af; font-weight: 700;">${b2.length} Students</span>
+              <span class="badge" style="background: #ecfdf5; color: #065f46; font-weight: 700;">Govt: ${b2.filter(s => s.quota === 'Government').length} | Mgt: ${b2.filter(s => s.quota === 'Management').length}</span>
+            </div>
+          </div>
+          ${this.renderPrincipalBatchTable(b2)}
+        </div>
+
+        <!-- Batch 1: Freshers -->
+        <div class="batch-section-card" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 1.25rem; overflow: hidden; box-shadow: 0 2px 8px rgba(7,23,57,0.04);">
+          <div class="batch-header" style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border-left: 5px solid #10b981; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <h4 style="font-family: var(--font-heading); color: #071739; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i data-lucide="sparkles" style="color: #059669;"></i>
+                Batch 2025–2028 (1st Year Freshers)
+              </h4>
+              <p style="font-size: 0.775rem; color: #64748b; margin: 0.2rem 0 0;">
+                Freshers Batch • Semesters 1 &amp; 2 • Foundational Engineering Sciences &amp; Workshops
+              </p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge" style="background: #d1fae5; color: #065f46; font-weight: 700;">${b1.length} Students</span>
+              <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 700;">Govt: ${b1.filter(s => s.quota === 'Government').length} | Mgt: ${b1.filter(s => s.quota === 'Management').length}</span>
+            </div>
+          </div>
+          ${this.renderPrincipalBatchTable(b1)}
+        </div>
+      `;
+    } else {
+      contentHtml = `
+        <div style="overflow-x: auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>DOTE Reg No</th>
+                <th>Student &amp; Parent</th>
+                <th>Department &amp; Year</th>
+                <th>Quota &amp; Residence</th>
+                <th>Fee Position</th>
+                <th>Status</th>
+                <th style="text-align: right;">Administrative Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
     container.innerHTML = `
       <div class="governance-card">
         <div class="governance-card-header">
           <div>
             <h3 class="governance-card-title">
-              <i data-lucide="graduation-cap"></i> Student Registry &amp; Fee Status
+              <i data-lucide="graduation-cap"></i> Student Registry &amp; 3-Year Batch Governance
             </h3>
             <p style="font-size: 0.8rem; color: #64748b; margin: 0.2rem 0 0;">
-              Total Enrolled: ${this.state.students.length} Students • Displaying ${filtered.length} Filtered Records
+              Total Enrolled: ${this.state.students.length} Students across 3 Batches • Displaying ${filtered.length} Filtered Records
             </p>
           </div>
-          <div style="display: flex; gap: 0.65rem;">
+          <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+            <!-- Segmented View Toggle -->
+            <div class="segmented-view-toggle" style="display: inline-flex; background: #f1f5f9; padding: 3px; border-radius: 8px; border: 1px solid #cbd5e1;">
+              <button type="button" class="segmented-view-btn ${this.state.studentViewMode === 'batches' ? 'active' : ''}" style="border: none; background: ${this.state.studentViewMode === 'batches' ? '#ffffff' : 'transparent'}; padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 700; color: #071739; border-radius: 6px; cursor: pointer; box-shadow: ${this.state.studentViewMode === 'batches' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none'};" onclick="Principal.switchStudentViewMode('batches')">
+                <i data-lucide="layers"></i> 3-Year Batches
+              </button>
+              <button type="button" class="segmented-view-btn ${this.state.studentViewMode === 'list' ? 'active' : ''}" style="border: none; background: ${this.state.studentViewMode === 'list' ? '#ffffff' : 'transparent'}; padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 700; color: #071739; border-radius: 6px; cursor: pointer; box-shadow: ${this.state.studentViewMode === 'list' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none'};" onclick="Principal.switchStudentViewMode('list')">
+                <i data-lucide="list"></i> All Records Table
+              </button>
+            </div>
+
             <button class="btn btn-outline btn-sm" onclick="Principal.exportStudentsCsv()">
-              <i data-lucide="download"></i> Export Registry (CSV)
+              <i data-lucide="download"></i> Export (CSV)
             </button>
             <button class="btn btn-gold btn-sm" onclick="Principal.openAddStudentModal()">
-              <i data-lucide="user-plus"></i> + Enroll New Student
+              <i data-lucide="user-plus"></i> + Enroll Student
             </button>
           </div>
         </div>
@@ -661,7 +786,7 @@ const Principal = {
             </div>
             <div>
               <select class="form-control" style="font-size: 0.85rem; padding: 0.65rem 1rem;" onchange="Principal.handleStudentDeptFilter(this.value)">
-                <option value="ALL">All Departments</option>
+                <option value="ALL">All Departments (9)</option>
                 <option value="Computer Engineering" ${qDept === 'Computer Engineering' ? 'selected' : ''}>Computer Engineering</option>
                 <option value="Mechanical Engineering" ${qDept === 'Mechanical Engineering' ? 'selected' : ''}>Mechanical Engineering</option>
                 <option value="Electrical & Electronics Engineering" ${qDept === 'Electrical & Electronics Engineering' ? 'selected' : ''}>Electrical & Electronics</option>
@@ -674,10 +799,10 @@ const Principal = {
             </div>
             <div>
               <select class="form-control" style="font-size: 0.85rem; padding: 0.65rem 1rem;" onchange="Principal.handleStudentYearFilter(this.value)">
-                <option value="ALL">All Academic Years</option>
-                <option value="1" ${qYear === '1' ? 'selected' : ''}>1st Year (Sem 1 & 2)</option>
-                <option value="2" ${qYear === '2' ? 'selected' : ''}>2nd Year (Sem 3 & 4)</option>
-                <option value="3" ${qYear === '3' ? 'selected' : ''}>3rd Year (Sem 5 & 6)</option>
+                <option value="ALL">All Batches (3 Years)</option>
+                <option value="1" ${qYear === '1' ? 'selected' : ''}>Batch 2025–2028 (1st Yr)</option>
+                <option value="2" ${qYear === '2' ? 'selected' : ''}>Batch 2024–2027 (2nd Yr)</option>
+                <option value="3" ${qYear === '3' ? 'selected' : ''}>Batch 2023–2026 (3rd Yr)</option>
               </select>
             </div>
             <div>
@@ -689,28 +814,102 @@ const Principal = {
             </div>
           </div>
 
-          <!-- Students Table -->
-          <div style="overflow-x: auto;">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>DOTE Reg No</th>
-                  <th>Student &amp; Parent</th>
-                  <th>Department &amp; Year</th>
-                  <th>Quota &amp; Residence</th>
-                  <th>Fee Position</th>
-                  <th>Status</th>
-                  <th style="text-align: right;">Administrative Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rowsHtml}
-              </tbody>
-            </table>
-          </div>
+          <!-- Dynamic View (Batches or Flat Table) -->
+          ${contentHtml}
+
         </div>
       </div>
     `;
+  },
+
+  // Helper to render student table inside batch section
+  renderPrincipalBatchTable(students) {
+    if (!students || students.length === 0) {
+      return `
+        <div style="padding: 2rem 1.5rem; text-align: center; color: #64748b;">
+          <i data-lucide="graduation-cap" style="font-size: 1.75rem; color: #cbd5e1; margin-bottom: 0.35rem; display: block;"></i>
+          No students match current filter criteria in this batch.
+        </div>
+      `;
+    }
+
+    const rows = students.map(st => {
+      const balance = st.balanceDue !== undefined ? st.balanceDue : (st.totalBilled ? st.totalBilled - (st.totalPaid || 0) : 0);
+      const hasDue = balance > 0;
+
+      return `
+        <tr>
+          <td>
+            <div style="font-family: monospace; font-weight: 800; color: #0a2558; font-size: 0.95rem;">${st.regNo}</div>
+            <div style="font-size: 0.725rem; color: #64748b;">Adm: ${st.admissionNo || 'SPTC/DOTE'}</div>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: #0a2558;">${st.name}</div>
+            <div style="font-size: 0.75rem; color: #64748b;">Parent: ${st.parentName || 'Guardian'} ${st.parentPhone ? '(' + st.parentPhone + ')' : ''}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600; color: #1e293b; font-size: 0.85rem;">${st.department}</div>
+            <div style="font-size: 0.75rem; color: #64748b;">Sem ${st.currentSemester || (st.currentYear * 2 - 1)} • ${st.batch || this.computeBatchLabel(st.currentYear)}</div>
+          </td>
+          <td>
+            <div>
+              <span class="badge ${st.quota === 'Government' ? 'badge-primary' : 'badge-gold'}" style="font-size: 0.7rem;">${st.quota}</span>
+            </div>
+            <div style="font-size: 0.725rem; color: #475569; margin-top: 3px;">
+              ${st.isHosteller ? '🏢 Hosteller' : `🚌 ${st.busRoute || 'Day Scholar'}`}
+            </div>
+          </td>
+          <td>
+            <div style="font-weight: 800; font-size: 0.9rem; color: ${hasDue ? '#d97706' : '#059669'};">
+              ${hasDue ? this.formatINR(balance) + ' Due' : '✓ Fees Cleared'}
+            </div>
+            <div style="font-size: 0.725rem; color: #64748b;">
+              Paid: ${this.formatINR(st.totalPaid || 0)}
+            </div>
+          </td>
+          <td>
+            <span class="status-pill ${st.status === 'Discontinued' ? 'status-inactive' : 'status-active'}">
+              ● ${st.status || 'Active'}
+            </span>
+          </td>
+          <td style="text-align: right;">
+            <div class="action-btn-group" style="justify-content: flex-end;">
+              <button class="btn-icon-action" onclick="Principal.openAuditLedgerModal('${st.regNo}')" title="Inspect Full Fee Ledger & Receipts">
+                <i data-lucide="file-text"></i> Audit
+              </button>
+              <button class="btn-icon-action" onclick="Principal.openEditStudentModal('${st.regNo}')" title="Edit Student Profile">
+                <i data-lucide="edit-3"></i>
+              </button>
+              <button class="btn-icon-action danger" onclick="Principal.confirmDeleteStudent('${st.regNo}', '${st.name.replace(/'/g, "\\'")}')" title="Delete Student Record">
+                <i data-lucide="trash-2"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    return `
+      <div style="overflow-x: auto;">
+        <table class="table" style="margin-bottom: 0;">
+          <thead>
+            <tr>
+              <th>DOTE Reg No</th>
+              <th>Student &amp; Parent</th>
+              <th>Department &amp; Term</th>
+              <th>Quota &amp; Mode</th>
+              <th>Fee Position</th>
+              <th>Status</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </div>
+    `;
+  },
   },
 
   handleStudentSearch(val) {
@@ -1148,6 +1347,8 @@ const Principal = {
     document.getElementById('studentForm').reset();
     document.getElementById('studentRegNoInput').disabled = false;
     document.getElementById('studentAnnualTuitionGroup').style.display = 'block';
+    const batchIn = document.getElementById('studentBatchInput');
+    if (batchIn) batchIn.value = this.computeBatchLabel(1);
 
     this.openModal('studentModal');
   },
@@ -1172,6 +1373,8 @@ const Principal = {
     document.getElementById('studentDeptSelect').value = student.department || 'Computer Engineering';
     document.getElementById('studentYearSelect').value = student.currentYear || 1;
     document.getElementById('studentSemSelect').value = student.currentSemester || 1;
+    const batchIn = document.getElementById('studentBatchInput');
+    if (batchIn) batchIn.value = student.batch || this.computeBatchLabel(student.currentYear);
     document.getElementById('studentQuotaSelect').value = student.quota || 'Government';
     document.getElementById('studentAdmissionNoInput').value = student.admissionNo || '';
     document.getElementById('studentHostellerCheck').checked = !!student.isHosteller;
@@ -1195,12 +1398,17 @@ const Principal = {
     btn.disabled = true;
     btn.textContent = 'Saving...';
 
+    const yr = parseInt(document.getElementById('studentYearSelect').value) || 1;
+    const batchIn = document.getElementById('studentBatchInput');
+    const batch = batchIn ? batchIn.value.trim() : this.computeBatchLabel(yr);
+
     const payload = {
       regNo: document.getElementById('studentRegNoInput').value.trim(),
       name: document.getElementById('studentNameInput').value.trim(),
       department: document.getElementById('studentDeptSelect').value,
-      currentYear: parseInt(document.getElementById('studentYearSelect').value) || 1,
+      currentYear: yr,
       currentSemester: parseInt(document.getElementById('studentSemSelect').value) || 1,
+      batch: batch,
       quota: document.getElementById('studentQuotaSelect').value,
       admissionNo: document.getElementById('studentAdmissionNoInput').value.trim(),
       isHosteller: document.getElementById('studentHostellerCheck').checked,

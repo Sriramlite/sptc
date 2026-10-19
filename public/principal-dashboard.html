@@ -147,6 +147,9 @@
           </div>
         </div>
 
+        <a href="/hod-dashboard.html" class="btn btn-outline btn-sm hide-on-mobile" title="Open HOD Department Portals &amp; 3-Year Batches">
+          <i data-lucide="book-open"></i> HOD Portals
+        </a>
         <a href="/cashier-dashboard.html" class="btn btn-outline btn-sm hide-on-mobile" title="Open Accounts Office &amp; Counter Fee Collection Desk">
           <i data-lucide="calculator"></i> Accounts &amp; Cashier
         </a>
@@ -510,7 +513,7 @@
             <div class="form-group">
               <label class="form-label">Academic Year &amp; Semester *</label>
               <div style="display: flex; gap: 0.5rem;">
-                <select id="studentYearSelect" class="form-control" style="flex: 1;" required>
+                <select id="studentYearSelect" class="form-control" style="flex: 1;" required onchange="Principal.onModalYearChange()">
                   <option value="1">Year 1</option>
                   <option value="2">Year 2</option>
                   <option value="3">Year 3</option>
@@ -524,6 +527,12 @@
                   <option value="6">Sem 6</option>
                 </select>
               </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">3-Year Diploma Batch *</label>
+              <input type="text" id="studentBatchInput" class="form-control" placeholder="Batch 2025–2028 (1st Year Freshers)" required>
+              <small style="color: #64748b; font-size: 0.725rem;">Auto-assigned according to 3-year diploma schedule</small>
             </div>
 
             <div class="form-group">

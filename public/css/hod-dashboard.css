@@ -1,0 +1,417 @@
+/* ==========================================================================
+   SPTC Head of Department (HOD) Portal Stylesheet
+   Subramanian Polytechnic College (Rayavaram) - DOTE Code: 331
+   ========================================================================== */
+
+:root {
+  --hod-navy: #0c2340;
+  --hod-navy-light: #16325c;
+  --hod-blue: #1d4ed8;
+  --hod-blue-light: #eff6ff;
+  --hod-gold: #d4af37;
+  --hod-gold-light: #fefce8;
+  --hod-border: #e2e8f0;
+  --hod-muted: #64748b;
+  --hod-green: #059669;
+  --hod-purple: #7c3aed;
+  --hod-red: #dc2626;
+}
+
+/* HOD Executive Hero Banner */
+.hod-hero-banner {
+  background: linear-gradient(135deg, #0c2340 0%, #1e3a8a 60%, #172554 100%);
+  color: #ffffff;
+  border-radius: 14px;
+  padding: 1.35rem 1.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 24px rgba(12, 35, 64, 0.14);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  border-bottom: 3px solid var(--hod-gold);
+}
+
+.hod-hero-left h2 {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.45rem;
+  font-weight: 800;
+  margin: 0.3rem 0;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hod-hero-left p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 640px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.hod-hero-actions {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* 4 HOD KPI Metric Tiles */
+.hod-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .hod-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .hod-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hod-kpi-card {
+  background: #ffffff;
+  border: 1.5px solid var(--hod-border);
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(12, 35, 64, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  cursor: pointer;
+}
+
+.hod-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(12, 35, 64, 0.08);
+  border-color: #cbd5e1;
+}
+
+/* 3-Year Batch Sections */
+.batch-section-card {
+  background: #ffffff;
+  border: 1.5px solid var(--hod-border);
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(12, 35, 64, 0.04);
+  transition: box-shadow 0.2s ease;
+}
+
+.batch-section-card:hover {
+  box-shadow: 0 6px 20px rgba(12, 35, 64, 0.08);
+}
+
+.batch-header {
+  padding: 1.15rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  border-bottom: 1px solid var(--hod-border);
+}
+
+.batch-header-year3 {
+  background: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 100%);
+  border-left: 5px solid #a855f7;
+}
+
+.batch-header-year2 {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-left: 5px solid #3b82f6;
+}
+
+.batch-header-year1 {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border-left: 5px solid #10b981;
+}
+
+.batch-title-group h3 {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--hod-navy);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.batch-title-group p {
+  font-size: 0.8rem;
+  color: var(--hod-muted);
+  margin: 0.25rem 0 0;
+}
+
+.batch-meta-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.batch-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.775rem;
+  font-weight: 700;
+}
+
+.batch-chip-purple {
+  background: #f3e8ff;
+  color: #7e22ce;
+  border: 1px solid #d8b4fe;
+}
+
+.batch-chip-blue {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.batch-chip-green {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.batch-chip-gold {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+/* Batch Summary Stats Row */
+.batch-stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #f8fafc;
+  border-bottom: 1px solid var(--hod-border);
+}
+
+@media (max-width: 768px) {
+  .batch-stats-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.batch-stat-cell {
+  padding: 0.85rem 1.25rem;
+  border-right: 1px solid var(--hod-border);
+}
+
+.batch-stat-cell:last-child {
+  border-right: none;
+}
+
+.batch-stat-cell small {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--hod-muted);
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  display: block;
+}
+
+.batch-stat-cell strong {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--hod-navy);
+}
+
+/* Filter View Mode Switcher */
+.view-mode-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.segmented-view-toggle {
+  display: inline-flex;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.segmented-view-btn {
+  border: none;
+  background: transparent;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #475569;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+
+.segmented-view-btn.active {
+  background: #ffffff;
+  color: var(--hod-navy);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(7, 23, 57, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.hod-modal-dialog {
+  background: #ffffff;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(7, 23, 57, 0.25);
+  border: 1px solid #cbd5e1;
+  animation: modalSlideIn 0.22s ease;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.hod-modal-header {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--hod-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border-radius: 14px 14px 0 0;
+}
+
+.hod-modal-header h3 {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--hod-navy);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hod-modal-body {
+  padding: 1.5rem;
+}
+
+.hod-modal-footer {
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  border-top: 1px solid var(--hod-border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  border-radius: 0 0 14px 14px;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.modal-close-btn svg,
+.modal-close-btn path,
+.modal-close-btn line {
+  pointer-events: none !important;
+}
+
+/* Toast Container */
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.toast-msg {
+  background: #ffffff;
+  color: #071739;
+  border: 1px solid #cbd5e1;
+  border-left: 4px solid var(--hod-navy);
+  padding: 0.75rem 1.15rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 300px;
+  max-width: 440px;
+  pointer-events: auto;
+  transition: all 0.22s ease;
+  animation: toastFadeIn 0.25s ease;
+}
+
+.toast-success { border-left-color: var(--hod-green); }
+.toast-error { border-left-color: var(--hod-red); }
+.toast-warning { border-left-color: #d97706; }
+.toast-info { border-left-color: var(--hod-blue); }
+
+@keyframes toastFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

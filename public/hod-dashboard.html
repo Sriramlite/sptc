@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOD Department Portal | 3-Year Batches &amp; Student Management | Subramanian Polytechnic College</title>
+  <meta name="description" content="Dedicated Head of Department (HOD) portal for Subramanian Polytechnic College (Rayavaram, DOTE: 331). Manage department students and group by 3-year batches.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
+  <link rel="stylesheet" href="/css/principal-dashboard.css?v=1.0">
+  <link rel="stylesheet" href="/css/hod-dashboard.css?v=1.0">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div id="hodToastContainer" class="toast-container"></div>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="top-bar-item">
+          <i data-lucide="map-pin"></i> <span>Rayavaram, Pudukkottai – 622 506</span>
+        </div>
+        <div class="top-bar-item">
+          <i data-lucide="landmark"></i> <strong>DOTE Institution: 331</strong> | AICTE Approved
+        </div>
+        <div class="top-bar-item">
+          <i data-lucide="shield-check"></i> <span style="color: #cbd5e1;">HOD Academic Session Active</span>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-bar-item" style="color: #fce076; font-size: 0.775rem;">
+          <i data-lucide="award"></i> Head of Department (HOD) Portal • 3-Year Diploma Batches
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Header Navigation -->
+  <header class="dashboard-header-dedicated" style="border-bottom: 2px solid #e2e8f0;">
+    <div class="container dashboard-header-inner">
+      <a href="/" class="brand-link">
+        <img src="/assets/logo.svg" alt="SPTC Crest" class="brand-logo-img" loading="lazy" decoding="async">
+        <div class="brand-text">
+          <h1 class="brand-name">Subramanian Polytechnic College</h1>
+          <p class="brand-sub">Rayavaram • <i data-lucide="book-open"></i> HOD Department Portal</p>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <div id="hodHeaderBadge" class="dashboard-user-card hide-on-mobile">
+          <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #1e40af); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.95rem;">
+            H
+          </div>
+          <div style="line-height: 1.15; text-align: left;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: #071739;">HOD Portal</div>
+            <div style="font-size: 0.7rem; color: #64748b;">Loading profile...</div>
+          </div>
+        </div>
+
+        <a href="/principal-dashboard.html" class="btn btn-outline btn-sm hide-on-mobile" title="Open Principal's Executive Governance Desk">
+          <i data-lucide="crown"></i> Principal's Desk
+        </a>
+        <a href="/cashier-dashboard.html" class="btn btn-outline btn-sm hide-on-mobile" title="Open Accounts Office &amp; Cashier Desk">
+          <i data-lucide="calculator"></i> Accounts &amp; Cashier
+        </a>
+        <a href="/" class="btn btn-outline btn-sm hide-on-mobile" title="Go to College Main Web Portal">
+          <i data-lucide="landmark"></i> College Home
+        </a>
+        <button onclick="handleHodLogout()" class="btn btn-sm btn-outline hide-on-mobile" style="border-color: #cbd5e1; color: #b91c1c;" title="Sign out of HOD Portal">
+          <i data-lucide="log-out"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container" style="padding-top: 1.5rem; padding-bottom: 4rem;" id="hodPortalContainer">
+
+    <!-- Hero Banner -->
+    <section class="hod-hero-banner">
+      <div class="hod-hero-left">
+        <span class="badge" style="background: rgba(212, 175, 55, 0.25); color: #fce076; border: 1px solid rgba(212, 175, 55, 0.5); font-weight: 700; padding: 0.2rem 0.6rem; font-size: 0.725rem;">
+          DEPARTMENTAL STUDENT GOVERNANCE
+        </span>
+        <h2 id="hodHeroTitle"><i data-lucide="book-open"></i> Department of Computer Engineering</h2>
+        <p id="hodHeroDesc">
+          HOD: Loading... • DOTE Code: 331 • Manage student admissions, edit details, and group by 3-year diploma batches.
+        </p>
+
+        <!-- Department Switcher (Shown if Principal or Super Admin) -->
+        <div id="hodDeptSwitchWrap" style="display: none; margin-top: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+            <span style="font-size: 0.75rem; color: #fce076; font-weight: 700;">Executive Department Switcher:</span>
+            <select id="hodDeptSelectDropdown" class="form-control" style="width: auto; padding: 0.3rem 0.75rem; font-size: 0.8rem; background: #ffffff; color: #0c2340; font-weight: 700;" onchange="HOD.handleDepartmentSwitch(this.value)">
+              <option value="Computer Engineering">Computer Engineering (CSE)</option>
+              <option value="Mechanical Engineering">Mechanical Engineering (MECH)</option>
+              <option value="Electrical & Electronics Engineering">Electrical & Electronics (EEE)</option>
+              <option value="Electronics & Communication Engineering">Electronics & Communication (ECE)</option>
+              <option value="Civil Engineering">Civil Engineering (CIVIL)</option>
+              <option value="Artificial Intelligence & Machine Learning">AI & Machine Learning (AIML)</option>
+              <option value="Biomedical Engineering">Biomedical Engineering (BME)</option>
+              <option value="Medical Laboratory Technology">Medical Laboratory Tech (MLT)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="hod-hero-actions">
+        <button class="btn btn-gold" onclick="HOD.openAddStudentModal()">
+          <i data-lucide="user-plus"></i> + Enroll Student
+        </button>
+        <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: #ffffff;" onclick="HOD.refreshAllData()">
+          <i data-lucide="refresh-cw"></i> Refresh
+        </button>
+      </div>
+    </section>
+
+    <!-- 4 KPI Cards -->
+    <section class="hod-kpi-grid">
+      <!-- Total Dept Students -->
+      <div class="hod-kpi-card" onclick="HOD.switchViewMode('list')">
+        <div class="kpi-icon-square kpi-purple">
+          <i data-lucide="graduation-cap"></i>
+        </div>
+        <div>
+          <div class="kpi-label-text">Department Students</div>
+          <div class="kpi-number-text" id="kpiTotalDeptStudents">--</div>
+          <div class="kpi-sub-text" id="kpiSubTotalStudents">Govt &amp; Management Quota</div>
+        </div>
+      </div>
+
+      <!-- Batch 1 (Freshers) -->
+      <div class="hod-kpi-card" onclick="HOD.switchViewMode('batches')">
+        <div class="kpi-icon-square kpi-green">
+          <i data-lucide="sparkles"></i>
+        </div>
+        <div>
+          <div class="kpi-label-text">Batch 2025–2028 (1st Yr)</div>
+          <div class="kpi-number-text" id="kpiBatch1Count" style="color: #059669;">--</div>
+          <div class="kpi-sub-text">Freshers • Semesters 1 &amp; 2</div>
+        </div>
+      </div>
+
+      <!-- Batch 2 (Intermediate) -->
+      <div class="hod-kpi-card" onclick="HOD.switchViewMode('batches')">
+        <div class="kpi-icon-square kpi-blue">
+          <i data-lucide="book-open"></i>
+        </div>
+        <div>
+          <div class="kpi-label-text">Batch 2024–2027 (2nd Yr)</div>
+          <div class="kpi-number-text" id="kpiBatch2Count" style="color: #2563eb;">--</div>
+          <div class="kpi-sub-text">Intermediate • Semesters 3 &amp; 4</div>
+        </div>
+      </div>
+
+      <!-- Batch 3 (Final Year Seniors) -->
+      <div class="hod-kpi-card" onclick="HOD.switchViewMode('batches')">
+        <div class="kpi-icon-square kpi-gold">
+          <i data-lucide="award"></i>
+        </div>
+        <div>
+          <div class="kpi-label-text">Batch 2023–2026 (3rd Yr)</div>
+          <div class="kpi-number-text" id="kpiBatch3Count" style="color: #7c3aed;">--</div>
+          <div class="kpi-sub-text">Final Year Seniors • Semesters 5 &amp; 6</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Dynamic Content (3-Year Batches or Flat List) -->
+    <div id="hodMainContent">
+      <div style="text-align: center; padding: 4rem 1rem;">
+        <i data-lucide="loader-2" class="spin-icon" style="font-size: 2.25rem; color: #2563eb; margin-bottom: 0.85rem;"></i>
+        <h4 style="color: #0c2340; font-family: var(--font-heading); margin-bottom: 0.25rem;">Loading Department Records...</h4>
+        <p style="color: #64748b; font-size: 0.9rem;">Organizing students into 3-year diploma batches...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: ADD / EDIT STUDENT IN DEPARTMENT -->
+  <!-- ============================================================== -->
+  <div class="modal-overlay" id="hodStudentModal">
+    <div class="hod-modal-dialog">
+      <div class="hod-modal-header">
+        <h3 id="hodStudentModalTitle">
+          <i data-lucide="user-plus"></i> Enroll Student in Department
+        </h3>
+        <button type="button" class="modal-close-btn close-modal-btn" aria-label="Close modal" onclick="HOD.closeModal('hodStudentModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <form id="hodStudentForm">
+        <div class="hod-modal-body">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            
+            <div class="form-group">
+              <label class="form-label">DOTE Registration No *</label>
+              <input type="text" id="hodStudentRegNoInput" class="form-control" placeholder="e.g. 25201088" required>
+              <small style="color: #64748b; font-size: 0.725rem;">Official 8-digit DOTE Reg. No</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Admission Number</label>
+              <input type="text" id="hodStudentAdmissionNoInput" class="form-control" placeholder="e.g. SPTC/25/110">
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+              <label class="form-label">Student Full Name *</label>
+              <input type="text" id="hodStudentNameInput" class="form-control" placeholder="e.g. S. Muthukumar" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <input type="text" id="hodStudentDeptInput" class="form-control" readonly style="background-color: #f1f5f9; font-weight: 700; color: #0c2340;">
+              <small style="color: #64748b; font-size: 0.725rem;">Locked to your Department</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Academic Year (3-Year Diploma) *</label>
+              <select id="hodStudentYearSelect" class="form-control" required onchange="HOD.onModalYearChange()">
+                <option value="1">1st Year (Freshers)</option>
+                <option value="2">2nd Year (Intermediate)</option>
+                <option value="3">3rd Year (Final Year Seniors)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">3-Year Batch Label *</label>
+              <input type="text" id="hodStudentBatchInput" class="form-control" placeholder="Batch 2025–2028" required>
+              <small style="color: #64748b; font-size: 0.725rem;">Auto-assigned according to diploma duration</small>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Academic Semester *</label>
+              <select id="hodStudentSemSelect" class="form-control" required>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Admission Quota *</label>
+              <select id="hodStudentQuotaSelect" class="form-control" required>
+                <option value="Government">Government Single Window Quota</option>
+                <option value="Management">Management Quota</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Student Status</label>
+              <select id="hodStudentStatusSelect" class="form-control">
+                <option value="Active">Active</option>
+                <option value="Discontinued">Discontinued</option>
+                <option value="Alumni">Alumni</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 1.5rem;">
+              <input type="checkbox" id="hodStudentHostellerCheck" style="width: 18px; height: 18px;">
+              <label for="hodStudentHostellerCheck" style="margin: 0; font-weight: 700; color: #0c2340; cursor: pointer;">
+                College Hostel Resident (Hosteller)
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Bus Route (Day Scholar)</label>
+              <input type="text" id="hodStudentBusRouteInput" class="form-control" placeholder="e.g. Pudukkottai Town (Route #1)">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Parent / Guardian Name</label>
+              <input type="text" id="hodStudentParentNameInput" class="form-control" placeholder="e.g. Thiru. P. Shanmugam">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Parent Mobile Contact</label>
+              <input type="tel" id="hodStudentParentPhoneInput" class="form-control" placeholder="e.g. 9842100000">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Student Email</label>
+              <input type="email" id="hodStudentEmailInput" class="form-control" placeholder="e.g. student@sptc.org.in">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Annual Tuition Fee (INR) *</label>
+              <input type="number" id="hodStudentTuitionInput" class="form-control" value="14000" placeholder="14000">
+              <small style="color: #64748b; font-size: 0.725rem;">Govt Quota: ₹14,000 • Mgt Quota: ₹22,000</small>
+            </div>
+
+            <div class="form-group" style="grid-column: span 2;">
+              <label class="form-label">Concession / Scholarship Waiver</label>
+              <select id="hodStudentConcessionSelect" class="form-control">
+                <option value="None">None (Standard Institutional Fee)</option>
+                <option value="First Generation Graduate (FGG)">First Generation Graduate (FGG Waiver)</option>
+                <option value="Post-Matric Scholarship (Govt. BC/MBC)">Post-Matric Scholarship (Govt. BC/MBC)</option>
+                <option value="Merit Scholarship (Subramanian Trust)">Merit Scholarship (Subramanian Trust)</option>
+                <option value="Staff Ward Concession">Staff Ward Concession</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+        <div class="hod-modal-footer">
+          <button type="button" class="btn btn-outline close-modal-btn" onclick="HOD.closeModal('hodStudentModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="hodSubmitStudentBtn">Save Student Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: AUDIT STUDENT FEE LEDGER & DIGITAL RECEIPTS -->
+  <!-- ============================================================== -->
+  <div class="modal-overlay" id="hodLedgerModal">
+    <div class="hod-modal-dialog" style="max-width: 760px;">
+      <div class="hod-modal-header">
+        <h3>
+          <i data-lucide="file-text"></i> Student Fee Ledger &amp; Cryptographic Receipts
+        </h3>
+        <button type="button" class="modal-close-btn close-modal-btn" aria-label="Close modal" onclick="HOD.closeModal('hodLedgerModal')">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <div class="hod-modal-body" id="hodLedgerModalContent">
+        <!-- Dynamic Ledger Details Loaded via API -->
+      </div>
+      <div class="hod-modal-footer">
+        <button type="button" class="btn btn-primary close-modal-btn" onclick="HOD.closeModal('hodLedgerModal')">Close Ledger</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer" style="margin-top: 3rem;">
+    <div class="container footer-bottom" style="border-top: none; padding-top: 0;">
+      <p>© 2026 Subramanian Polytechnic College, Rayavaram, Pudukkottai – 622 506. (DOTE Code: 331).</p>
+      <p style="margin-top: 0.25rem; font-size: 0.775rem;">
+        HOD Department Portal • 3-Year Diploma Batches &amp; Student Registry • Directorate of Technical Education (TN)
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
+  <script src="/js/data-store.js"></script>
+  <script src="/js/receipts.js"></script>
+  <script src="/js/hod.js"></script>
+  <script>
+    // HOD Route Guard & Access Security
+    async function guardAndInitHod() {
+      const container = document.getElementById('hodPortalContainer');
+
+      // Verify Active Session
+      const session = await API.verifySession();
+
+      // Case A: Student logged in -> Show restriction card
+      if (session && session.authenticated && session.userType === 'STUDENT') {
+        if (window.RedirectGuard) window.RedirectGuard.clear();
+        if (container) {
+          container.innerHTML = `
+            <div style="max-width: 600px; margin: 3rem auto; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 30px rgba(10,37,88,0.08);">
+              <div style="width: 64px; height: 64px; margin: 0 auto 1.25rem; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i data-lucide="shield-alert"></i>
+              </div>
+              <span class="badge badge-gold" style="margin-bottom: 0.75rem;">ROLE RESTRICTION</span>
+              <h2 style="font-family: var(--font-heading); color: #071739; font-size: 1.45rem; margin-bottom: 0.5rem;">
+                HOD Staff Authorization Required
+              </h2>
+              <p style="color: #64748b; font-size: 0.92rem; line-height: 1.55; margin-bottom: 1.75rem;">
+                You are currently signed in with a <strong>Student Account</strong>. This departmental portal is reserved for Heads of Departments and Academic Administrators.
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 360px; margin: 0 auto;">
+                <a href="/dashboard.html" class="btn btn-primary" style="justify-content: center;">
+                  <i data-lucide="graduation-cap"></i> Open My Student Fee Vault
+                </a>
+                <a href="/" class="btn btn-outline" style="justify-content: center;">
+                  <i data-lucide="landmark"></i> Return to College Home
+                </a>
+                <a href="/login.html?role=staff" class="btn btn-gold" style="justify-content: center; margin-top: 0.25rem;">
+                  <i data-lucide="log-out"></i> Sign In with HOD Account
+                </a>
+              </div>
+            </div>
+          `;
+          if (window.initLucideIcons) window.initLucideIcons(container);
+        }
+        return;
+      }
+
+      // Case B: Not logged in at all -> redirect
+      const userRole = (session?.role || session?.profile?.role || '').toUpperCase();
+      if (!session || !session.authenticated || session.userType !== 'STAFF' || (userRole !== 'HOD' && userRole !== 'PRINCIPAL')) {
+        const canRedirect = window.RedirectGuard ? window.RedirectGuard.recordHop('/login.html') : true;
+        if (container) {
+          container.innerHTML = `
+            <div style="max-width: 540px; margin: 3rem auto; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 30px rgba(10,37,88,0.08);">
+              <div style="width: 64px; height: 64px; margin: 0 auto 1.25rem; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i data-lucide="lock"></i>
+              </div>
+              <h3 style="font-family: var(--font-heading); color: #071739; font-size: 1.35rem; margin-bottom: 0.5rem;">
+                HOD Department Portal Authentication Required
+              </h3>
+              <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Please sign in with authorized Head of Department (HOD) credentials.
+              </p>
+              <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/login.html?role=staff&reason=staff_required" class="btn btn-primary">
+                  <i data-lucide="log-in"></i> HOD Staff Sign In
+                </a>
+                <a href="/" class="btn btn-outline">College Home</a>
+              </div>
+            </div>
+          `;
+          if (window.initLucideIcons) window.initLucideIcons(container);
+        }
+
+        if (canRedirect) {
+          setTimeout(() => {
+            window.location.replace('/login.html?role=staff&reason=staff_required');
+          }, 800);
+        }
+        return;
+      }
+
+      // Validated HOD or Principal session!
+      if (window.RedirectGuard) window.RedirectGuard.clear();
+      HOD.init(session);
+    }
+
+    async function handleHodLogout() {
+      try {
+        await API.logout();
+      } catch (e) {
+        console.warn('Logout notice:', e);
+      }
+      if (window.RedirectGuard) window.RedirectGuard.clear();
+      window.location.replace('/login.html?role=staff&reason=logged_out');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      guardAndInitHod();
+    });
+  </script>
+</body>
+</html>

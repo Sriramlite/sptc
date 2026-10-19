@@ -320,6 +320,20 @@ function requirePrincipal(req, res, next) {
   });
 }
 
+// 5. Principal or Department HOD Authorization Middleware
+function requirePrincipalOrHOD(req, res, next) {
+  requireStaff(req, res, () => {
+    const role = (req.user.role || req.user.profile?.role || '').toUpperCase();
+    if (role !== 'PRINCIPAL' && role !== 'HOD') {
+      return res.status(403).json({ 
+        error: 'Access denied. Principal or Head of Department (HOD) authorization required.', 
+        code: 'FORBIDDEN' 
+      });
+    }
+    next();
+  });
+}
+
 // ======================== API ROUTES ========================
 
 // Health & Deployment Status Endpoint
@@ -1473,14 +1487,30 @@ app.delete('/api/principal/staff/:id', requirePrincipal, (req, res) => {
   });
 });
 
-// G. Student Management: Enroll New Student (Principal Only)
-app.post('/api/principal/students', requirePrincipal, (req, res) => {
-  const {
+// Helper to calculate standard 3-year diploma batch label
+function computeBatchLabel(year) {
+  const yr = parseInt(year) || 1;
+  if (yr === 3) return 'Batch 2023–2026 (3rd Year Final)';
+  if (yr === 2) return 'Batch 2024–2027 (2nd Year Intermediate)';
+  return 'Batch 2025–2028 (1st Year Freshers)';
+}
+
+// G. Student Management: Enroll New Student (Principal or HOD)
+app.post(['/api/principal/students', '/api/hod/students'], requirePrincipalOrHOD, (req, res) => {
+  const userRole = (req.user.role || req.user.profile?.role || '').toUpperCase();
+  const userDept = req.user.department || req.user.profile?.department || '';
+
+  let {
     regNo, name, department, currentYear, currentSemester,
     quota, admissionNo, isHosteller, busRoute,
     parentName, parentPhone, email, pin,
-    concessionType, concessionAmount, annualTuitionFee
+    concessionType, concessionAmount, annualTuitionFee, batch
   } = req.body;
+
+  // If HOD, default department to HOD's department
+  if (userRole === 'HOD' && userDept) {
+    department = userDept;
+  }
 
   if (!regNo || !name || !department) {
     return res.status(400).json({ success: false, error: 'Registration Number, Full Name, and Department are required.' });
@@ -1507,6 +1537,7 @@ app.post('/api/principal/students', requirePrincipal, (req, res) => {
   const yr = parseInt(currentYear) || 1;
   const sem = parseInt(currentSemester) || (yr * 2 - 1);
   const concAmt = parseFloat(concessionAmount) || 0;
+  const studentBatch = batch ? batch.trim() : computeBatchLabel(yr);
 
   const newStudent = {
     regNo: trimmedReg,
@@ -1517,6 +1548,7 @@ app.post('/api/principal/students', requirePrincipal, (req, res) => {
     deptCode: deptCode.toLowerCase(),
     currentYear: yr,
     currentSemester: sem,
+    batch: studentBatch,
     quota: quota || 'Government',
     isHosteller: !!isHosteller,
     busRoute: isHosteller ? 'Hosteller (No Bus)' : (busRoute || 'Pudukkottai Town (Route #1)'),
@@ -1525,7 +1557,8 @@ app.post('/api/principal/students', requirePrincipal, (req, res) => {
     email: email ? email.trim() : `${trimmedReg}@sptc.org.in`,
     concessionType: concessionType || 'None',
     concessionAmount: concAmt,
-    status: 'Active'
+    status: 'Active',
+    enrolledBy: userRole === 'HOD' ? `HOD (${userDept})` : 'Principal'
   };
 
   db.students = db.students || [];
@@ -1557,19 +1590,22 @@ app.post('/api/principal/students', requirePrincipal, (req, res) => {
 
   res.json({
     success: true,
-    message: `Student ${newStudent.name} (${newStudent.regNo}) enrolled successfully.`,
+    message: `Student ${newStudent.name} (${newStudent.regNo}) enrolled successfully in ${newStudent.batch}.`,
     student: newStudent
   });
 });
 
-// H. Student Management: Update Student Profile (Principal Only)
-app.put('/api/principal/students/:regNo', requirePrincipal, (req, res) => {
+// H. Student Management: Update Student Profile (Principal or HOD)
+app.put(['/api/principal/students/:regNo', '/api/hod/students/:regNo'], requirePrincipalOrHOD, (req, res) => {
   const { regNo } = req.params;
+  const userRole = (req.user.role || req.user.profile?.role || '').toUpperCase();
+  const userDept = (req.user.department || req.user.profile?.department || '').toLowerCase();
+
   const {
     name, department, currentYear, currentSemester,
     quota, admissionNo, isHosteller, busRoute,
     parentName, parentPhone, email,
-    concessionType, concessionAmount, status
+    concessionType, concessionAmount, status, batch
   } = req.body;
 
   const db = loadDb();
@@ -1578,10 +1614,25 @@ app.put('/api/principal/students/:regNo', requirePrincipal, (req, res) => {
     return res.status(404).json({ success: false, error: `Student with Reg. No ${regNo} not found.` });
   }
 
+  // If HOD, verify department authorization
+  if (userRole === 'HOD' && userDept) {
+    const studentDeptLower = (student.department || '').toLowerCase();
+    if (!studentDeptLower.includes(userDept) && !userDept.includes(studentDeptLower)) {
+      return res.status(403).json({
+        success: false,
+        error: `Access denied. As HOD of ${req.user.department}, you may only edit students in your department.`
+      });
+    }
+  }
+
   if (name) student.name = name.trim();
-  if (department) student.department = department.trim();
-  if (currentYear) student.currentYear = parseInt(currentYear);
+  if (department && userRole === 'PRINCIPAL') student.department = department.trim();
+  if (currentYear) {
+    student.currentYear = parseInt(currentYear);
+    if (!batch) student.batch = computeBatchLabel(student.currentYear);
+  }
   if (currentSemester) student.currentSemester = parseInt(currentSemester);
+  if (batch) student.batch = batch.trim();
   if (quota) student.quota = quota.trim();
   if (admissionNo) student.admissionNo = admissionNo.trim();
   if (isHosteller !== undefined) student.isHosteller = !!isHosteller;
@@ -1599,6 +1650,90 @@ app.put('/api/principal/students/:regNo', requirePrincipal, (req, res) => {
     success: true,
     message: `Student record for ${student.name} (${student.regNo}) updated successfully.`,
     student
+  });
+});
+
+// H2. HOD Department Overview & 3-Year Batch Grouping API
+app.get('/api/hod/overview', requireStaff, (req, res) => {
+  const userRole = (req.user.role || req.user.profile?.role || '').toUpperCase();
+  if (userRole !== 'HOD' && userRole !== 'PRINCIPAL') {
+    return res.status(403).json({ success: false, error: 'HOD or Principal authorization required.' });
+  }
+
+  const db = loadDb();
+  const userDept = req.user.department || req.user.profile?.department || req.query.department || 'Computer Engineering';
+  const allStudents = db.students || [];
+  const bills = db.feeBilledItems || [];
+  const receipts = db.receipts || [];
+
+  // Filter students for HOD's department
+  const deptStudents = allStudents.filter(s => {
+    return s.department?.toLowerCase() === userDept.toLowerCase() ||
+           s.department?.toLowerCase().includes(userDept.toLowerCase()) ||
+           userDept.toLowerCase().includes(s.department?.toLowerCase());
+  }).map(s => {
+    const sBills = bills.filter(b => b.regNo === s.regNo);
+    const sReceipts = receipts.filter(r => r.regNo === s.regNo);
+    const bTotal = sBills.reduce((acc, b) => acc + (b.netPayable || 0), 0);
+    const pTotal = sReceipts.reduce((acc, r) => acc + (r.amount || 0), 0);
+    const balanceDue = Math.max(0, bTotal - pTotal);
+    return {
+      ...s,
+      batch: s.batch || computeBatchLabel(s.currentYear),
+      totalBilled: bTotal,
+      totalPaid: pTotal,
+      balanceDue
+    };
+  });
+
+  // Calculate financial metrics for department students
+  const studentRegNos = new Set(deptStudents.map(s => s.regNo));
+  const deptBills = bills.filter(b => studentRegNos.has(b.regNo));
+  const deptReceipts = receipts.filter(r => studentRegNos.has(r.regNo));
+  const totalBilled = deptBills.reduce((acc, b) => acc + (b.netPayable || 0), 0);
+  const totalCollections = deptReceipts.reduce((acc, r) => acc + (r.amount || 0), 0);
+  const totalDues = Math.max(0, totalBilled - totalCollections);
+
+  // Group students into 3 Batches (3 Years)
+  const batch3 = deptStudents.filter(s => s.currentYear === 3);
+  const batch2 = deptStudents.filter(s => s.currentYear === 2);
+  const batch1 = deptStudents.filter(s => s.currentYear === 1 || !s.currentYear);
+
+  res.json({
+    success: true,
+    department: userDept,
+    hodName: req.user.name || req.user.profile?.name,
+    totalStudents: deptStudents.length,
+    totalBilled,
+    totalCollections,
+    totalDues,
+    batches: {
+      year3: {
+        batchLabel: 'Batch 2023–2026 (3rd Year Final)',
+        year: 3,
+        count: batch3.length,
+        govtQuota: batch3.filter(s => s.quota === 'Government').length,
+        mgtQuota: batch3.filter(s => s.quota === 'Management').length,
+        students: batch3
+      },
+      year2: {
+        batchLabel: 'Batch 2024–2027 (2nd Year Intermediate)',
+        year: 2,
+        count: batch2.length,
+        govtQuota: batch2.filter(s => s.quota === 'Government').length,
+        mgtQuota: batch2.filter(s => s.quota === 'Management').length,
+        students: batch2
+      },
+      year1: {
+        batchLabel: 'Batch 2025–2028 (1st Year Freshers)',
+        year: 1,
+        count: batch1.length,
+        govtQuota: batch1.filter(s => s.quota === 'Government').length,
+        mgtQuota: batch1.filter(s => s.quota === 'Management').length,
+        students: batch1
+      }
+    },
+    students: deptStudents
   });
 });
 
@@ -1758,6 +1893,11 @@ app.get(['/cashier', '/cashier-dashboard', '/cashier-dashboard.html'], (req, res
 // Dedicated Principal Executive Dashboard Route
 app.get(['/principal', '/principal-dashboard', '/principal-dashboard.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'principal-dashboard.html'));
+});
+
+// Dedicated HOD Department Dashboard Route
+app.get(['/hod', '/hod-dashboard', '/hod-dashboard.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'hod-dashboard.html'));
 });
 
 // Dedicated Transactions Journal Page (Paginated 20 rows per page)

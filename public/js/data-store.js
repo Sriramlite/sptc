@@ -300,6 +300,19 @@ const API = {
     return await res.json();
   },
 
+  // Protected: HOD / Principal - Department Overview & 3-Year Batch Grouping
+  async getHodOverview(department = '') {
+    const url = department ? `/api/hod/overview?department=${encodeURIComponent(department)}` : '/api/hod/overview';
+    const res = await fetch(url, {
+      headers: this.getAuthHeaders()
+    });
+    if (res.status === 401 || res.status === 403) {
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err.error || 'HOD or Principal authorization required.', unauthorized: true };
+    }
+    return await res.json();
+  },
+
   // Protected: Principal Only - Full Staff Directory
   async getPrincipalStaff() {
     const res = await fetch('/api/principal/staff', {
