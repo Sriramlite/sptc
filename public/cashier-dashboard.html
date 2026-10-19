@@ -321,6 +321,75 @@
         return;
       }
 
+      // Case C: User is an HOD -> HODs CANNOT have privileges to view Cashier Dashboard!
+      const userRole = (session?.role || session?.profile?.role || '').toUpperCase();
+      if (session && session.authenticated && (userRole === 'HOD' || session.role === 'HOD')) {
+        RedirectGuard.clear();
+        if (container) {
+          container.innerHTML = `
+            <div style="max-width: 620px; margin: 3rem auto; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 30px rgba(10,37,88,0.08);">
+              <div style="width: 64px; height: 64px; margin: 0 auto 1.25rem; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i data-lucide="shield-x"></i>
+              </div>
+              <span class="badge" style="background: #fee2e2; color: #dc2626; margin-bottom: 0.75rem; font-weight: 700; padding: 0.25rem 0.65rem;">HOD PRIVILEGE RESTRICTION</span>
+              <h2 style="font-family: var(--font-heading); color: #0a2558; font-size: 1.45rem; margin-bottom: 0.5rem;">
+                Cashier Desk Access Restricted
+              </h2>
+              <p style="color: #64748b; font-size: 0.92rem; line-height: 1.55; margin-bottom: 1.75rem;">
+                You are currently signed in as Head of Department (<strong>${session.profile?.name || 'HOD'}</strong> - ${session.profile?.department || 'Department'}).<br>
+                Heads of Departments (HODs) do not have privileges to view the Cashier Dashboard, counter POS fee collections, or daily cash-book records. HODs manage students and 3-year batches through the dedicated HOD Portal.
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 380px; margin: 0 auto;">
+                <a href="/hod-dashboard.html" class="btn btn-primary" style="justify-content: center;">
+                  <i data-lucide="book-open"></i> Return to HOD Department Portal
+                </a>
+                <a href="/" class="btn btn-outline" style="justify-content: center;">
+                  <i data-lucide="landmark"></i> Return to College Home
+                </a>
+                <button type="button" onclick="handleSwitchToStaff()" class="btn btn-gold" style="justify-content: center; margin-top: 0.25rem;">
+                  <i data-lucide="log-out"></i> Sign In with Cashier Credentials
+                </button>
+              </div>
+            </div>
+          `;
+          if (window.initLucideIcons) window.initLucideIcons(container);
+        }
+        return;
+      }
+
+      // Case D: Role is not Cashier, Principal, or Accounts Department
+      const userDept = (session.profile?.department || '').toLowerCase();
+      if (userRole !== 'CASHIER' && userRole !== 'PRINCIPAL' && !userDept.includes('accounts')) {
+        RedirectGuard.clear();
+        if (container) {
+          container.innerHTML = `
+            <div style="max-width: 600px; margin: 3rem auto; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 30px rgba(10,37,88,0.08);">
+              <div style="width: 64px; height: 64px; margin: 0 auto 1.25rem; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i data-lucide="shield-x"></i>
+              </div>
+              <span class="badge" style="background: #fee2e2; color: #dc2626; margin-bottom: 0.75rem; font-weight: 700;">ACCOUNTS AUTHORIZATION REQUIRED</span>
+              <h2 style="font-family: var(--font-heading); color: #0a2558; font-size: 1.45rem; margin-bottom: 0.5rem;">
+                Cashier Authorization Required
+              </h2>
+              <p style="color: #64748b; font-size: 0.92rem; line-height: 1.55; margin-bottom: 1.75rem;">
+                Only Accounts Officers and the Principal are authorized to access the Counter Fee Collection POS desk.
+              </p>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 360px; margin: 0 auto;">
+                <a href="/" class="btn btn-outline" style="justify-content: center;">
+                  <i data-lucide="landmark"></i> Return to College Home
+                </a>
+                <button type="button" onclick="handleSwitchToStaff()" class="btn btn-gold" style="justify-content: center;">
+                  <i data-lucide="log-out"></i> Sign In with Accounts Credentials
+                </button>
+              </div>
+            </div>
+          `;
+          if (window.initLucideIcons) window.initLucideIcons(container);
+        }
+        return;
+      }
+
       // Successful staff verification: clear any redirect counter
       RedirectGuard.clear();
 

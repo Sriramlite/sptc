@@ -512,6 +512,22 @@
             return; // STOP! Never redirect student to cashier-dashboard!
           }
 
+          // Fallback 1b: HODs do not have privileges to view Cashier Desk
+          const isUserHod = (res.role === 'HOD' || res.profile?.role === 'HOD');
+          if (isUserHod && redirectUrl && redirectUrl.includes('cashier')) {
+            RedirectGuard.clear();
+            showAlert(`
+              <div style="text-align: left; line-height: 1.45;">
+                <strong style="color: #92400e;">Cashier Desk Access Restricted:</strong><br>
+                You are logged in as Head of Department (<strong>${res.profile.name}</strong>). HODs do not have privileges to access the Cashier Desk. Redirecting to your HOD Portal...
+              </div>
+            `, 'warning');
+            setTimeout(() => {
+              window.location.replace('/hod-dashboard.html');
+            }, 800);
+            return;
+          }
+
           // Fallback 2: Check circuit breaker against rapid bouncing
           if (!RedirectGuard.recordHop(redirectUrl || window.location.pathname)) {
             RedirectGuard.clear();
@@ -520,7 +536,7 @@
                 <strong>Navigation Paused:</strong> A redirect loop was prevented.<br>
                 You are securely logged in as <strong>${res.profile.name}</strong> (${res.userType}).
                 <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
-                  <a href="${res.userType === 'STAFF' ? '/cashier-dashboard.html' : '/dashboard.html'}" class="btn btn-sm btn-primary">Go to Dashboard</a>
+                  <a href="${isUserHod ? '/hod-dashboard.html' : (res.userType === 'STAFF' ? '/cashier-dashboard.html' : '/dashboard.html')}" class="btn btn-sm btn-primary">Go to Dashboard</a>
                   <a href="/" class="btn btn-sm btn-outline">College Home</a>
                 </div>
               </div>
@@ -532,13 +548,13 @@
           showAlert(`Welcome back, ${res.profile.name}! Redirecting to your active portal...`, 'success');
           setTimeout(() => {
             RedirectGuard.clear();
-            if (redirectUrl && redirectUrl.startsWith('/') && !isTargetingStaff) {
+            if (isUserHod) {
+              window.location.href = '/hod-dashboard.html';
+            } else if (redirectUrl && redirectUrl.startsWith('/') && !isTargetingStaff) {
               window.location.href = redirectUrl;
             } else if (res.userType === 'STAFF') {
               if (res.role === 'PRINCIPAL' || res.profile?.role === 'PRINCIPAL') {
                 window.location.href = '/principal-dashboard.html';
-              } else if (res.role === 'HOD' || res.profile?.role === 'HOD') {
-                window.location.href = '/hod-dashboard.html';
               } else {
                 window.location.href = '/cashier-dashboard.html';
               }
@@ -675,13 +691,14 @@
           localStorage.setItem('sptc_auth_session', JSON.stringify(sessionData));
 
           setTimeout(() => {
-            if (redirectUrl && redirectUrl.startsWith('/')) {
+            const isUserHod = (res.role === 'HOD' || res.profile?.role === 'HOD');
+            if (isUserHod) {
+              window.location.href = '/hod-dashboard.html';
+            } else if (redirectUrl && redirectUrl.startsWith('/') && !redirectUrl.includes('cashier')) {
               window.location.href = redirectUrl;
             } else if (res.userType === 'STAFF') {
               if (res.role === 'PRINCIPAL' || res.profile?.role === 'PRINCIPAL') {
                 window.location.href = '/principal-dashboard.html';
-              } else if (res.role === 'HOD' || res.profile?.role === 'HOD') {
-                window.location.href = '/hod-dashboard.html';
               } else {
                 window.location.href = '/cashier-dashboard.html';
               }

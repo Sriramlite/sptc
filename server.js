@@ -334,6 +334,30 @@ function requirePrincipalOrHOD(req, res, next) {
   });
 }
 
+// 6. Strict Cashier Desk & Accounts Office Middleware (HODs strictly forbidden)
+function requireCashierOrPrincipal(req, res, next) {
+  requireStaff(req, res, () => {
+    const role = (req.user.role || req.user.profile?.role || '').toUpperCase();
+    const dept = (req.user.department || req.user.profile?.department || '').toLowerCase();
+    
+    // Explicitly deny HOD role from cashier desk / financial operations
+    if (role === 'HOD') {
+      return res.status(403).json({ 
+        error: 'Access denied. Head of Departments (HOD) do not have privileges to view the Cashier Dashboard or process counter fee transactions. Please use the HOD Department Portal.', 
+        code: 'FORBIDDEN_HOD' 
+      });
+    }
+
+    if (role !== 'CASHIER' && role !== 'PRINCIPAL' && !dept.includes('accounts')) {
+      return res.status(403).json({ 
+        error: 'Access denied. Accounts Officer or Cashier authorization required.', 
+        code: 'FORBIDDEN' 
+      });
+    }
+    next();
+  });
+}
+
 // ======================== API ROUTES ========================
 
 // Health & Deployment Status Endpoint
@@ -892,8 +916,8 @@ app.post('/api/payments/create', authenticate, (req, res) => {
   });
 });
 
-// 8. Import from Legacy Tally (Strictly Protected: Staff Only)
-app.post('/api/tally/import-xml', requireStaff, (req, res) => {
+// 8. Import from Legacy Tally (Strictly Protected: Cashier & Principal Only)
+app.post('/api/tally/import-xml', requireCashierOrPrincipal, (req, res) => {
   const { xmlContent } = req.body;
   const db = loadDb();
 
@@ -965,8 +989,8 @@ app.post('/api/tally/import-xml', requireStaff, (req, res) => {
   });
 });
 
-// 9. Daily Cash-Book & Cashier Audit Summary (Strictly Protected: Staff Only)
-app.get('/api/reports/cash-book', requireStaff, (req, res) => {
+// 9. Daily Cash-Book & Cashier Audit Summary (Strictly Protected: Cashier & Principal Only)
+app.get('/api/reports/cash-book', requireCashierOrPrincipal, (req, res) => {
   const db = loadDb();
   const receipts = db.receipts;
 
@@ -1077,8 +1101,8 @@ app.get('/api/transactions', requireStaff, (req, res) => {
   });
 });
 
-// B. Set / Adjust Total Fees per Year / Semester (Staff Only)
-app.post('/api/students/:regNo/set-fees', requireStaff, (req, res) => {
+// B. Set / Adjust Total Fees per Year / Semester (Cashier & Principal Only)
+app.post('/api/students/:regNo/set-fees', requireCashierOrPrincipal, (req, res) => {
   const { regNo } = req.params;
   const {
     annualFee,

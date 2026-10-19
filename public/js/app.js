@@ -52,7 +52,14 @@ const Auth = {
 
         // Route according to role
         if (res.userType === 'STAFF') {
-          window.location.href = '/cashier-dashboard.html';
+          const staffRole = (res.role || res.profile?.role || '').toUpperCase();
+          if (staffRole === 'PRINCIPAL') {
+            window.location.href = '/principal-dashboard.html';
+          } else if (staffRole === 'HOD') {
+            window.location.href = '/hod-dashboard.html';
+          } else {
+            window.location.href = '/cashier-dashboard.html';
+          }
         } else {
           window.location.href = '/dashboard.html';
         }
@@ -102,7 +109,17 @@ const Auth = {
         ? '<span class="badge badge-primary">STAFF</span>'
         : '<span class="badge badge-gold">STUDENT</span>';
 
-      const dashboardUrl = isStaff ? '/cashier-dashboard.html' : '/dashboard.html';
+      let dashboardUrl = '/dashboard.html';
+      if (isStaff) {
+        const staffRole = (this.currentUser.role || this.currentUser.profile?.role || '').toUpperCase();
+        if (staffRole === 'PRINCIPAL') {
+          dashboardUrl = '/principal-dashboard.html';
+        } else if (staffRole === 'HOD') {
+          dashboardUrl = '/hod-dashboard.html';
+        } else {
+          dashboardUrl = '/cashier-dashboard.html';
+        }
+      }
 
       authStatusContainer.innerHTML = `
         <div class="user-profile-badge">
