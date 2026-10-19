@@ -1511,9 +1511,11 @@ app.delete('/api/principal/staff/:id', requirePrincipal, (req, res) => {
   });
 });
 
-// Helper to calculate standard 3-year diploma batch label
-function computeBatchLabel(year) {
+// Helper to calculate standard 3-year diploma batch label & post final year batches
+function computeBatchLabel(year, batch) {
+  if (batch && batch.trim()) return batch.trim();
   const yr = parseInt(year) || 1;
+  if (yr >= 4) return 'Batch 2022–2025 (Post Final Year)';
   if (yr === 3) return 'Batch 2023–2026 (3rd Year Final)';
   if (yr === 2) return 'Batch 2024–2027 (2nd Year Intermediate)';
   return 'Batch 2025–2028 (1st Year Freshers)';
@@ -1528,7 +1530,7 @@ app.post(['/api/principal/students', '/api/hod/students'], requirePrincipalOrHOD
     regNo, name, department, currentYear, currentSemester,
     quota, admissionNo, isHosteller, busRoute,
     parentName, parentPhone, email, pin,
-    concessionType, concessionAmount, annualTuitionFee, batch
+    concessionType, concessionAmount, annualTuitionFee, batch, status
   } = req.body;
 
   // If HOD, default department to HOD's department
@@ -1559,9 +1561,10 @@ app.post(['/api/principal/students', '/api/hod/students'], requirePrincipalOrHOD
   };
   const deptCode = deptCodes[department] || 'DIPLOMA';
   const yr = parseInt(currentYear) || 1;
-  const sem = parseInt(currentSemester) || (yr * 2 - 1);
+  const sem = parseInt(currentSemester) || (yr >= 4 ? 6 : yr * 2 - 1);
   const concAmt = parseFloat(concessionAmount) || 0;
-  const studentBatch = batch ? batch.trim() : computeBatchLabel(yr);
+  const studentBatch = batch && batch.trim() ? batch.trim() : computeBatchLabel(yr);
+  const studentStatus = status ? status.trim() : (yr >= 4 ? 'Post Final Year' : 'Active');
 
   const newStudent = {
     regNo: trimmedReg,
@@ -1581,7 +1584,7 @@ app.post(['/api/principal/students', '/api/hod/students'], requirePrincipalOrHOD
     email: email ? email.trim() : `${trimmedReg}@sptc.org.in`,
     concessionType: concessionType || 'None',
     concessionAmount: concAmt,
-    status: 'Active',
+    status: studentStatus,
     enrolledBy: userRole === 'HOD' ? `HOD (${userDept})` : 'Principal'
   };
 
@@ -1653,7 +1656,7 @@ app.put(['/api/principal/students/:regNo', '/api/hod/students/:regNo'], requireP
   if (department && userRole === 'PRINCIPAL') student.department = department.trim();
   if (currentYear) {
     student.currentYear = parseInt(currentYear);
-    if (!batch) student.batch = computeBatchLabel(student.currentYear);
+    if (!batch && !student.batch) student.batch = computeBatchLabel(student.currentYear);
   }
   if (currentSemester) student.currentSemester = parseInt(currentSemester);
   if (batch) student.batch = batch.trim();
@@ -1677,7 +1680,7 @@ app.put(['/api/principal/students/:regNo', '/api/hod/students/:regNo'], requireP
   });
 });
 
-// H2. HOD Department Overview & 3-Year Batch Grouping API
+// H2. HOD Department Overview & Batch Grouping API (3-Year Batches + Post Final Year Batches)
 app.get('/api/hod/overview', requireStaff, (req, res) => {
   const userRole = (req.user.role || req.user.profile?.role || '').toUpperCase();
   if (userRole !== 'HOD' && userRole !== 'PRINCIPAL') {
@@ -1718,16 +1721,49 @@ app.get('/api/hod/overview', requireStaff, (req, res) => {
   const totalCollections = deptReceipts.reduce((acc, r) => acc + (r.amount || 0), 0);
   const totalDues = Math.max(0, totalBilled - totalCollections);
 
-  // Group students into 3 Batches (3 Years)
-  const batch3 = deptStudents.filter(s => s.currentYear === 3);
-  const batch2 = deptStudents.filter(s => s.currentYear === 2);
-  const batch1 = deptStudents.filter(s => s.currentYear === 1 || !s.currentYear);
+  // Helper to identify Post Final Year students
+  const isPostFinal = (s) => {
+    const yr = parseInt(s.currentYear);
+    const b = (s.batch || '').toLowerCase();
+    const st = (s.status || '').toLowerCase();
+    return yr >= 4 || b.includes('post final') || st.includes('post final');
+  };
+
+  // Group active 3 years and Post Final Year students
+  const postFinalStudents = deptStudents.filter(isPostFinal);
+  const batch3 = deptStudents.filter(s => !isPostFinal(s) && parseInt(s.currentYear) === 3);
+  const batch2 = deptStudents.filter(s => !isPostFinal(s) && parseInt(s.currentYear) === 2);
+  const batch1 = deptStudents.filter(s => !isPostFinal(s) && (parseInt(s.currentYear) === 1 || !s.currentYear));
+
+  // Dynamically group Post Final Year students by batch
+  const postFinalMap = {};
+  postFinalStudents.forEach(st => {
+    const bLabel = st.batch || 'Batch 2022–2025 (Post Final Year)';
+    if (!postFinalMap[bLabel]) {
+      postFinalMap[bLabel] = [];
+    }
+    postFinalMap[bLabel].push(st);
+  });
+
+  const postFinalBatches = Object.keys(postFinalMap).map(bLabel => {
+    const list = postFinalMap[bLabel];
+    return {
+      batchLabel: bLabel,
+      year: 4,
+      isPostFinal: true,
+      count: list.length,
+      govtQuota: list.filter(s => s.quota === 'Government').length,
+      mgtQuota: list.filter(s => s.quota === 'Management').length,
+      students: list
+    };
+  });
 
   res.json({
     success: true,
     department: userDept,
     hodName: req.user.name || req.user.profile?.name,
     totalStudents: deptStudents.length,
+    totalPostFinalStudents: postFinalStudents.length,
     totalBilled,
     totalCollections,
     totalDues,
@@ -1755,8 +1791,18 @@ app.get('/api/hod/overview', requireStaff, (req, res) => {
         govtQuota: batch1.filter(s => s.quota === 'Government').length,
         mgtQuota: batch1.filter(s => s.quota === 'Management').length,
         students: batch1
+      },
+      postFinal: {
+        batchLabel: 'Post Final Year Batches',
+        year: 4,
+        count: postFinalStudents.length,
+        govtQuota: postFinalStudents.filter(s => s.quota === 'Government').length,
+        mgtQuota: postFinalStudents.filter(s => s.quota === 'Management').length,
+        batches: postFinalBatches,
+        students: postFinalStudents
       }
     },
+    postFinalBatches: postFinalBatches,
     students: deptStudents
   });
 });

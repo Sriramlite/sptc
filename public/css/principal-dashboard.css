@@ -111,6 +111,7 @@
 .kpi-blue { background: #eff6ff; color: #1d4ed8; }
 .kpi-green { background: #ecfdf5; color: #047857; }
 .kpi-gold { background: #fefce8; color: #b45309; }
+.kpi-amber { background: #fffbeb; color: #d97706; }
 
 .kpi-label-text {
   font-size: 0.72rem;

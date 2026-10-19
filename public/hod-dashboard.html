@@ -173,6 +173,18 @@
           <div class="kpi-sub-text">Final Year Seniors • Semesters 5 &amp; 6</div>
         </div>
       </div>
+
+      <!-- Post Final Year Batches -->
+      <div class="hod-kpi-card" onclick="HOD.scrollToPostFinalBatches()">
+        <div class="kpi-icon-square kpi-amber">
+          <i data-lucide="history"></i>
+        </div>
+        <div>
+          <div class="kpi-label-text">Post Final Year Batches</div>
+          <div class="kpi-number-text" id="kpiPostFinalCount" style="color: #d97706;">--</div>
+          <div class="kpi-sub-text" id="kpiSubPostFinal">Course Completed • Arrears</div>
+        </div>
+      </div>
     </section>
 
     <!-- Main Dynamic Content (3-Year Batches or Flat List) -->
@@ -180,7 +192,7 @@
       <div style="text-align: center; padding: 4rem 1rem;">
         <i data-lucide="loader-2" class="spin-icon" style="font-size: 2.25rem; color: #2563eb; margin-bottom: 0.85rem;"></i>
         <h4 style="color: #0c2340; font-family: var(--font-heading); margin-bottom: 0.25rem;">Loading Department Records...</h4>
-        <p style="color: #64748b; font-size: 0.9rem;">Organizing students into 3-year diploma batches...</p>
+        <p style="color: #64748b; font-size: 0.9rem;">Organizing students into 3-year diploma batches and post final year batches...</p>
       </div>
     </div>
 
@@ -226,18 +238,27 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">Academic Year (3-Year Diploma) *</label>
+              <label class="form-label">Academic Year (Diploma Program) *</label>
               <select id="hodStudentYearSelect" class="form-control" required onchange="HOD.onModalYearChange()">
                 <option value="1">1st Year (Freshers)</option>
                 <option value="2">2nd Year (Intermediate)</option>
                 <option value="3">3rd Year (Final Year Seniors)</option>
+                <option value="4">Post Final Year (Course Completed / Arrears)</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="form-label">3-Year Batch Label *</label>
-              <input type="text" id="hodStudentBatchInput" class="form-control" placeholder="Batch 2025–2028" required>
-              <small style="color: #64748b; font-size: 0.725rem;">Auto-assigned according to diploma duration</small>
+              <label class="form-label">Batch Label *</label>
+              <input type="text" id="hodStudentBatchInput" list="hodBatchSuggestions" class="form-control" placeholder="e.g. Batch 2025–2028" required>
+              <datalist id="hodBatchSuggestions">
+                <option value="Batch 2025–2028 (1st Year Freshers)">
+                <option value="Batch 2024–2027 (2nd Year Intermediate)">
+                <option value="Batch 2023–2026 (3rd Year Final)">
+                <option value="Batch 2022–2025 (Post Final Year)">
+                <option value="Batch 2021–2024 (Post Final Year)">
+                <option value="Batch 2020–2023 (Post Final Year)">
+              </datalist>
+              <small style="color: #64748b; font-size: 0.725rem;">Grouped by diploma batch (e.g. Batch 2022–2025)</small>
             </div>
 
             <div class="form-group">
@@ -248,7 +269,7 @@
                 <option value="3">Semester 3</option>
                 <option value="4">Semester 4</option>
                 <option value="5">Semester 5</option>
-                <option value="6">Semester 6</option>
+                <option value="6">Semester 6 (Final / Completed)</option>
               </select>
             </div>
 
@@ -264,8 +285,9 @@
               <label class="form-label">Student Status</label>
               <select id="hodStudentStatusSelect" class="form-control">
                 <option value="Active">Active</option>
-                <option value="Discontinued">Discontinued</option>
+                <option value="Post Final Year">Post Final Year (Course Completed / Arrears)</option>
                 <option value="Alumni">Alumni</option>
+                <option value="Discontinued">Discontinued</option>
               </select>
             </div>
 

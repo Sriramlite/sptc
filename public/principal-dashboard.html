@@ -517,6 +517,7 @@
                   <option value="1">Year 1</option>
                   <option value="2">Year 2</option>
                   <option value="3">Year 3</option>
+                  <option value="4">Post Final Year</option>
                 </select>
                 <select id="studentSemSelect" class="form-control" style="flex: 1;" required>
                   <option value="1">Sem 1</option>
@@ -530,9 +531,17 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">3-Year Diploma Batch *</label>
-              <input type="text" id="studentBatchInput" class="form-control" placeholder="Batch 2025–2028 (1st Year Freshers)" required>
-              <small style="color: #64748b; font-size: 0.725rem;">Auto-assigned according to 3-year diploma schedule</small>
+              <label class="form-label">Diploma Batch *</label>
+              <input type="text" id="studentBatchInput" list="principalBatchSuggestions" class="form-control" placeholder="Batch 2025–2028 (1st Year Freshers)" required>
+              <datalist id="principalBatchSuggestions">
+                <option value="Batch 2025–2028 (1st Year Freshers)">
+                <option value="Batch 2024–2027 (2nd Year Intermediate)">
+                <option value="Batch 2023–2026 (3rd Year Final)">
+                <option value="Batch 2022–2025 (Post Final Year)">
+                <option value="Batch 2021–2024 (Post Final Year)">
+                <option value="Batch 2020–2023 (Post Final Year)">
+              </datalist>
+              <small style="color: #64748b; font-size: 0.725rem;">Grouped by diploma batch (e.g. Batch 2022–2025)</small>
             </div>
 
             <div class="form-group">
@@ -547,8 +556,9 @@
               <label class="form-label">Status</label>
               <select id="studentStatusSelect" class="form-control">
                 <option value="Active">Active</option>
-                <option value="Discontinued">Discontinued</option>
+                <option value="Post Final Year">Post Final Year (Course Completed / Arrears)</option>
                 <option value="Alumni">Alumni</option>
+                <option value="Discontinued">Discontinued</option>
               </select>
             </div>
 

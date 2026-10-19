@@ -38,8 +38,10 @@ const Principal = {
   },
 
   // 3-Year Diploma Batch computation
-  computeBatchLabel(year) {
+  computeBatchLabel(year, batch) {
+    if (batch && batch.trim()) return batch.trim();
     const yr = parseInt(year) || 1;
+    if (yr >= 4) return 'Batch 2022–2025 (Post Final Year)';
     if (yr === 3) return 'Batch 2023–2026 (3rd Year Final)';
     if (yr === 2) return 'Batch 2024–2027 (2nd Year Intermediate)';
     return 'Batch 2025–2028 (1st Year Freshers)';
@@ -49,8 +51,22 @@ const Principal = {
     const yr = document.getElementById('studentYearSelect')?.value;
     const batchInput = document.getElementById('studentBatchInput');
     const semSelect = document.getElementById('studentSemSelect');
+    const statusSelect = document.getElementById('studentStatusSelect');
     if (batchInput && yr) batchInput.value = this.computeBatchLabel(yr);
-    if (semSelect && yr) semSelect.value = parseInt(yr) * 2 - 1;
+    if (semSelect && yr) {
+      if (parseInt(yr) >= 4) {
+        semSelect.value = '6';
+      } else {
+        semSelect.value = parseInt(yr) * 2 - 1;
+      }
+    }
+    if (statusSelect && this.state.activeStudentModalMode === 'add') {
+      if (parseInt(yr) >= 4) {
+        statusSelect.value = 'Post Final Year';
+      } else {
+        statusSelect.value = 'Active';
+      }
+    }
   },
 
   switchStudentViewMode(mode) {
@@ -572,7 +588,13 @@ const Principal = {
         (st.parentName && st.parentName.toLowerCase().includes(qSearch));
 
       const matchDept = qDept === 'ALL' || st.department === qDept;
-      const matchYear = qYear === 'ALL' || String(st.currentYear) === String(qYear);
+      const isPf = (parseInt(st.currentYear) >= 4 || (st.batch || '').toLowerCase().includes('post final') || (st.status || '').toLowerCase().includes('post final'));
+      let matchYear = true;
+      if (qYear === '4') {
+        matchYear = isPf;
+      } else if (qYear !== 'ALL') {
+        matchYear = !isPf && String(st.currentYear) === String(qYear);
+      }
       
       let matchStatus = true;
       if (qStatus === 'PAID') {
@@ -598,6 +620,7 @@ const Principal = {
       rowsHtml = filtered.map(st => {
         const balance = st.balanceDue !== undefined ? st.balanceDue : (st.totalBilled ? st.totalBilled - (st.totalPaid || 0) : 0);
         const hasDue = balance > 0;
+        const isPf = (parseInt(st.currentYear) >= 4 || (st.batch || '').toLowerCase().includes('post final'));
 
         return `
           <tr>
@@ -611,7 +634,9 @@ const Principal = {
             </td>
             <td>
               <div style="font-weight: 600; color: #1e293b; font-size: 0.85rem;">${st.department}</div>
-              <div style="font-size: 0.75rem; color: #64748b;">Year ${st.currentYear} • Semester ${st.currentSemester || (st.currentYear * 2)}</div>
+              <div style="font-size: 0.75rem; color: ${isPf ? '#b45309; font-weight: 700;' : '#64748b;'}">
+                ${isPf ? 'Post Final Year • Sem ' + (st.currentSemester || 6) + ' • ' + (st.batch || 'Batch 2022–2025') : `Year ${st.currentYear} • Semester ${st.currentSemester || (st.currentYear * 2)}`}
+              </div>
             </td>
             <td>
               <div>
@@ -630,8 +655,8 @@ const Principal = {
               </div>
             </td>
             <td>
-              <span class="status-pill ${st.status === 'Discontinued' ? 'status-inactive' : 'status-active'}">
-                ● ${st.status || 'Active'}
+              <span class="status-pill ${st.status === 'Discontinued' ? 'status-inactive' : (isPf ? 'status-leave' : 'status-active')}">
+                ● ${st.status || (isPf ? 'Post Final Year' : 'Active')}
               </span>
             </td>
             <td>
@@ -656,9 +681,79 @@ const Principal = {
     let contentHtml = '';
 
     if (this.state.studentViewMode === 'batches') {
-      const b3 = filtered.filter(s => s.currentYear === 3);
-      const b2 = filtered.filter(s => s.currentYear === 2);
-      const b1 = filtered.filter(s => s.currentYear === 1 || !s.currentYear);
+      const isPostFinal = (s) => {
+        const yr = parseInt(s.currentYear);
+        const b = (s.batch || '').toLowerCase();
+        const st = (s.status || '').toLowerCase();
+        return yr >= 4 || b.includes('post final') || st.includes('post final');
+      };
+
+      const b3 = filtered.filter(s => !isPostFinal(s) && parseInt(s.currentYear) === 3);
+      const b2 = filtered.filter(s => !isPostFinal(s) && parseInt(s.currentYear) === 2);
+      const b1 = filtered.filter(s => !isPostFinal(s) && (parseInt(s.currentYear) === 1 || !s.currentYear));
+      const postFinalList = filtered.filter(isPostFinal);
+
+      // Group Post Final Year students by batch
+      const postFinalBatchMap = {};
+      postFinalList.forEach(st => {
+        const bLabel = st.batch || 'Batch 2022–2025 (Post Final Year)';
+        if (!postFinalBatchMap[bLabel]) {
+          postFinalBatchMap[bLabel] = [];
+        }
+        postFinalBatchMap[bLabel].push(st);
+      });
+
+      const postFinalKeys = Object.keys(postFinalBatchMap);
+      let postFinalSectionsHtml = '';
+
+      if (postFinalKeys.length === 0) {
+        postFinalSectionsHtml = `
+          <div class="batch-section-card" style="background: #fdfefe; border: 2px dashed #cbd5e1; border-radius: 12px; margin-bottom: 1.25rem; overflow: hidden; padding: 2.25rem 1.5rem; text-align: center;">
+            <i data-lucide="history" style="font-size: 2rem; color: #d97706; margin-bottom: 0.5rem; display: block;"></i>
+            <h4 style="color: #071739; font-family: var(--font-heading); margin-bottom: 0.25rem; font-size: 1.1rem;">No Post Final Year Students Found</h4>
+            <p style="font-size: 0.85rem; color: #64748b; max-width: 500px; margin: 0 auto 1rem;">
+              Students beyond the 3-year curriculum (clearing arrears or awaiting certificates) can be enrolled and grouped by batch.
+            </p>
+            <button class="btn btn-gold btn-sm" onclick="Principal.openAddStudentModal(4, 'Batch 2022–2025 (Post Final Year)')">
+              <i data-lucide="user-plus"></i> + Enroll Post Final Student (Batch 2022–2025)
+            </button>
+          </div>
+        `;
+      } else {
+        postFinalSectionsHtml = postFinalKeys.map((bLabel, idx) => {
+          const list = postFinalBatchMap[bLabel];
+          const govtCount = list.filter(s => s.quota === 'Government').length;
+          const mgtCount = list.filter(s => s.quota === 'Management').length;
+          const bgGrad = idx % 2 === 0
+            ? 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)'
+            : 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)';
+          const borderSide = idx % 2 === 0 ? '#d97706' : '#64748b';
+
+          return `
+            <div class="batch-section-card" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-bottom: 1.25rem; overflow: hidden; box-shadow: 0 2px 8px rgba(7,23,57,0.04);">
+              <div class="batch-header" style="background: ${bgGrad}; border-left: 5px solid ${borderSide}; padding: 1rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+                <div>
+                  <h4 style="font-family: var(--font-heading); color: #071739; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i data-lucide="history" style="color: #d97706;"></i>
+                    ${bLabel}
+                  </h4>
+                  <p style="font-size: 0.775rem; color: #64748b; margin: 0.2rem 0 0;">
+                    Post Final Year • Course Completed / Arrear Clearance • Diploma Verification
+                  </p>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <span class="badge" style="background: #fef3c7; color: #b45309; font-weight: 700;">${list.length} Students</span>
+                  <span class="badge" style="background: #eff6ff; color: #1e40af; font-weight: 700;">Govt: ${govtCount} | Mgt: ${mgtCount}</span>
+                  <button class="btn btn-sm btn-outline" style="border-color: #d97706; color: #b45309; padding: 0.25rem 0.65rem; font-size: 0.75rem;" onclick="Principal.openAddStudentModal(4, '${bLabel.replace(/'/g, "\\'")}')">
+                    <i data-lucide="user-plus"></i> + Add to ${bLabel.split('(')[0].trim()}
+                  </button>
+                </div>
+              </div>
+              ${this.renderPrincipalBatchTable(list)}
+            </div>
+          `;
+        }).join('');
+      }
 
       contentHtml = `
         <!-- Batch 3: Final Year Seniors -->
@@ -720,6 +815,25 @@ const Principal = {
           </div>
           ${this.renderPrincipalBatchTable(b1)}
         </div>
+
+        <!-- Post Final Year Batches Header & Cards -->
+        <div class="post-final-banner" style="background: linear-gradient(135deg, #071739 0%, #0c2340 100%); color: #ffffff; padding: 1.25rem 1.5rem; border-radius: 12px; margin: 2rem 0 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border: 1px solid rgba(212, 175, 55, 0.35);">
+          <div>
+            <h4 style="color: #fce076; margin: 0 0 0.25rem; font-family: var(--font-heading); font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem;">
+              <i data-lucide="history"></i> Post Final Year Batches (Course Completed / Arrear Clearance)
+            </h4>
+            <p style="font-size: 0.825rem; color: #e2e8f0; margin: 0;">
+              Senior cohorts beyond the 3-year curriculum. Grouped by their original diploma admission batch for arrear examinations and DOTE diploma verification.
+            </p>
+          </div>
+          <div>
+            <button class="btn btn-gold btn-sm" onclick="Principal.openAddStudentModal(4, 'Batch 2022–2025 (Post Final Year)')">
+              <i data-lucide="user-plus"></i> + Enroll Post Final Student
+            </button>
+          </div>
+        </div>
+
+        ${postFinalSectionsHtml}
       `;
     } else {
       contentHtml = `
@@ -749,17 +863,17 @@ const Principal = {
         <div class="governance-card-header">
           <div>
             <h3 class="governance-card-title">
-              <i data-lucide="graduation-cap"></i> Student Registry &amp; 3-Year Batch Governance
+              <i data-lucide="graduation-cap"></i> Student Registry &amp; Batch Governance
             </h3>
             <p style="font-size: 0.8rem; color: #64748b; margin: 0.2rem 0 0;">
-              Total Enrolled: ${this.state.students.length} Students across 3 Batches • Displaying ${filtered.length} Filtered Records
+              Total Enrolled: ${this.state.students.length} Students across Active &amp; Post Final Batches • Displaying ${filtered.length} Filtered Records
             </p>
           </div>
           <div style="display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
             <!-- Segmented View Toggle -->
             <div class="segmented-view-toggle" style="display: inline-flex; background: #f1f5f9; padding: 3px; border-radius: 8px; border: 1px solid #cbd5e1;">
               <button type="button" class="segmented-view-btn ${this.state.studentViewMode === 'batches' ? 'active' : ''}" style="border: none; background: ${this.state.studentViewMode === 'batches' ? '#ffffff' : 'transparent'}; padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 700; color: #071739; border-radius: 6px; cursor: pointer; box-shadow: ${this.state.studentViewMode === 'batches' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none'};" onclick="Principal.switchStudentViewMode('batches')">
-                <i data-lucide="layers"></i> 3-Year Batches
+                <i data-lucide="layers"></i> Batches View
               </button>
               <button type="button" class="segmented-view-btn ${this.state.studentViewMode === 'list' ? 'active' : ''}" style="border: none; background: ${this.state.studentViewMode === 'list' ? '#ffffff' : 'transparent'}; padding: 0.4rem 0.85rem; font-size: 0.8rem; font-weight: 700; color: #071739; border-radius: 6px; cursor: pointer; box-shadow: ${this.state.studentViewMode === 'list' ? '0 1px 4px rgba(0,0,0,0.08)' : 'none'};" onclick="Principal.switchStudentViewMode('list')">
                 <i data-lucide="list"></i> All Records Table
@@ -799,10 +913,11 @@ const Principal = {
             </div>
             <div>
               <select class="form-control" style="font-size: 0.85rem; padding: 0.65rem 1rem;" onchange="Principal.handleStudentYearFilter(this.value)">
-                <option value="ALL">All Batches (3 Years)</option>
+                <option value="ALL">All Batches (Regular &amp; Post Final)</option>
                 <option value="1" ${qYear === '1' ? 'selected' : ''}>Batch 2025–2028 (1st Yr)</option>
                 <option value="2" ${qYear === '2' ? 'selected' : ''}>Batch 2024–2027 (2nd Yr)</option>
                 <option value="3" ${qYear === '3' ? 'selected' : ''}>Batch 2023–2026 (3rd Yr)</option>
+                <option value="4" ${qYear === '4' ? 'selected' : ''}>Post Final Year Batches</option>
               </select>
             </div>
             <div>
@@ -1337,7 +1452,7 @@ const Principal = {
   // ==========================================
   // MODALS: STUDENT MANAGEMENT
   // ==========================================
-  openAddStudentModal() {
+  openAddStudentModal(defaultYear = 1, defaultBatch = null) {
     this.state.activeStudentModalMode = 'add';
     this.state.activeStudentRegNo = null;
 
@@ -1347,8 +1462,15 @@ const Principal = {
     document.getElementById('studentForm').reset();
     document.getElementById('studentRegNoInput').disabled = false;
     document.getElementById('studentAnnualTuitionGroup').style.display = 'block';
+    
+    const yearSelect = document.getElementById('studentYearSelect');
+    if (yearSelect) yearSelect.value = String(defaultYear);
+    this.onModalYearChange();
+
     const batchIn = document.getElementById('studentBatchInput');
-    if (batchIn) batchIn.value = this.computeBatchLabel(1);
+    if (batchIn) {
+      batchIn.value = defaultBatch || this.computeBatchLabel(defaultYear);
+    }
 
     this.openModal('studentModal');
   },
@@ -1372,7 +1494,7 @@ const Principal = {
     document.getElementById('studentNameInput').value = student.name || '';
     document.getElementById('studentDeptSelect').value = student.department || 'Computer Engineering';
     document.getElementById('studentYearSelect').value = student.currentYear || 1;
-    document.getElementById('studentSemSelect').value = student.currentSemester || 1;
+    document.getElementById('studentSemSelect').value = student.currentSemester || (student.currentYear >= 4 ? 6 : 1);
     const batchIn = document.getElementById('studentBatchInput');
     if (batchIn) batchIn.value = student.batch || this.computeBatchLabel(student.currentYear);
     document.getElementById('studentQuotaSelect').value = student.quota || 'Government';
@@ -1384,7 +1506,7 @@ const Principal = {
     document.getElementById('studentEmailInput').value = student.email || '';
     document.getElementById('studentConcessionSelect').value = student.concessionType || 'None';
     document.getElementById('studentConcessionAmountInput').value = student.concessionAmount || 0;
-    document.getElementById('studentStatusSelect').value = student.status || 'Active';
+    document.getElementById('studentStatusSelect').value = student.status || (student.currentYear >= 4 ? 'Post Final Year' : 'Active');
 
     // Hide tuition fee on basic profile edit
     document.getElementById('studentAnnualTuitionGroup').style.display = 'none';
@@ -1407,9 +1529,10 @@ const Principal = {
       name: document.getElementById('studentNameInput').value.trim(),
       department: document.getElementById('studentDeptSelect').value,
       currentYear: yr,
-      currentSemester: parseInt(document.getElementById('studentSemSelect').value) || 1,
+      currentSemester: parseInt(document.getElementById('studentSemSelect').value) || (yr >= 4 ? 6 : 1),
       batch: batch,
       quota: document.getElementById('studentQuotaSelect').value,
+      status: document.getElementById('studentStatusSelect').value,
       admissionNo: document.getElementById('studentAdmissionNoInput').value.trim(),
       isHosteller: document.getElementById('studentHostellerCheck').checked,
       busRoute: document.getElementById('studentBusRouteInput').value.trim(),
