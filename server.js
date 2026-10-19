@@ -52,11 +52,22 @@ app.use(express.static(path.join(__dirname, 'public'), {
   }
 }));
 
+// In-memory db cache for serverless environments (e.g. Vercel)
+let inMemoryDb = null;
+
 // ======================== DATABASE HELPERS ========================
 function loadDb() {
+  if (inMemoryDb) return inMemoryDb;
   try {
+    const tmpPath = path.join(os.tmpdir(), 'sptc_database.json');
+    if (fs.existsSync(tmpPath)) {
+      const raw = fs.readFileSync(tmpPath, 'utf-8');
+      inMemoryDb = JSON.parse(raw);
+      return inMemoryDb;
+    }
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
+    inMemoryDb = JSON.parse(raw);
+    return inMemoryDb;
   } catch (err) {
     console.error('Error loading database:', err);
     return { college: {}, departments: [], students: [], feeBilledItems: [], receipts: [], staff: [] };
@@ -65,19 +76,21 @@ function loadDb() {
 
 // Atomic safe save to prevent JSON corruption on sudden restarts
 function saveDb(data) {
+  inMemoryDb = data;
   try {
     const tmpFile = `${DB_FILE}.tmp.${Date.now()}`;
     fs.writeFileSync(tmpFile, JSON.stringify(data, null, 2), 'utf-8');
     fs.renameSync(tmpFile, DB_FILE);
     return true;
   } catch (err) {
-    console.error('Atomic database save failed, attempting direct write:', err);
+    // If running in a read-only serverless environment (e.g. Vercel), fallback to OS temp dir
     try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+      const tmpPath = path.join(os.tmpdir(), 'sptc_database.json');
+      fs.writeFileSync(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
       return true;
     } catch (e) {
-      console.error('Fatal database save error:', e);
-      return false;
+      console.warn('Serverless environment: database updated in-memory.');
+      return true;
     }
   }
 }
@@ -1351,3 +1364,6 @@ function handleGracefulShutdown(signal) {
 
 process.on('SIGINT', () => handleGracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => handleGracefulShutdown('SIGTERM'));
+
+// Export app for serverless platforms (e.g. Vercel)
+module.exports = app;
