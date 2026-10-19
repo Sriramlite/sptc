@@ -1294,7 +1294,8 @@
       "role": "CASHIER",
       "title": "Senior Accounts Officer & Cashier",
       "department": "Accounts & Fee Collection Office",
-      "phone": "9443128901"
+      "phone": "9443128901",
+      "status": "Active"
     },
     {
       "id": "STAFF002",
@@ -1305,7 +1306,8 @@
       "role": "PRINCIPAL",
       "title": "Principal & Ex-Officio Trustee",
       "department": "College Administration",
-      "phone": "9842145610"
+      "phone": "9842145610",
+      "status": "Active"
     },
     {
       "id": "STAFF003",
@@ -1316,7 +1318,8 @@
       "role": "HOD",
       "title": "Head of Department (Computer Engineering)",
       "department": "Computer Engineering",
-      "phone": "9788123456"
+      "phone": "9788123456",
+      "status": "Active"
     },
     {
       "id": "STAFF004",
@@ -1327,7 +1330,80 @@
       "role": "HOD",
       "title": "Head of Department (Mechanical Engineering)",
       "department": "Mechanical Engineering",
-      "phone": "9842789012"
+      "phone": "9842789012",
+      "status": "Active"
+    },
+    {
+      "id": "STAFF005",
+      "username": "hod_eee",
+      "email": "hod.eee@sptc.org.in",
+      "password": "sptc@eee2026",
+      "name": "Tmt. P. Chithraleka, M.E.",
+      "role": "HOD",
+      "title": "Head of Department (EEE)",
+      "department": "Electrical & Electronics Engineering",
+      "phone": "9443210987",
+      "status": "Active"
+    },
+    {
+      "id": "STAFF006",
+      "username": "hod_ece",
+      "email": "hod.ece@sptc.org.in",
+      "password": "sptc@ece2026",
+      "name": "Mr. V. Arumugam, B.Tech.",
+      "role": "HOD",
+      "title": "Head of Department (ECE)",
+      "department": "Electronics & Communication Engineering",
+      "phone": "9842998877",
+      "status": "Active"
+    },
+    {
+      "id": "STAFF007",
+      "username": "hod_civil",
+      "email": "hod.civil@sptc.org.in",
+      "password": "sptc@civil2026",
+      "name": "Mr. S. Sathiyamoorthy, B.E.",
+      "role": "HOD",
+      "title": "Head of Department (Civil Engineering)",
+      "department": "Civil Engineering",
+      "phone": "9488112233",
+      "status": "Active"
+    },
+    {
+      "id": "STAFF008",
+      "username": "hod_aiml",
+      "email": "hod.aiml@sptc.org.in",
+      "password": "sptc@aiml2026",
+      "name": "Dr. R. Ramasamy, M.E., Ph.D.",
+      "role": "HOD",
+      "title": "Head of Department (AI & Machine Learning)",
+      "department": "Artificial Intelligence & Machine Learning",
+      "phone": "9842145611",
+      "status": "Active"
+    },
+    {
+      "id": "STAFF009",
+      "username": "hod_bme",
+      "email": "hod.bme@sptc.org.in",
+      "password": "sptc@bme2026",
+      "name": "Mr. M. Suthir, B.E.",
+      "role": "HOD",
+      "title": "Head of Department (Biomedical Engineering)",
+      "department": "Biomedical Engineering",
+      "phone": "9790445566",
+      "status": "Active"
+    },
+    {
+      "id": "STAFF010",
+      "username": "hod_dmlt",
+      "email": "hod.dmlt@sptc.org.in",
+      "password": "sptc@dmlt2026",
+      "name": "Tmt. S. Vijayalakshmi, B.E.",
+      "role": "HOD",
+      "title": "Head of Department (Medical Laboratory Technology)",
+      "department": "Medical Laboratory Technology",
+      "phone": "9894778899",
+      "status": "Active"
     }
   ]
 }

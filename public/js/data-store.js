@@ -92,6 +92,11 @@ const API = {
     return await res.json();
   },
 
+  // Alias for getAllStudents
+  async getStudents() {
+    return this.getAllStudents();
+  },
+
   // Authentication: Unified Login
   async login(identifier, password, roleType = 'STUDENT') {
     const res = await fetch('/api/auth/login', {
@@ -280,6 +285,98 @@ const API = {
       const err = await res.json().catch(() => ({}));
       return { success: false, error: err.error || 'Access denied.', unauthorized: true };
     }
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Overview & Institutional Statistics
+  async getPrincipalOverview() {
+    const res = await fetch('/api/principal/overview', {
+      headers: this.getAuthHeaders()
+    });
+    if (res.status === 401 || res.status === 403) {
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err.error || 'Principal authorization required.', unauthorized: true };
+    }
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Full Staff Directory
+  async getPrincipalStaff() {
+    const res = await fetch('/api/principal/staff', {
+      headers: this.getAuthHeaders()
+    });
+    if (res.status === 401 || res.status === 403) {
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err.error || 'Access denied.', unauthorized: true };
+    }
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Add New Staff Member
+  async createStaff(staffData) {
+    const res = await fetch('/api/principal/staff', {
+      method: 'POST',
+      headers: this.getAuthHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(staffData)
+    });
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Update Staff Member
+  async updateStaff(id, staffData) {
+    const res = await fetch(`/api/principal/staff/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(staffData)
+    });
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Reset Staff Password
+  async resetStaffPassword(id, newPassword) {
+    const res = await fetch(`/api/principal/staff/${encodeURIComponent(id)}/reset-password`, {
+      method: 'POST',
+      headers: this.getAuthHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ newPassword })
+    });
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Delete Staff Member
+  async deleteStaff(id) {
+    const res = await fetch(`/api/principal/staff/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders()
+    });
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Enroll New Student
+  async enrollStudent(studentData) {
+    const res = await fetch('/api/principal/students', {
+      method: 'POST',
+      headers: this.getAuthHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(studentData)
+    });
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Update Student Profile
+  async updateStudent(regNo, studentData) {
+    const res = await fetch(`/api/principal/students/${encodeURIComponent(regNo)}`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(studentData)
+    });
+    return await res.json();
+  },
+
+  // Protected: Principal Only - Delete Student
+  async deleteStudent(regNo) {
+    const res = await fetch(`/api/principal/students/${encodeURIComponent(regNo)}`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders()
+    });
     return await res.json();
   },
 

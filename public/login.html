@@ -535,7 +535,11 @@
             if (redirectUrl && redirectUrl.startsWith('/') && !isTargetingStaff) {
               window.location.href = redirectUrl;
             } else if (res.userType === 'STAFF') {
-              window.location.href = '/cashier-dashboard.html';
+              if (res.role === 'PRINCIPAL' || res.profile?.role === 'PRINCIPAL') {
+                window.location.href = '/principal-dashboard.html';
+              } else {
+                window.location.href = '/cashier-dashboard.html';
+              }
             } else {
               window.location.href = '/dashboard.html';
             }
@@ -672,7 +676,11 @@
             if (redirectUrl && redirectUrl.startsWith('/')) {
               window.location.href = redirectUrl;
             } else if (res.userType === 'STAFF') {
-              window.location.href = '/cashier-dashboard.html';
+              if (res.role === 'PRINCIPAL' || res.profile?.role === 'PRINCIPAL') {
+                window.location.href = '/principal-dashboard.html';
+              } else {
+                window.location.href = '/cashier-dashboard.html';
+              }
             } else {
               window.location.href = '/dashboard.html';
             }

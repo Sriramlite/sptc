@@ -306,6 +306,20 @@ function requireStudentOrStaff(req, res, next) {
   });
 }
 
+// 4. Strict Principal-Only Middleware
+function requirePrincipal(req, res, next) {
+  requireStaff(req, res, () => {
+    const role = (req.user.role || req.user.profile?.role || '').toUpperCase();
+    if (role !== 'PRINCIPAL') {
+      return res.status(403).json({ 
+        error: 'Access denied. Principal executive authorization required.', 
+        code: 'FORBIDDEN' 
+      });
+    }
+    next();
+  });
+}
+
 // ======================== API ROUTES ========================
 
 // Health & Deployment Status Endpoint
@@ -1159,13 +1173,451 @@ app.get('/api/students/:regNo/ledger', requireStaff, (req, res) => {
     success: true,
     student,
     bills,
+    billedItems: bills,
     receipts,
+    totalBilled,
+    totalPaid,
+    balanceDue,
     summary: {
       totalBilled,
       totalPaid,
       balanceDue,
       receiptCount: receipts.length
     }
+  });
+});
+
+// ============================================================================
+// PRINCIPAL GOVERNANCE DESK APIS: FACULTY, STUDENTS & INSTITUTIONAL OVERSIGHT
+// ============================================================================
+
+// A. Executive Overview & Institutional Analytics (Principal Only)
+app.get('/api/principal/overview', requirePrincipal, (req, res) => {
+  const db = loadDb();
+  const students = db.students || [];
+  const staff = db.staff || [];
+  const bills = db.feeBilledItems || [];
+  const receipts = db.receipts || [];
+  const departments = db.departments || [];
+
+  const totalBilled = bills.reduce((sum, b) => sum + (b.netPayable || 0), 0);
+  const totalCollections = receipts.reduce((sum, r) => sum + (r.amount || 0), 0);
+  const totalDues = Math.max(0, totalBilled - totalCollections);
+
+  let studentsWithDues = 0;
+  let studentsSettled = 0;
+
+  // Department statistics
+  const deptSummary = departments.map(d => {
+    const deptStudents = students.filter(s => 
+      s.deptCode?.toLowerCase() === d.id?.toLowerCase() || 
+      s.department?.toLowerCase() === d.name?.toLowerCase() ||
+      s.department?.toLowerCase().includes(d.name?.toLowerCase())
+    );
+    const deptStaff = staff.filter(st => 
+      st.department?.toLowerCase().includes(d.name?.toLowerCase()) ||
+      st.department?.toLowerCase().includes(d.id?.toLowerCase())
+    );
+
+    const studentRegNos = new Set(deptStudents.map(s => s.regNo));
+    const deptBills = bills.filter(b => studentRegNos.has(b.regNo));
+    const deptReceipts = receipts.filter(r => studentRegNos.has(r.regNo));
+
+    const billed = deptBills.reduce((acc, b) => acc + (b.netPayable || 0), 0);
+    const collected = deptReceipts.reduce((acc, r) => acc + (r.amount || 0), 0);
+    const dues = Math.max(0, billed - collected);
+
+    return {
+      id: d.id,
+      name: d.name,
+      code: d.code,
+      department: d.name,
+      deptCode: d.code || d.id || 'ENGG',
+      intake: d.intake,
+      head: d.head,
+      studentCount: deptStudents.length,
+      staffCount: deptStaff.length,
+      enrolledStudents: deptStudents.length,
+      facultyCount: deptStaff.length,
+      hostellers: deptStudents.filter(s => s.isHosteller).length,
+      busUsers: deptStudents.filter(s => !s.isHosteller).length,
+      billedAmount: billed,
+      collectedAmount: collected,
+      balanceDue: dues
+    };
+  });
+
+  // Calculate dues count across all students
+  students.forEach(s => {
+    const sBills = bills.filter(b => b.regNo === s.regNo);
+    const sReceipts = receipts.filter(r => r.regNo === s.regNo);
+    const bTotal = sBills.reduce((acc, b) => acc + (b.netPayable || 0), 0);
+    const pTotal = sReceipts.reduce((acc, r) => acc + (r.amount || 0), 0);
+    if (bTotal - pTotal > 0) {
+      studentsWithDues++;
+    } else {
+      studentsSettled++;
+    }
+  });
+
+  // Recent 5 enrolled students
+  const recentStudents = [...students].slice(-5).reverse();
+  // Recent 5 receipts
+  const recentReceipts = [...receipts].slice(-5).reverse().map(r => {
+    const st = students.find(s => s.regNo === r.regNo);
+    return {
+      ...r,
+      studentName: st ? st.name : 'Unknown Student',
+      department: st ? st.department : 'Diploma',
+      amountPaid: r.amount || 0,
+      paymentMode: r.paymentMode || 'Counter Cash'
+    };
+  });
+
+  res.json({
+    success: true,
+    kpis: {
+      totalEnrolledStudents: students.length,
+      totalStaffMembers: staff.length,
+      totalFeesCollected: totalCollections,
+      totalOutstandingDues: totalDues,
+      totalBilled
+    },
+    studentsBreakdown: {
+      govtQuota: students.filter(s => s.quota === 'Government').length,
+      mgtQuota: students.filter(s => s.quota === 'Management').length,
+      hostellers: students.filter(s => s.isHosteller).length,
+      dayScholars: students.filter(s => !s.isHosteller).length
+    },
+    staffBreakdown: {
+      hodCount: staff.filter(s => s.role === 'HOD').length,
+      facultyCount: staff.filter(s => s.role === 'FACULTY').length,
+      adminAccountsCount: staff.filter(s => s.role === 'CASHIER' || s.role === 'PRINCIPAL').length
+    },
+    departmentSummary: deptSummary,
+    recentEnrollments: recentStudents,
+    recentCollections: recentReceipts,
+    totalStudents: students.length,
+    totalStaff: staff.length,
+    totalBilled,
+    totalCollections,
+    totalDues,
+    studentsWithDues,
+    studentsSettled,
+    departments: deptSummary,
+    recentStudents,
+    recentReceipts
+  });
+});
+
+// B. Staff Management: Get All Staff (Principal Only)
+app.get('/api/principal/staff', requirePrincipal, (req, res) => {
+  const db = loadDb();
+  const staffList = (db.staff || []).map(s => ({
+    id: s.id,
+    username: s.username,
+    email: s.email,
+    name: s.name,
+    role: s.role,
+    title: s.title,
+    department: s.department,
+    phone: s.phone || 'N/A',
+    status: s.status || 'Active'
+  }));
+  res.json(staffList);
+});
+
+// C. Staff Management: Add New Staff (Principal Only)
+app.post('/api/principal/staff', requirePrincipal, (req, res) => {
+  const { name, role, department, title, phone, email, username, password, status } = req.body;
+  if (!name || !role || !department || !username || !password) {
+    return res.status(400).json({ success: false, error: 'Full Name, Role, Department, Username, and Password are required.' });
+  }
+
+  const db = loadDb();
+  const trimmedUser = username.trim().toLowerCase();
+  const trimmedEmail = (email || '').trim().toLowerCase();
+
+  const userExists = (db.staff || []).some(s => s.username.toLowerCase() === trimmedUser);
+  if (userExists) {
+    return res.status(409).json({ success: false, error: `A staff member with username "${username}" already exists.` });
+  }
+
+  if (trimmedEmail) {
+    const emailExists = (db.staff || []).some(s => s.email && s.email.toLowerCase() === trimmedEmail);
+    if (emailExists) {
+      return res.status(409).json({ success: false, error: `Email address "${email}" is already registered to another staff member.` });
+    }
+  }
+
+  // Generate unique employee ID
+  const existingIds = (db.staff || []).map(s => parseInt((s.id || '').replace(/\D/g, '')) || 0);
+  const nextIdNum = Math.max(0, ...existingIds) + 1;
+  const newId = `STAFF${nextIdNum.toString().padStart(3, '0')}`;
+
+  const newStaff = {
+    id: newId,
+    username: trimmedUser,
+    email: trimmedEmail || `${trimmedUser}@sptc.org.in`,
+    password: password.trim(),
+    name: name.trim(),
+    role: role.trim().toUpperCase(),
+    title: title ? title.trim() : (role === 'HOD' ? `Head of Department (${department})` : `${role} - ${department}`),
+    department: department.trim(),
+    phone: phone ? phone.trim() : '',
+    status: status || 'Active'
+  };
+
+  db.staff = db.staff || [];
+  db.staff.push(newStaff);
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: `Faculty member ${newStaff.name} registered successfully with ID ${newStaff.id}.`,
+    staff: {
+      id: newStaff.id,
+      username: newStaff.username,
+      email: newStaff.email,
+      name: newStaff.name,
+      role: newStaff.role,
+      title: newStaff.title,
+      department: newStaff.department,
+      phone: newStaff.phone,
+      status: newStaff.status
+    }
+  });
+});
+
+// D. Staff Management: Update Staff Member (Principal Only)
+app.put('/api/principal/staff/:id', requirePrincipal, (req, res) => {
+  const { id } = req.params;
+  const { name, role, department, title, phone, email, status } = req.body;
+
+  const db = loadDb();
+  const staff = (db.staff || []).find(s => s.id === id);
+  if (!staff) {
+    return res.status(404).json({ success: false, error: `Staff record with ID "${id}" not found.` });
+  }
+
+  if (name) staff.name = name.trim();
+  if (role) staff.role = role.trim().toUpperCase();
+  if (department) staff.department = department.trim();
+  if (title) staff.title = title.trim();
+  if (phone !== undefined) staff.phone = phone.trim();
+  if (email) staff.email = email.trim();
+  if (status) staff.status = status.trim();
+
+  saveDb(db);
+  res.json({
+    success: true,
+    message: `Staff record for ${staff.name} updated successfully.`,
+    staff: {
+      id: staff.id,
+      username: staff.username,
+      email: staff.email,
+      name: staff.name,
+      role: staff.role,
+      title: staff.title,
+      department: staff.department,
+      phone: staff.phone,
+      status: staff.status
+    }
+  });
+});
+
+// E. Staff Management: Reset Staff Password (Principal Only)
+app.post('/api/principal/staff/:id/reset-password', requirePrincipal, (req, res) => {
+  const { id } = req.params;
+  const { newPassword } = req.body;
+
+  if (!newPassword || newPassword.trim().length < 4) {
+    return res.status(400).json({ success: false, error: 'New password must be at least 4 characters long.' });
+  }
+
+  const db = loadDb();
+  const staff = (db.staff || []).find(s => s.id === id);
+  if (!staff) {
+    return res.status(404).json({ success: false, error: `Staff record with ID "${id}" not found.` });
+  }
+
+  staff.password = newPassword.trim();
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: `Password for ${staff.name} (${staff.username}) has been updated successfully.`
+  });
+});
+
+// F. Staff Management: Delete Staff Member (Principal Only)
+app.delete('/api/principal/staff/:id', requirePrincipal, (req, res) => {
+  const { id } = req.params;
+  const db = loadDb();
+  const staff = (db.staff || []).find(s => s.id === id);
+
+  if (!staff) {
+    return res.status(404).json({ success: false, error: 'Staff member not found.' });
+  }
+
+  if (staff.role === 'PRINCIPAL' || staff.username === 'principal') {
+    return res.status(403).json({ success: false, error: 'The Master Principal administrative account cannot be deleted.' });
+  }
+
+  db.staff = db.staff.filter(s => s.id !== id);
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: `Staff member ${staff.name} has been removed from the institutional directory.`
+  });
+});
+
+// G. Student Management: Enroll New Student (Principal Only)
+app.post('/api/principal/students', requirePrincipal, (req, res) => {
+  const {
+    regNo, name, department, currentYear, currentSemester,
+    quota, admissionNo, isHosteller, busRoute,
+    parentName, parentPhone, email, pin,
+    concessionType, concessionAmount, annualTuitionFee
+  } = req.body;
+
+  if (!regNo || !name || !department) {
+    return res.status(400).json({ success: false, error: 'Registration Number, Full Name, and Department are required.' });
+  }
+
+  const db = loadDb();
+  const trimmedReg = regNo.trim();
+  const exists = (db.students || []).find(s => s.regNo === trimmedReg);
+  if (exists) {
+    return res.status(409).json({ success: false, error: `Student with DOTE Reg. No ${trimmedReg} already exists.` });
+  }
+
+  const deptCodes = {
+    'Computer Engineering': 'CSE',
+    'Mechanical Engineering': 'MECH',
+    'Electrical & Electronics Engineering': 'EEE',
+    'Electronics & Communication Engineering': 'ECE',
+    'Civil Engineering': 'CIVIL',
+    'Artificial Intelligence & Machine Learning': 'AIML',
+    'Biomedical Engineering': 'BME',
+    'Medical Laboratory Technology': 'MLT'
+  };
+  const deptCode = deptCodes[department] || 'DIPLOMA';
+  const yr = parseInt(currentYear) || 1;
+  const sem = parseInt(currentSemester) || (yr * 2 - 1);
+  const concAmt = parseFloat(concessionAmount) || 0;
+
+  const newStudent = {
+    regNo: trimmedReg,
+    admissionNo: admissionNo ? admissionNo.trim() : `SPTC/${new Date().getFullYear().toString().slice(-2)}/${Math.floor(100 + Math.random() * 900)}`,
+    name: name.trim(),
+    pin: pin ? pin.trim() : '12052005',
+    department: department.trim(),
+    deptCode: deptCode.toLowerCase(),
+    currentYear: yr,
+    currentSemester: sem,
+    quota: quota || 'Government',
+    isHosteller: !!isHosteller,
+    busRoute: isHosteller ? 'Hosteller (No Bus)' : (busRoute || 'Pudukkottai Town (Route #1)'),
+    parentName: parentName ? parentName.trim() : 'Parent / Guardian',
+    parentPhone: parentPhone ? parentPhone.trim() : '',
+    email: email ? email.trim() : `${trimmedReg}@sptc.org.in`,
+    concessionType: concessionType || 'None',
+    concessionAmount: concAmt,
+    status: 'Active'
+  };
+
+  db.students = db.students || [];
+  db.students.push(newStudent);
+
+  // Initialize fee bill
+  const tuition = annualTuitionFee !== undefined ? parseFloat(annualTuitionFee) : (quota === 'Management' ? 22000 : 14000);
+  const lab = 3500;
+  const bus = isHosteller ? 0 : 5000;
+  const hostel = isHosteller ? 16000 : 0;
+  const netDue = Math.max(0, tuition + lab + bus + hostel - concAmt);
+
+  db.feeBilledItems = db.feeBilledItems || [];
+  db.feeBilledItems.push({
+    id: `BILL-${trimmedReg}-SEM${sem}`,
+    regNo: trimmedReg,
+    academicYear: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`,
+    semester: `Semester ${sem}`,
+    tuitionFee: tuition,
+    labFee: lab,
+    busFee: bus,
+    hostelFee: hostel,
+    concession: concAmt,
+    netPayable: netDue,
+    dueDate: `${new Date().getFullYear()}-12-31`
+  });
+
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: `Student ${newStudent.name} (${newStudent.regNo}) enrolled successfully.`,
+    student: newStudent
+  });
+});
+
+// H. Student Management: Update Student Profile (Principal Only)
+app.put('/api/principal/students/:regNo', requirePrincipal, (req, res) => {
+  const { regNo } = req.params;
+  const {
+    name, department, currentYear, currentSemester,
+    quota, admissionNo, isHosteller, busRoute,
+    parentName, parentPhone, email,
+    concessionType, concessionAmount, status
+  } = req.body;
+
+  const db = loadDb();
+  const student = (db.students || []).find(s => s.regNo === regNo);
+  if (!student) {
+    return res.status(404).json({ success: false, error: `Student with Reg. No ${regNo} not found.` });
+  }
+
+  if (name) student.name = name.trim();
+  if (department) student.department = department.trim();
+  if (currentYear) student.currentYear = parseInt(currentYear);
+  if (currentSemester) student.currentSemester = parseInt(currentSemester);
+  if (quota) student.quota = quota.trim();
+  if (admissionNo) student.admissionNo = admissionNo.trim();
+  if (isHosteller !== undefined) student.isHosteller = !!isHosteller;
+  if (busRoute !== undefined) student.busRoute = busRoute.trim();
+  if (parentName) student.parentName = parentName.trim();
+  if (parentPhone !== undefined) student.parentPhone = parentPhone.trim();
+  if (email) student.email = email.trim();
+  if (concessionType) student.concessionType = concessionType.trim();
+  if (concessionAmount !== undefined) student.concessionAmount = parseFloat(concessionAmount) || 0;
+  if (status) student.status = status.trim();
+
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: `Student record for ${student.name} (${student.regNo}) updated successfully.`,
+    student
+  });
+});
+
+// I. Student Management: Delete Student (Principal Only)
+app.delete('/api/principal/students/:regNo', requirePrincipal, (req, res) => {
+  const { regNo } = req.params;
+  const db = loadDb();
+  const student = (db.students || []).find(s => s.regNo === regNo);
+  if (!student) {
+    return res.status(404).json({ success: false, error: 'Student record not found.' });
+  }
+
+  db.students = (db.students || []).filter(s => s.regNo !== regNo);
+  db.feeBilledItems = (db.feeBilledItems || []).filter(b => b.regNo !== regNo);
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: `Student record for ${student.name} (${regNo}) deleted from institutional records.`
   });
 });
 
@@ -1301,6 +1753,11 @@ app.get('/student-dashboard', (req, res) => {
 
 app.get(['/cashier', '/cashier-dashboard', '/cashier-dashboard.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'cashier-dashboard.html'));
+});
+
+// Dedicated Principal Executive Dashboard Route
+app.get(['/principal', '/principal-dashboard', '/principal-dashboard.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'principal-dashboard.html'));
 });
 
 // Dedicated Transactions Journal Page (Paginated 20 rows per page)
