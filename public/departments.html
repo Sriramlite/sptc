@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academic Departments & Laboratories | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description"
+    content="Explore the 9 AICTE-approved and DOTE-affiliated diploma engineering departments at Subramanian Polytechnic College, Rayavaram, Pudukkottai. Computer, AI & ML, Mechanical, EEE, ECE, Civil, Biomedical, and MLT.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
+  <style>
+    .dept-page-hero {
+      background: linear-gradient(135deg, #071739 0%, #0a2558 50%, #113375 100%);
+      color: #ffffff;
+      padding: 3.5rem 0 4rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .dept-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 2rem 0 3rem 0;
+    }
+    .dept-filter-btn {
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--radius-full);
+      font-size: 0.86rem;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: var(--color-text-main);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .dept-filter-btn:hover {
+      background: #e2e8f0;
+      color: var(--color-primary);
+    }
+    .dept-filter-btn.active {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+      box-shadow: 0 4px 12px rgba(10, 37, 88, 0.25);
+    }
+    .dept-detail-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      padding: 2.25rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      scroll-margin-top: 100px;
+    }
+    .dept-detail-card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: rgba(26, 86, 219, 0.3);
+    }
+    .dept-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1.5rem;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .dept-card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .dept-icon-box {
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-secondary-blue));
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+    .dept-title-text h3 {
+      font-family: var(--font-heading);
+      font-size: 1.55rem;
+      color: var(--color-primary);
+      margin: 0;
+      line-height: 1.2;
+    }
+    .dept-meta-badges {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.45rem;
+      flex-wrap: wrap;
+    }
+    .dept-badge-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--radius-full);
+      background: #eff6ff;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .dept-badge-pill.gold {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fcd34d;
+    }
+    .dept-grid-3col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .dept-subcard {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 1.25rem;
+    }
+    .dept-subcard h5 {
+      font-size: 0.95rem;
+      color: var(--color-primary);
+      margin: 0 0 0.75rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+    }
+    .dept-subcard ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      font-size: 0.85rem;
+      color: #475569;
+      line-height: 1.7;
+    }
+    @media (max-width: 860px) {
+      .dept-page-hero {
+        padding: 2rem 0 2.5rem 0;
+      }
+      .dept-filter-bar {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        flex-wrap: nowrap;
+        margin: 1.25rem 0 1.75rem 0;
+      }
+      .dept-filter-btn {
+        white-space: nowrap;
+        font-size: 0.78rem;
+        padding: 0.45rem 0.9rem;
+      }
+      .dept-detail-card {
+        padding: 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+      }
+      .dept-card-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding-bottom: 1.25rem;
+      }
+      .dept-icon-box {
+        width: 46px;
+        height: 46px;
+      }
+      .dept-title-text h3 {
+        font-size: 1.25rem;
+      }
+      .dept-grid-3col {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .dept-subcard {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======================== 1. TOP ANNOUNCEMENT STRIP ======================== -->
+  <aside class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="top-bar-item">
+          <i data-lucide="map-pin"></i> <span>Rayavaram, Pudukkottai – 622 506</span>
+        </div>
+        <div class="top-bar-item">
+          <i data-lucide="phone"></i> <span>04333-272226 / +91 6382391625</span>
+        </div>
+        <div class="top-bar-item">
+          <i data-lucide="landmark"></i> <strong>DOTE: 331</strong> | AICTE Approved
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <a href="/departments.html" style="color: #fce076; font-weight: 600;"><i data-lucide="award"></i> Admissions 2026-27</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="/verify.html" style="color: #ffffff; font-weight: 600;"><i data-lucide="file-check-2"></i> Verify Receipt</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="/login.html" style="color: #93c5fd; font-weight: 600;"><i data-lucide="lock"></i> Portal Login</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======================== 2. MAIN HEADER & NAVBAR ======================== -->
+  <header class="main-header">
+    <div class="container navbar">
+      <a href="/index.html" class="brand-link">
+        <img src="/assets/logo.svg" alt="SPTC Crest" class="brand-logo-img" loading="lazy" decoding="async">
+        <div class="brand-text">
+          <h1 class="brand-name">Subramanian Polytechnic College</h1>
+          <p class="brand-sub">Rayavaram, Pudukkottai • Estd. 1983 (DOTE: 331)</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/index.html#home">Home</a></li>
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/departments.html" class="active">Departments</a></li>
+          <li><a href="/gallery.html">Gallery</a></li>
+          <li><a href="/index.html#facilities">Campus &amp; Bus</a></li>
+          <li><a href="/index.html#compliance">Compliance</a></li>
+          <li><a href="/index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-gold btn-sm hide-on-mobile" onclick="window.openAdmissionModal()">
+          Admission
+        </button>
+        <div id="navbarAuthContainer" style="display: flex; align-items: center;">
+          <div class="portal-dropdown-wrapper" id="portalDropdownWrapper">
+            <button type="button" class="portal-btn hide-on-mobile" id="portalDropdownBtn" aria-haspopup="true" aria-expanded="false" onclick="window.handlePortalBtnClick(event)">
+              <i data-lucide="lock"></i>
+              <span>Portal</span>
+              <i data-lucide="chevron-down" class="portal-chevron"></i>
+            </button>
+
+            <div class="portal-dropdown-menu" id="portalDropdownMenu" role="menu">
+              <div class="portal-dropdown-columns">
+                <!-- 1. STUDENT OPTIONS -->
+                <div class="portal-col portal-col-student">
+                  <div class="portal-col-header">
+                    <span class="portal-col-badge student-badge">
+                      <i data-lucide="graduation-cap"></i> Student
+                    </span>
+                  </div>
+                  <p class="portal-col-desc">Fee dues, online digital payments &amp; verified receipts</p>
+                  <div class="portal-links-list">
+                    <a href="/dashboard.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="credit-card"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Student Fee Vault</span>
+                        <span class="portal-link-sub">Semester ledgers &amp; receipts</span>
+                      </div>
+                    </a>
+                    <a href="/login.html?role=student" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="log-in"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Student Sign In</span>
+                        <span class="portal-link-sub">DOTE Reg No &amp; DOB (PIN)</span>
+                      </div>
+                    </a>
+                    <a href="/register.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="user-plus"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">New Registration</span>
+                        <span class="portal-link-sub">Activate student ledger</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 2. STAFF / OFFICE OPTIONS -->
+                <div class="portal-col portal-col-staff">
+                  <div class="portal-col-header">
+                    <span class="portal-col-badge staff-badge">
+                      <i data-lucide="briefcase"></i> Staff
+                    </span>
+                  </div>
+                  <p class="portal-col-desc">Counter collection, legacy Tally migration &amp; audit</p>
+                  <div class="portal-links-list">
+                    <a href="/cashier-dashboard.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="calculator"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Office Accounts &amp; Cashier</span>
+                        <span class="portal-link-sub">Counter POS, Tally sync &amp; audit</span>
+                      </div>
+                    </a>
+                    <a href="/login.html?role=staff" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="shield-check"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Staff &amp; Faculty Login</span>
+                        <span class="portal-link-sub">Cashier, Principal &amp; HODs</span>
+                      </div>
+                    </a>
+                    <a href="/verify.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="file-check-2"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Verify Official Receipt</span>
+                        <span class="portal-link-sub">SHA-256 certificate check</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile Navigation Hamburger Button -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false" onclick="window.toggleMobileMenu()">
+          <i data-lucide="menu" id="menuToggleIconOpen"></i>
+          <i data-lucide="x" id="menuToggleIconClose" style="display: none;"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer Backdrop & Drawer Panel (Direct Child of Body) -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="window.toggleMobileMenu(false)"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+      <div class="mobile-drawer-header">
+        <div class="mobile-drawer-brand">
+          <img src="/assets/logo.svg" alt="SPTC Crest" class="mobile-drawer-logo" loading="lazy" decoding="async">
+          <div class="mobile-drawer-brand-text">
+            <strong>SPTC Rayavaram</strong>
+            <small>DOTE: 331 • AICTE Approved</small>
+          </div>
+        </div>
+        <button class="mobile-drawer-close" aria-label="Close menu" onclick="window.toggleMobileMenu(false)">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="mobile-drawer-body">
+        <div class="mobile-drawer-group-label">Navigation Menu</div>
+        <ul class="mobile-nav-menu">
+          <li>
+            <a href="/index.html#home" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="building"></i>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#about" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="info"></i>
+              <span>About SPTC</span>
+            </a>
+          </li>
+          <li>
+            <a href="/departments.html" class="mobile-menu-item active">
+              <i data-lucide="laptop"></i>
+              <span>Academic Departments</span>
+              <span class="drawer-pill-tag">9 Wings</span>
+            </a>
+          </li>
+          <li>
+            <a href="/gallery.html" class="mobile-menu-item">
+              <i data-lucide="sparkles"></i>
+              <span>Campus &amp; Event Gallery</span>
+              <span class="drawer-pill-tag gold">Photos</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#facilities" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="bus"></i>
+              <span>Campus &amp; Bus Routes</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#compliance" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="shield-check"></i>
+              <span>AICTE &amp; DOTE Compliance</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#contact" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="phone"></i>
+              <span>Contact &amp; Location</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mobile-drawer-group-label">Institutional Portals</div>
+        <div class="mobile-drawer-actions">
+          <a href="/dashboard.html" class="btn btn-primary btn-block">
+            <i data-lucide="graduation-cap"></i> Student Fees Vault
+          </a>
+          <a href="/cashier-dashboard.html" class="btn btn-outline btn-block">
+            <i data-lucide="briefcase"></i> Accounts &amp; Cashier POS Desk
+          </a>
+          <div class="mobile-auth-grid">
+            <a href="/login.html" class="btn btn-secondary">
+              <i data-lucide="lock"></i> Sign In
+            </a>
+            <a href="/register.html" class="btn btn-gold">
+              <i data-lucide="user-plus"></i> Register
+            </a>
+          </div>
+          <button class="btn btn-gold btn-block" onclick="window.toggleMobileMenu(false); window.openAdmissionModal();" style="margin-top: 0.5rem;">
+            <i data-lucide="file-text"></i> Online Admission Enquiry
+          </button>
+        </div>
+
+        <div class="mobile-drawer-footer">
+          <div><i data-lucide="map-pin"></i> Rayavaram, Pudukkottai – 622 506</div>
+          <div><i data-lucide="phone"></i> 04333-272226 / +91 6382391625</div>
+          <div style="color: var(--color-accent-gold); font-weight: 600; margin-top: 4px;">
+            <i data-lucide="landmark"></i> DOTE Code: 331 | AICTE Approved
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  <!-- ======================== 3. HERO BANNER ======================== -->
+  <section class="dept-page-hero">
+    <div class="container">
+      <div style="max-width: 840px;">
+        <div class="hero-badge-pill">
+          <i data-lucide="award"></i> DOTE Affiliated (Institution Code: 331) • AICTE Approved, New Delhi
+        </div>
+        <h2 style="font-family: var(--font-heading); font-size: clamp(1.8rem, 4vw, 2.75rem); line-height: 1.2; margin-bottom: 1rem;">
+          Academic Departments &amp; <span style="color: var(--color-accent-gold);">Specialized Engineering Laboratories</span>
+        </h2>
+        <p style="font-size: 1.05rem; color: rgba(255,255,255,0.88); line-height: 1.6; margin-bottom: 1.75rem;">
+          Subramanian Polytechnic College offers 9 specialized 3-year diploma engineering programs in Rayavaram. Each department combines robust curriculum mastery with dedicated industrial workshops, CNC machinery, software suites, and 100% placement training.
+        </p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button class="btn btn-gold" onclick="window.openAdmissionModal()">
+            <i data-lucide="file-text"></i> Enquire for 2026-27 Admissions
+          </button>
+          <a href="/dashboard.html" class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: #fff;">
+            <i data-lucide="credit-card"></i> Student Fee Vault &amp; Ledgers
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 4. INTERACTIVE FILTER & DEPARTMENT CARDS ======================== -->
+  <main class="section" style="background: #f8fafc; padding-top: 2rem;">
+    <div class="container">
+
+      <!-- Category Filter Pills -->
+      <div class="dept-filter-bar">
+        <button class="dept-filter-btn active" onclick="filterDepts('all', this)">
+          <i data-lucide="clipboard-list"></i> All Disciplines (9)
+        </button>
+        <button class="dept-filter-btn" onclick="filterDepts('computing', this)">
+          <i data-lucide="laptop"></i> Computing &amp; AI (2)
+        </button>
+        <button class="dept-filter-btn" onclick="filterDepts('core', this)">
+          <i data-lucide="cog"></i> Core Engineering (4)
+        </button>
+        <button class="dept-filter-btn" onclick="filterDepts('healthcare', this)">
+          <i data-lucide="dna"></i> Healthcare &amp; Medical (2)
+        </button>
+        <button class="dept-filter-btn" onclick="filterDepts('foundation', this)">
+          <i data-lucide="book-open"></i> Foundational Wing (1)
+        </button>
+      </div>
+
+      <!-- DEPT 1: CSE -->
+      <article class="dept-detail-card" id="cse" data-category="computing">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box"><i data-lucide="laptop"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Computer Engineering (CSE)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 60 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1052</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. S. Muthusamy, M.E.</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('Computer Engineering')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          The Department of Computer Engineering delivers modern training across full-stack software development, operating systems, database management, and cloud infrastructures. Students gain daily coding experience in Python, C++, Java, web technologies, and Linux systems administration.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="monitor"></i> Advanced Laboratories</h5>
+            <ul>
+              <li>High-Speed LAN Computing Lab (60 Core i7 Workstations)</li>
+              <li>Python &amp; Full-Stack Web Development Lab</li>
+              <li>Microprocessor, Hardware &amp; IoT Sensor Workbench</li>
+              <li>Linux Open-Source Operating Systems Lab</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="book-open"></i> Curriculum Competencies</h5>
+            <ul>
+              <li>Data Structures &amp; Object-Oriented Programming</li>
+              <li>Relational Databases (MySQL, PostgreSQL)</li>
+              <li>Cloud Computing &amp; Computer Networks</li>
+              <li>Cyber Security &amp; Information Defense Essentials</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> Placements &amp; Careers</h5>
+            <ul>
+              <li>Junior Software Developer / Web Engineer</li>
+              <li>Network Administrator / Cloud Support Tech</li>
+              <li>Recruiters: TI Metals, Lucas TVS, TCS, Wipro Core</li>
+              <li>100% Campus Placement Assistance</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 2: AI & ML -->
+      <article class="dept-detail-card" id="aiml" data-category="computing">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #059669, #10b981);"><i data-lucide="bot"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Artificial Intelligence &amp; Machine Learning (AI &amp; ML)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 60 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1055</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. P. Karthikeyan, M.Tech</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('AI & Machine Learning')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          SPTC's state-of-the-art AI &amp; ML program trains students in foundational machine learning algorithms, deep neural network architectures, predictive modeling, and intelligent computer vision applications using high-performance GPU workstations.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="zap"></i> Specialized AI Facilities</h5>
+            <ul>
+              <li>Dedicated GPU Deep Learning Computing Cluster</li>
+              <li>TensorFlow, PyTorch &amp; Keras Modeling Suite</li>
+              <li>OpenCV Computer Vision &amp; Image Processing Lab</li>
+              <li>Big Data Analytics &amp; Statistical Tooling Bench</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="book-open"></i> Key Core Modules</h5>
+            <ul>
+              <li>Supervised, Unsupervised &amp; Reinforcement Learning</li>
+              <li>Natural Language Processing (NLP) Fundamentals</li>
+              <li>Data Visualization &amp; Exploratory Analysis</li>
+              <li>Applied AI in Industrial Automation &amp; Robotics</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> High-Demand Careers</h5>
+            <ul>
+              <li>AI Assistant Engineer &amp; ML Operations Associate</li>
+              <li>Data Analytics Technician &amp; Prompt Engineer</li>
+              <li>Automation Testing &amp; Robotics Associate</li>
+              <li>Direct pathway to B.E. / B.Tech Lateral Entry</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 3: MECHANICAL -->
+      <article class="dept-detail-card" id="mech" data-category="core">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #d97706, #f59e0b);"><i data-lucide="cog"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Mechanical Engineering (MECH)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 120 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1020</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. K. Rajasekaran, M.E.</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('Mechanical Engineering')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          One of the founding branches of SPTC Rayavaram since 1983. The department boasts extensive physical workshops spanning heavy machinery, CNC turn-mill centers, foundry, thermal engine testing setups, and advanced computer-aided design laboratories.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="hard-hat"></i> Machine Shops &amp; Labs</h5>
+            <ul>
+              <li>Heavy Machine Shop (Lathes, Shapers, Slotters, Milling)</li>
+              <li>CNC Machining Center &amp; G-Code Simulator Lab</li>
+              <li>Automobile &amp; IC Engine Thermal Testing Lab</li>
+              <li>Foundry, Smithy, Sheet Metal &amp; Arc/Gas Welding Shop</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="drafting-compass"></i> CAD/CAM Systems</h5>
+            <ul>
+              <li>Parametric 3D Modeling (Creo, SolidWorks, AutoCAD)</li>
+              <li>Strength of Materials &amp; Structural Mechanics</li>
+              <li>Hydraulics, Pneumatics &amp; Industrial Fluid Power</li>
+              <li>Metrology, Precision Gauging &amp; Quality Control</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> Core Industry Recruiters</h5>
+            <ul>
+              <li>TI Metals &amp; Tube Investments of India</li>
+              <li>Lucas TVS &amp; TVS Mobility Group</li>
+              <li>Ashok Leyland &amp; BHEL Ancillary Units</li>
+              <li>Over 40 Years of Mechanical Placement Track Record</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 4: EEE -->
+      <article class="dept-detail-card" id="eee" data-category="core">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #eab308, #ca8a04);"><i data-lucide="zap"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Electrical &amp; Electronics Engineering (EEE)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 60 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1030</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. M. Sundaram, M.E.</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('Electrical Engineering')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          The EEE department provides rigorous practical grounding in electrical machinery, industrial switchgear, power generation, PLC automation, and renewable solar power systems. Students acquire hands-on mastery of industrial motor drives and electrical safety standards.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="zap"></i> Power &amp; Drive Labs</h5>
+            <ul>
+              <li>AC &amp; DC Electrical Machines Testing Laboratory</li>
+              <li>Power Electronics, Inverters &amp; Motor Drives Lab</li>
+              <li>Programmable Logic Controllers (PLC) &amp; SCADA Bench</li>
+              <li>Rooftop Solar PV Installation &amp; Grid Telemetry</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="book-open"></i> Practical Syllabus</h5>
+            <ul>
+              <li>Generation, Transmission &amp; Switchgear Protection</li>
+              <li>Industrial Electrical Estimating &amp; Panel Wiring</li>
+              <li>Renewable Clean Energy Systems &amp; Energy Auditing</li>
+              <li>Microcontroller-Based Power Automation</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> Employment Avenues</h5>
+            <ul>
+              <li>TNEB / TANGEDCO Electrical Maintenance Technician</li>
+              <li>Solar Rooftop Project Engineer / Industrial Electrician</li>
+              <li>Schneider Electric, TVS, L&amp;T Electrical Divisions</li>
+              <li>Electrical Contractor License (C-License Eligibility)</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 5: ECE -->
+      <article class="dept-detail-card" id="ece" data-category="core">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #0284c7, #38bdf8);"><i data-lucide="radio"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Electronics &amp; Communication Engineering (ECE)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 60 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1040</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. V. Saravanan, M.E.</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('ECE')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          Specializing in microcontrollers, embedded IoT devices, RF wireless communications, PCB manufacturing, and signal processing. The department bridges digital hardware design with firmware programming for modern industrial instrumentation.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="radio"></i> Electronics Labs</h5>
+            <ul>
+              <li>8051, PIC &amp; ARM Microcontroller Embedded Lab</li>
+              <li>Analog &amp; Digital RF Wireless Communication Workbench</li>
+              <li>PCB Design, Etching, Soldering &amp; Prototyping Workshop</li>
+              <li>Digital Signal Processing (DSP) &amp; FPGA Simulation</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="book-open"></i> Key Modules</h5>
+            <ul>
+              <li>Semiconductor Devices &amp; Linear Integrated Circuits</li>
+              <li>Optical Fiber Telemetry &amp; Satellite Systems</li>
+              <li>Consumer Electronics &amp; Industrial Instrumentation</li>
+              <li>Embedded C &amp; Sensor Interfacing</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> Career Paths</h5>
+            <ul>
+              <li>Embedded Firmware Associate / Testing Tech</li>
+              <li>Telecom Infrastructure Engineer (Jio, Airtel, BSNL)</li>
+              <li>Electronics Hardware Assembler / Quality Tester</li>
+              <li>Recruiters: Bharat Electronics, TVS, Foxconn</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 6: CIVIL -->
+      <article class="dept-detail-card" id="civil" data-category="core">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #b45309, #d97706);"><i data-lucide="drafting-compass"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Civil Engineering (CIVIL)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 60 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1010</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. A. Murugesan, M.E.</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('Civil Engineering')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          Equipping future civil supervisors and surveyors with practical competency in digital Total Station GPS land surveying, material testing, concrete technology, AutoCAD structural drafting, and sustainable building construction methods.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="landmark"></i> Field Surveying &amp; Labs</h5>
+            <ul>
+              <li>Total Station &amp; Digital GPS Geodetic Surveying Lab</li>
+              <li>Strength of Materials &amp; Universal Testing Machine (UTM)</li>
+              <li>Concrete Slump, Compressive &amp; Aggregate Testing Lab</li>
+              <li>Soil Mechanics, Geology &amp; Environmental Hydraulics</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="drafting-compass"></i> Drafting &amp; Management</h5>
+            <ul>
+              <li>AutoCAD 2D/3D Architectural Building Planning</li>
+              <li>Quantity Surveying, Estimation, Costing &amp; Valuation</li>
+              <li>Reinforced Cement Concrete (RCC) Structural Detailing</li>
+              <li>Highway Engineering &amp; Modern Construction Safety</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> Professional Careers</h5>
+            <ul>
+              <li>Site Engineer / Building Construction Supervisor</li>
+              <li>Licensed Surveyor &amp; Quantity Estimator</li>
+              <li>PWD &amp; Highway Department Contractor Assistant</li>
+              <li>L&amp;T Construction, Sobha, Shriram Properties</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 7: BIOMEDICAL -->
+      <article class="dept-detail-card" id="bme" data-category="healthcare">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #7c3aed, #a855f7);"><i data-lucide="dna"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Biomedical Engineering (BME)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 60 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1048</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Dr. K. Meenakshi, Ph.D.</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('Biomedical Engineering')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          Bridging modern medical science with engineering precision. Students study diagnostic equipment calibration, physiological sensors, patient monitoring monitors, hemodialysis machines, and hospital telemetry maintenance.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="dna"></i> Healthcare Diagnostic Labs</h5>
+            <ul>
+              <li>Medical Diagnostic Instrumentation &amp; Calibration Lab</li>
+              <li>ECG, EEG &amp; Patient Vital Sign Telemetry Simulator</li>
+              <li>Medical Imaging Systems (X-Ray, Ultrasound Physics)</li>
+              <li>Clinical Equipment Calibration &amp; Safety Bench</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="book-open"></i> Key Core Competencies</h5>
+            <ul>
+              <li>Bio-Sensors, Electrodes &amp; Transducers</li>
+              <li>Diagnostic &amp; Therapeutic Medical Devices</li>
+              <li>Hospital Equipment Management &amp; NABH Standards</li>
+              <li>Biomedical Waste Safety &amp; Radiation Hygiene</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> Hospital Placement Ties</h5>
+            <ul>
+              <li>Biomedical Service Engineer / Hospital Equipment Tech</li>
+              <li>Medical Device Field Applications Specialist</li>
+              <li>Hospitals: Apollo, Kauvery, Meenakshi Mission</li>
+              <li>GE Healthcare, Philips Medical, Siemens Healthineers</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 8: MLT -->
+      <article class="dept-detail-card" id="mlt" data-category="healthcare">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #0d9488, #14b8a6);"><i data-lucide="microscope"></i></div>
+            <div class="dept-title-text">
+              <h3>Diploma in Medical Laboratory Technology (MLT)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 3 Years (6 Semesters)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Intake: 60 Seats</span>
+                <span class="dept-badge-pill"><i data-lucide="landmark"></i> DOTE Code: 1049</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. N. Senthilkumar, M.Sc.</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('MLT')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          Specialized professional clinical laboratory education covering automated hematology, diagnostic microbiology, clinical biochemistry reagents, histotechnology, and blood bank safety management under sterile laboratory protocols.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="microscope"></i> Diagnostic Laboratory</h5>
+            <ul>
+              <li>Sterile Clinical Pathology &amp; Culture Laboratory</li>
+              <li>Automated Multi-Channel Hematology Analyzers</li>
+              <li>Spectrophotometers &amp; Biochemistry Reagent Stations</li>
+              <li>Centrifuges, Incubators &amp; Binocular Research Microscopes</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="book-open"></i> Core Subjects</h5>
+            <ul>
+              <li>Clinical Biochemistry &amp; Analytical Chemistry</li>
+              <li>Hematology, Blood Grouping &amp; Transfusion Medicine</li>
+              <li>Medical Microbiology, Mycology &amp; Virology</li>
+              <li>Histopathology &amp; Cytological Specimen Handling</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="briefcase"></i> Certified Technologist Roles</h5>
+            <ul>
+              <li>Hospital Diagnostic Laboratory Technologist</li>
+              <li>Pathology Lab Operations Manager / Phlebotomist</li>
+              <li>Blood Bank &amp; Serology Specialist</li>
+              <li>Thyrocare, Metropolis, Vijaya Diagnostic, Govt PHCs</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- DEPT 9: BASIC ENGINEERING -->
+      <article class="dept-detail-card" id="basic" data-category="foundation">
+        <div class="dept-card-header">
+          <div class="dept-card-title-group">
+            <div class="dept-icon-box" style="background: linear-gradient(135deg, #475569, #64748b);"><i data-lucide="book-open"></i></div>
+            <div class="dept-title-text">
+              <h3>Basic Engineering &amp; Science (1st Year Wing)</h3>
+              <div class="dept-meta-badges">
+                <span class="dept-badge-pill"><i data-lucide="calendar"></i> 1st Year (Semesters 1 &amp; 2)</span>
+                <span class="dept-badge-pill gold"><i data-lucide="users"></i> Common to All Branches</span>
+                <span class="dept-badge-pill"><i data-lucide="user"></i> HOD: Prof. G. Kannan, M.Sc., M.Phil</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal('Basic Engineering')">
+            <i data-lucide="file-text"></i> Enquire Admission
+          </button>
+        </div>
+
+        <p style="color: #475569; font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.5rem;">
+          The foundational academic pillar of Subramanian Polytechnic College. Welcoming 10th and 12th standard entrants, this wing shapes strong core competencies in engineering mathematics, applied physics, applied chemistry, and English professional communication.
+        </p>
+
+        <div class="dept-grid-3col">
+          <div class="dept-subcard">
+            <h5><i data-lucide="award"></i> First-Year Facilities</h5>
+            <ul>
+              <li>Modern Digital Audio-Visual Language Laboratory</li>
+              <li>Applied Physics Optics &amp; Mechanics Laboratory</li>
+              <li>Applied Chemistry Water Analysis &amp; Organic Reagent Lab</li>
+              <li>Spacious Engineering Drawing Hall with Parallel Bars</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="book-open"></i> Core Focus Areas</h5>
+            <ul>
+              <li>Engineering Mathematics I &amp; II</li>
+              <li>Technical English Communication &amp; Soft Skills</li>
+              <li>Workshop Practice (Fitting, Carpentry, Plumbing)</li>
+              <li>Basic Electrical &amp; Computer Literacy Skills</li>
+            </ul>
+          </div>
+          <div class="dept-subcard">
+            <h5><i data-lucide="sparkles"></i> Student Mentorship</h5>
+            <ul>
+              <li>Dedicated Class Incharges &amp; Parent Counseling</li>
+              <li>Special Coaching for Rural &amp; Tamil-Medium Entrants</li>
+              <li>Bridge Course in Mathematical Problem-Solving</li>
+              <li>Foundation for 100% Academic Pass Percentages</li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <!-- ADMISSION CALL TO ACTION BOX -->
+      <div style="background: linear-gradient(135deg, #0a2558 0%, #1a56db 100%); border-radius: 16px; padding: 2.5rem; color: #fff; text-align: center; margin-top: 2rem; box-shadow: var(--shadow-lg);">
+        <h3 style="font-family: var(--font-heading); font-size: 1.85rem; color: var(--color-accent-gold); margin-bottom: 0.75rem;">
+          Enroll for DOTE Approved 3-Year Diploma (2026-27)
+        </h3>
+        <p style="max-width: 680px; margin: 0 auto 1.5rem auto; font-size: 0.95rem; color: rgba(255,255,255,0.9); line-height: 1.6;">
+          Join thousands of successful engineers who began their career at Subramanian Polytechnic College, Rayavaram. Government scholarship concessions (FGG, SC/ST, BC/MBC) and hostel facilities available.
+        </p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-gold" onclick="window.openAdmissionModal()">
+            <i data-lucide="file-text"></i> Submit Online Admission Enquiry
+          </button>
+          <a href="/register.html" class="btn btn-outline" style="border-color: #fff; color: #fff;">
+            <i data-lucide="user-plus"></i> Student Portal Registration
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ======================== FOOTER ======================== -->
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+          <img src="/assets/logo.svg" alt="SPTC Logo" style="width: 44px; height: 44px;" loading="lazy" decoding="async">
+          <h4 style="margin: 0; padding: 0;">SPTC Rayavaram</h4>
+        </div>
+        <p>
+          Subramanian Polytechnic College is a leading technical diploma institution in Pudukkottai, affiliated with
+          DOTE Chennai (Code: 331) and approved by AICTE New Delhi.
+        </p>
+        <p style="font-size: 0.8rem; color: var(--color-accent-gold);">
+          Official Web Portal &amp; Cloud Student Fee Vault (Replacing Legacy Tally Desktop).
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Academic Wings</h4>
+        <ul class="footer-links">
+          <li><a href="/departments.html#cse">Computer Engineering (CSE)</a></li>
+          <li><a href="/departments.html#aiml">Artificial Intelligence &amp; ML (AI&amp;ML)</a></li>
+          <li><a href="/departments.html#mech">Mechanical Engineering (MECH)</a></li>
+          <li><a href="/departments.html#eee">Electrical &amp; Electronics (EEE)</a></li>
+          <li><a href="/departments.html#ece">Electronics &amp; Communication (ECE)</a></li>
+          <li><a href="/departments.html#civil">Civil Engineering (CIVIL)</a></li>
+          <li><a href="/departments.html#bme">Biomedical Engineering (BME)</a></li>
+          <li><a href="/departments.html#mlt">Medical Laboratory Tech (MLT)</a></li>
+          <li><a href="/departments.html#basic">Basic Engineering (1st Year)</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Portals &amp; Media</h4>
+        <ul class="footer-links">
+          <li><a href="/departments.html"><i data-lucide="laptop"></i> All 9 Academic Departments</a></li>
+          <li><a href="/gallery.html"><i data-lucide="sparkles"></i> Campus &amp; Event Gallery</a></li>
+          <li><a href="/dashboard.html"><i data-lucide="graduation-cap"></i> Student Fees Dashboard</a></li>
+          <li><a href="/cashier-dashboard.html"><i data-lucide="briefcase"></i> Accounts &amp; Cashier Desk</a></li>
+          <li><a href="/login.html"><i data-lucide="lock"></i> Institutional Sign In</a></li>
+          <li><a href="/register.html"><i data-lucide="file-text"></i> Student Portal Registration</a></li>
+          <li><a href="/index.html#compliance"><i data-lucide="shield-check"></i> AICTE &amp; DOTE Compliance</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Campus Office</h4>
+        <p>Rayavaram, Pudukkottai District,<br>Tamil Nadu, India – 622 506</p>
+        <p>Ph: +91 6382391625<br>Email: principal@sptc.org.in</p>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 Subramanian Polytechnic College (SPTC), Rayavaram. All Rights Reserved. Affiliated to DOTE Chennai.</p>
+    </div>
+  </footer>
+
+  <!-- Admission Enquiry Modal -->
+  <div class="modal-overlay" id="admissionModal">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text"></i> Diploma Admission Enquiry (2026-27)</h3>
+        <button class="modal-close-btn" onclick="window.closeAdmissionModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="window.handleAdmissionSubmit(event)">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Student Name: *</label>
+            <input type="text" id="admName" class="form-control" placeholder="e.g. R. Karthik" required
+              style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Parent / Guardian Phone Number: *</label>
+            <input type="tel" id="admPhone" class="form-control" placeholder="e.g. 9842100000" required
+              style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Preferred Diploma Discipline: *</label>
+            <select id="admDept" class="form-control"
+              style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box;">
+              <option value="Computer Engineering">Computer Engineering (CSE) - 60 Seats</option>
+              <option value="Artificial Intelligence & ML">Artificial Intelligence &amp; ML - 60 Seats</option>
+              <option value="Biomedical Engineering">Biomedical Engineering - 60 Seats</option>
+              <option value="Medical Laboratory Tech">Medical Laboratory Tech (MLT) - 60 Seats</option>
+              <option value="Mechanical Engineering">Mechanical Engineering - 120 Seats</option>
+              <option value="Electrical & Electronics">Electrical &amp; Electronics (EEE) - 60 Seats</option>
+              <option value="Electronics & Communication">Electronics &amp; Communication (ECE) - 60 Seats</option>
+              <option value="Civil Engineering">Civil Engineering - 60 Seats</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; padding: 0.75rem;">
+            <i data-lucide="send"></i> Submit Admission Enquiry
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide, Icons, and App Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
+  <script src="/js/data-store.js"></script>
+  <script src="/js/app.js"></script>
+
+  <script>
+    function filterDepts(cat, btn) {
+      document.querySelectorAll('.dept-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.dept-detail-card');
+      cards.forEach(card => {
+        if (cat === 'all' || card.getAttribute('data-category') === cat) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Preselect specific department if opened with anchor or parameter
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        const target = document.getElementById(hash);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -203,12 +203,12 @@ const Receipts = {
               ${qrCodeElement}
             </div>
             <div style="font-size: 0.775rem; color: #64748b;">
-              <p style="font-weight: 700; color: #059669; margin-bottom: 2px;">✓ Verified Digital Receipt</p>
+              <p style="font-weight: 700; color: #059669; margin-bottom: 2px; display: flex; align-items: center; gap: 0.35rem;"><i data-lucide="check-circle-2"></i> Verified Digital Receipt</p>
               <p>Hash: <code style="font-size: 0.72rem; color: #0a2558; font-weight: 700;">${receipt.verificationHash || 'N/A'}</code></p>
               <p style="margin-top: 3px; font-size: 0.72rem;">Scan with any phone camera to verify authenticity via SPTC DOTE Accounts Ledger.</p>
               <div style="margin-top: 5px;">
-                <a href="${finalVerifyUrl}" target="_blank" style="color: #0a2558; font-size: 0.72rem; font-weight: 700; text-decoration: underline; word-break: break-all;">
-                  🔗 ${finalVerifyUrl}
+                <a href="${finalVerifyUrl}" target="_blank" style="color: #0a2558; font-size: 0.72rem; font-weight: 700; text-decoration: underline; word-break: break-all; display: inline-flex; align-items: center; gap: 0.35rem;">
+                  <i data-lucide="link-2"></i> ${finalVerifyUrl}
                 </a>
               </div>
             </div>
@@ -224,8 +224,8 @@ const Receipts = {
         </div>
 
         ${receipt.source && receipt.source.includes('Tally') ? `
-          <div style="margin-top: 1rem; padding: 0.4rem 0.8rem; background: #fffbeb; border: 1px dashed #d97706; border-radius: 4px; font-size: 0.75rem; color: #92400e;">
-            ℹ️ <strong>Legacy Ledger Notice:</strong> This historical receipt was automatically migrated and digitally archived from the legacy Tally 9 accounts desktop computer.
+          <div style="margin-top: 1rem; padding: 0.4rem 0.8rem; background: #fffbeb; border: 1px dashed #d97706; border-radius: 4px; font-size: 0.75rem; color: #92400e; display: flex; align-items: center; gap: 0.35rem;">
+            <i data-lucide="info"></i> <span><strong>Legacy Ledger Notice:</strong> This historical receipt was automatically migrated and digitally archived from the legacy Tally 9 accounts desktop computer.</span>
           </div>
         ` : ''}
       </div>
@@ -245,6 +245,7 @@ const Receipts = {
       if (!modalContainer) return;
 
       modalContainer.innerHTML = this.buildReceiptHtml(data);
+      if (window.initLucideIcons) window.initLucideIcons(modalContainer);
 
       const modal = document.getElementById('receiptModal');
       if (modal) modal.classList.add('active');
@@ -259,6 +260,7 @@ const Receipts = {
     const el = typeof container === 'string' ? document.getElementById(container) : container;
     if (!el) return;
     el.innerHTML = this.buildReceiptHtml(data);
+    if (window.initLucideIcons) window.initLucideIcons(el);
   },
 
   closeReceiptModal() {

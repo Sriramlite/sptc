@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Life & Event Gallery | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description"
+    content="Official Photo Gallery of Subramanian Polytechnic College (SPTC), Rayavaram, Pudukkottai. Explore campus infrastructure, engineering laboratories, annual events, convocation, placement drives, and sports.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
+  <style>
+    .gallery-page-hero {
+      background: linear-gradient(135deg, #071739 0%, #0a2558 50%, #113375 100%);
+      color: #ffffff;
+      padding: 3.5rem 0 4rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .gallery-filter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 2rem 0 2.5rem 0;
+    }
+    .gallery-filter-btn {
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--radius-full);
+      font-size: 0.86rem;
+      font-weight: 600;
+      background: #f1f5f9;
+      color: var(--color-text-main);
+      border: 1px solid var(--color-border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .gallery-filter-btn:hover {
+      background: #e2e8f0;
+      color: var(--color-primary);
+    }
+    .gallery-filter-btn.active {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+      box-shadow: 0 4px 12px rgba(10, 37, 88, 0.25);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+    .gallery-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+    }
+    .gallery-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(26, 86, 219, 0.35);
+    }
+    .gallery-img-wrap {
+      height: 210px;
+      position: relative;
+      background: linear-gradient(135deg, #07193f 0%, #1e3a8a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      overflow: hidden;
+    }
+    .gallery-img-wrap svg {
+      width: 48px;
+      height: 48px;
+      opacity: 0.85;
+      transition: transform 0.3s ease;
+    }
+    .gallery-card:hover .gallery-img-wrap svg {
+      transform: scale(1.1);
+    }
+    .gallery-overlay-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(3, 10, 28, 0.75);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .gallery-overlay-tag.gold {
+      background: rgba(212, 175, 55, 0.9);
+      color: #071b40;
+      border: none;
+    }
+    .gallery-card-body {
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .gallery-card-body h4 {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      color: var(--color-primary);
+      margin: 0 0 0.5rem 0;
+      line-height: 1.3;
+    }
+    .gallery-card-body p {
+      font-size: 0.84rem;
+      color: #64748b;
+      line-height: 1.5;
+      margin: 0;
+      flex: 1;
+    }
+    .gallery-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #f1f5f9;
+      font-size: 0.75rem;
+      color: #94a3b8;
+    }
+    .gallery-lightbox-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(3, 10, 28, 0.88);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+    .gallery-lightbox-modal.active {
+      display: flex;
+    }
+    .lightbox-content-box {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 650px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      animation: modalFadeIn 0.3s ease;
+    }
+    .lightbox-visual-header {
+      height: 240px;
+      background: linear-gradient(135deg, #07193f 0%, #1e3a8a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      position: relative;
+    }
+    .lightbox-visual-header svg {
+      width: 64px;
+      height: 64px;
+      color: var(--color-accent-gold);
+    }
+    .lightbox-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+      font-size: 1.25rem;
+    }
+    .lightbox-body {
+      padding: 1.75rem;
+    }
+    .lightbox-body h3 {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      color: var(--color-primary);
+      margin: 0 0 0.5rem 0;
+    }
+    .lightbox-body p {
+      font-size: 0.92rem;
+      color: #475569;
+      line-height: 1.6;
+    }
+    @media (max-width: 1024px) {
+      .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 680px) {
+      .gallery-page-hero {
+        padding: 2rem 0 2.5rem 0;
+      }
+      .gallery-filter-bar {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        flex-wrap: nowrap;
+        margin: 1.25rem 0 1.75rem 0;
+      }
+      .gallery-filter-btn {
+        white-space: nowrap;
+        font-size: 0.78rem;
+        padding: 0.45rem 0.9rem;
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .gallery-img-wrap {
+        height: 180px;
+      }
+      .gallery-card-body {
+        padding: 1rem;
+      }
+      .lightbox-content-box {
+        max-width: 100%;
+        margin: 0 0.5rem;
+      }
+      .lightbox-visual-header {
+        height: 180px;
+      }
+      .lightbox-body {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ======================== 1. TOP ANNOUNCEMENT STRIP ======================== -->
+  <aside class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="top-bar-item">
+          <i data-lucide="map-pin"></i> <span>Rayavaram, Pudukkottai – 622 506</span>
+        </div>
+        <div class="top-bar-item">
+          <i data-lucide="phone"></i> <span>04333-272226 / +91 6382391625</span>
+        </div>
+        <div class="top-bar-item">
+          <i data-lucide="landmark"></i> <strong>DOTE: 331</strong> | AICTE Approved
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <a href="/departments.html" style="color: #fce076; font-weight: 600;"><i data-lucide="award"></i> Admissions 2026-27</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="/verify.html" style="color: #ffffff; font-weight: 600;"><i data-lucide="file-check-2"></i> Verify Receipt</a>
+        <span style="color: rgba(255,255,255,0.3);">|</span>
+        <a href="/login.html" style="color: #93c5fd; font-weight: 600;"><i data-lucide="lock"></i> Portal Login</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======================== 2. MAIN HEADER & NAVBAR ======================== -->
+  <header class="main-header">
+    <div class="container navbar">
+      <a href="/index.html" class="brand-link">
+        <img src="/assets/logo.svg" alt="SPTC Crest" class="brand-logo-img" loading="lazy" decoding="async">
+        <div class="brand-text">
+          <h1 class="brand-name">Subramanian Polytechnic College</h1>
+          <p class="brand-sub">Rayavaram, Pudukkottai • Estd. 1983 (DOTE: 331)</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/index.html#home">Home</a></li>
+          <li><a href="/index.html#about">About</a></li>
+          <li><a href="/departments.html">Departments</a></li>
+          <li><a href="/gallery.html" class="active">Gallery</a></li>
+          <li><a href="/index.html#facilities">Campus &amp; Bus</a></li>
+          <li><a href="/index.html#compliance">Compliance</a></li>
+          <li><a href="/index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="btn btn-gold btn-sm hide-on-mobile" onclick="window.openAdmissionModal()">
+          Admission
+        </button>
+        <div id="navbarAuthContainer" style="display: flex; align-items: center;">
+          <div class="portal-dropdown-wrapper" id="portalDropdownWrapper">
+            <button type="button" class="portal-btn hide-on-mobile" id="portalDropdownBtn" aria-haspopup="true" aria-expanded="false" onclick="window.handlePortalBtnClick(event)">
+              <i data-lucide="lock"></i>
+              <span>Portal</span>
+              <i data-lucide="chevron-down" class="portal-chevron"></i>
+            </button>
+
+            <div class="portal-dropdown-menu" id="portalDropdownMenu" role="menu">
+              <div class="portal-dropdown-columns">
+                <!-- 1. STUDENT OPTIONS -->
+                <div class="portal-col portal-col-student">
+                  <div class="portal-col-header">
+                    <span class="portal-col-badge student-badge">
+                      <i data-lucide="graduation-cap"></i> Student
+                    </span>
+                  </div>
+                  <p class="portal-col-desc">Fee dues, online digital payments &amp; verified receipts</p>
+                  <div class="portal-links-list">
+                    <a href="/dashboard.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="credit-card"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Student Fee Vault</span>
+                        <span class="portal-link-sub">Semester ledgers &amp; receipts</span>
+                      </div>
+                    </a>
+                    <a href="/login.html?role=student" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="log-in"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Student Sign In</span>
+                        <span class="portal-link-sub">DOTE Reg No &amp; DOB (PIN)</span>
+                      </div>
+                    </a>
+                    <a href="/register.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="user-plus"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">New Registration</span>
+                        <span class="portal-link-sub">Activate student ledger</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 2. STAFF / OFFICE OPTIONS -->
+                <div class="portal-col portal-col-staff">
+                  <div class="portal-col-header">
+                    <span class="portal-col-badge staff-badge">
+                      <i data-lucide="briefcase"></i> Staff
+                    </span>
+                  </div>
+                  <p class="portal-col-desc">Counter collection, legacy Tally migration &amp; audit</p>
+                  <div class="portal-links-list">
+                    <a href="/cashier-dashboard.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="calculator"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Office Accounts &amp; Cashier</span>
+                        <span class="portal-link-sub">Counter POS, Tally sync &amp; audit</span>
+                      </div>
+                    </a>
+                    <a href="/login.html?role=staff" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="shield-check"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Staff &amp; Faculty Login</span>
+                        <span class="portal-link-sub">Cashier, Principal &amp; HODs</span>
+                      </div>
+                    </a>
+                    <a href="/verify.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="file-check-2"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Verify Official Receipt</span>
+                        <span class="portal-link-sub">SHA-256 certificate check</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Mobile Navigation Hamburger Button -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false" onclick="window.toggleMobileMenu()">
+          <i data-lucide="menu" id="menuToggleIconOpen"></i>
+          <i data-lucide="x" id="menuToggleIconClose" style="display: none;"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer Backdrop & Drawer Panel (Direct Child of Body) -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="window.toggleMobileMenu(false)"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+      <div class="mobile-drawer-header">
+        <div class="mobile-drawer-brand">
+          <img src="/assets/logo.svg" alt="SPTC Crest" class="mobile-drawer-logo" loading="lazy" decoding="async">
+          <div class="mobile-drawer-brand-text">
+            <strong>SPTC Rayavaram</strong>
+            <small>DOTE: 331 • AICTE Approved</small>
+          </div>
+        </div>
+        <button class="mobile-drawer-close" aria-label="Close menu" onclick="window.toggleMobileMenu(false)">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="mobile-drawer-body">
+        <div class="mobile-drawer-group-label">Navigation Menu</div>
+        <ul class="mobile-nav-menu">
+          <li>
+            <a href="/index.html#home" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="building"></i>
+              <span>Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#about" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="info"></i>
+              <span>About SPTC</span>
+            </a>
+          </li>
+          <li>
+            <a href="/departments.html" class="mobile-menu-item">
+              <i data-lucide="laptop"></i>
+              <span>Academic Departments</span>
+              <span class="drawer-pill-tag">9 Wings</span>
+            </a>
+          </li>
+          <li>
+            <a href="/gallery.html" class="mobile-menu-item active">
+              <i data-lucide="sparkles"></i>
+              <span>Campus &amp; Event Gallery</span>
+              <span class="drawer-pill-tag gold">Photos</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#facilities" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="bus"></i>
+              <span>Campus &amp; Bus Routes</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#compliance" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="shield-check"></i>
+              <span>AICTE &amp; DOTE Compliance</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.html#contact" class="mobile-menu-item" onclick="window.toggleMobileMenu(false)">
+              <i data-lucide="phone"></i>
+              <span>Contact &amp; Location</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mobile-drawer-group-label">Institutional Portals</div>
+        <div class="mobile-drawer-actions">
+          <a href="/dashboard.html" class="btn btn-primary btn-block">
+            <i data-lucide="graduation-cap"></i> Student Fees Vault
+          </a>
+          <a href="/cashier-dashboard.html" class="btn btn-outline btn-block">
+            <i data-lucide="briefcase"></i> Accounts &amp; Cashier POS Desk
+          </a>
+          <div class="mobile-auth-grid">
+            <a href="/login.html" class="btn btn-secondary">
+              <i data-lucide="lock"></i> Sign In
+            </a>
+            <a href="/register.html" class="btn btn-gold">
+              <i data-lucide="user-plus"></i> Register
+            </a>
+          </div>
+          <button class="btn btn-gold btn-block" onclick="window.toggleMobileMenu(false); window.openAdmissionModal();" style="margin-top: 0.5rem;">
+            <i data-lucide="file-text"></i> Online Admission Enquiry
+          </button>
+        </div>
+
+        <div class="mobile-drawer-footer">
+          <div><i data-lucide="map-pin"></i> Rayavaram, Pudukkottai – 622 506</div>
+          <div><i data-lucide="phone"></i> 04333-272226 / +91 6382391625</div>
+          <div style="color: var(--color-accent-gold); font-weight: 600; margin-top: 4px;">
+            <i data-lucide="landmark"></i> DOTE Code: 331 | AICTE Approved
+          </div>
+        </div>
+      </div>
+    </aside>
+
+  <!-- ======================== 3. HERO BANNER ======================== -->
+  <section class="gallery-page-hero">
+    <div class="container">
+      <div style="max-width: 820px;">
+        <div class="hero-badge-pill">
+          <i data-lucide="sparkles"></i> 12-Acre Serene Green Campus • Rayavaram, Pudukkottai
+        </div>
+        <h2 style="font-family: var(--font-heading); font-size: clamp(1.8rem, 4vw, 2.75rem); line-height: 1.2; margin-bottom: 1rem;">
+          SPTC Visual Gallery &amp; <span style="color: var(--color-accent-gold);">Campus Life Showcase</span>
+        </h2>
+        <p style="font-size: 1.05rem; color: rgba(255,255,255,0.88); line-height: 1.6; margin-bottom: 1.75rem;">
+          Browse moments from four decades of academic excellence at Subramanian Polytechnic College. Explore modern engineering laboratories, convocation ceremonies, corporate placement drives, cultural festivals, and community NSS initiatives.
+        </p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="/departments.html" class="btn btn-gold">
+            <i data-lucide="laptop"></i> Explore 9 Academic Departments
+          </a>
+          <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: #fff;" onclick="window.openAdmissionModal()">
+            <i data-lucide="file-text"></i> Admission Enquiry
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 4. FILTERABLE PHOTO GALLERY ======================== -->
+  <main class="section" style="background: #f8fafc; padding-top: 2rem;">
+    <div class="container">
+
+      <!-- Category Filter Pills -->
+      <div class="gallery-filter-bar">
+        <button class="gallery-filter-btn active" onclick="filterGallery('all', this)">
+          <i data-lucide="clipboard-list"></i> All Photos (18)
+        </button>
+        <button class="gallery-filter-btn" onclick="filterGallery('campus', this)">
+          <i data-lucide="building"></i> Campus &amp; Infrastructure (4)
+        </button>
+        <button class="gallery-filter-btn" onclick="filterGallery('labs', this)">
+          <i data-lucide="cog"></i> Workshops &amp; Labs (5)
+        </button>
+        <button class="gallery-filter-btn" onclick="filterGallery('events', this)">
+          <i data-lucide="award"></i> Events &amp; Convocation (3)
+        </button>
+        <button class="gallery-filter-btn" onclick="filterGallery('placements', this)">
+          <i data-lucide="briefcase"></i> Placement Drives (3)
+        </button>
+        <button class="gallery-filter-btn" onclick="filterGallery('activities', this)">
+          <i data-lucide="trophy"></i> Sports &amp; NSS (3)
+        </button>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="gallery-grid" id="galleryContainer">
+
+        <!-- Item 1: Auditorium -->
+        <div class="gallery-card" data-category="campus" onclick="openLightbox('MAM Palaniappa Chettiar Auditorium', 'Air-conditioned modern auditorium with a seating capacity of 1,200, hosting national technical symposiums, convocation ceremonies, and cultural annual days.', 'Campus Infrastructure', 'building')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #0a2558, #1e3a8a);">
+            <i data-lucide="building"></i>
+            <span class="gallery-overlay-tag gold"><i data-lucide="star"></i> Flagship Venue</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>MAM Palaniappa Chettiar Auditorium</h4>
+            <p>1,200-seat grand auditorium for academic convocations, industrial symposiums, and cultural festivals.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Main Campus</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2: Temple -->
+        <div class="gallery-card" data-category="campus" onclick="openLightbox('Selva Vinayagar Campus Temple', 'Spiritual center of Subramanian Polytechnic College campus fostering ethical grounding, peace, and moral values among students.', 'Campus Culture', 'landmark')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #b45309, #d97706);">
+            <i data-lucide="landmark"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="heart"></i> Spiritual Center</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Selva Vinayagar Campus Temple</h4>
+            <p>Spiritual sanctum located amidst lush foliage fostering peace, discipline, and moral grounding.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> East Garden Wing</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 3: Central Library -->
+        <div class="gallery-card" data-category="campus" onclick="openLightbox('SPTC Central Library & E-Learning Vault', 'Housing over 10,000 engineering titles, national journals, research magazines, and automated digital DELNET cataloging.', 'Knowledge Infrastructure', 'book-open')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #065f46, #059669);">
+            <i data-lucide="book-open"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="book"></i> 10,000+ Books</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Central Engineering Library</h4>
+            <p>Comprehensive technical book repository with high-speed DELNET digital access and research journals.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Academic Block</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 4: Bus Fleet -->
+        <div class="gallery-card" data-category="campus" onclick="openLightbox('College Bus Transport Fleet', 'Safe, scheduled commuter transport covering 5 major regional corridors including Pudukkottai town, Karaikudi, Thirumayam, and Aranthangi.', 'Student Amenities', 'bus')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #854d0e, #ca8a04);">
+            <i data-lucide="bus"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="navigation"></i> 5 Routes</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>College Bus Fleet Coverage</h4>
+            <p>Dedicated transport linking Pudukkottai, Karaikudi, Thirumayam, and surrounding rural centers.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Rayavaram Depot</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 5: Heavy Machine Shop -->
+        <div class="gallery-card" data-category="labs" onclick="openLightbox('Heavy Machine Shop & Lathe Bay', 'Equipped with precision centre lathes, shapers, radial drills, and milling cutters for core mechanical engineering practicals.', 'Mechanical Labs', 'cog')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #475569, #334155);">
+            <i data-lucide="cog"></i>
+            <span class="gallery-overlay-tag gold"><i data-lucide="wrench"></i> Heavy Industry</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Mechanical Lathe &amp; Machine Shop</h4>
+            <p>Industrial machinery floor featuring all-geared lathes, shaping, slotting, and precision milling tools.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Mech Workshop Block</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 6: CNC Machining Lab -->
+        <div class="gallery-card" data-category="labs" onclick="openLightbox('CNC Machining & CAM Simulation Lab', 'Computer Numerical Control machining bay with FANUC controls, G-Code verification, and automated turning operations.', 'Advanced Manufacturing', 'monitor')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #1e3a8a, #2563eb);">
+            <i data-lucide="monitor"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="cpu"></i> CNC Center</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>CNC Machining &amp; CAD/CAM Lab</h4>
+            <p>Automated manufacturing center running CAD modeling, CNC programming, and automated part fabrication.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Mech Tech Wing</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 7: High-Speed Computer Lab -->
+        <div class="gallery-card" data-category="labs" onclick="openLightbox('High-Speed Computer Engineering Lab', 'Central computing facility with 60 Core i7 terminals, dedicated gigabit optical internet, Python and web development stacks.', 'Computer Science', 'laptop')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
+            <i data-lucide="laptop"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="wifi"></i> Gigabit LAN</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Computing &amp; Software Lab</h4>
+            <p>Equipped with 60 modern terminals, cloud server stacks, and software development IDEs.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> CSE Department</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 8: AI & GPU Deep Learning Lab -->
+        <div class="gallery-card" data-category="labs" onclick="openLightbox('GPU Deep Learning & AI Research Lab', 'Equipped with dedicated Tensor-core workstations for training convolutional neural networks, predictive models, and big data processing.', 'AI & ML', 'bot')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #047857, #10b981);">
+            <i data-lucide="bot"></i>
+            <span class="gallery-overlay-tag gold"><i data-lucide="zap"></i> GPU Powered</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>GPU AI &amp; Machine Learning Lab</h4>
+            <p>High-performance computing workbench for deep neural networks, computer vision, and big data pipelines.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> AI Discipline</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 9: Biomedical Instrumentation Lab -->
+        <div class="gallery-card" data-category="labs" onclick="openLightbox('Biomedical Instrumentation & Diagnostics Lab', 'Clinical diagnostic devices including multi-parameter patient vital monitors, ECG simulators, and medical imaging testing benches.', 'Biomedical & MLT', 'dna')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #6d28d9, #8b5cf6);">
+            <i data-lucide="dna"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="activity"></i> Clinical Tech</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Biomedical Diagnostics Lab</h4>
+            <p>Hands-on calibration and repair of hospital patient monitoring equipment and diagnostic instruments.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Biomedical Block</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 10: Convocation Ceremony -->
+        <div class="gallery-card" data-category="events" onclick="openLightbox('Annual Diploma Convocation Day', 'Graduation ceremony awarding DOTE state diplomas to graduating batches in the presence of distinguished technical education dignitaries.', 'Convocation', 'graduation-cap')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #991b1b, #dc2626);">
+            <i data-lucide="graduation-cap"></i>
+            <span class="gallery-overlay-tag gold"><i data-lucide="award"></i> Graduation Day</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Annual Diploma Convocation</h4>
+            <p>Conferring official DOTE state diplomas to graduating batches of engineers with gold medal awards.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="calendar"></i> Annual Milestone</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 11: Technical Symposium -->
+        <div class="gallery-card" data-category="events" onclick="openLightbox('TECHSPTC State-Level Technical Symposium', 'Inter-polytechnic paper presentation, robotics challenge, CAD design modeling, and technical quiz competitions.', 'Academic Symposium', 'trophy')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #1d4ed8, #3b82f6);">
+            <i data-lucide="trophy"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="award"></i> State Level</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>TECHSPTC Technical Symposium</h4>
+            <p>Paper presentations, project expos, and robotics challenges drawing polytechnic students statewide.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="calendar"></i> College Event</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 12: Cultural Celebrations & Pongal -->
+        <div class="gallery-card" data-category="events" onclick="openLightbox('Traditional Pongal Thiruvizha & Cultural Day', 'Traditional celebration uniting students, faculty, and management in Rayavaram with folk arts, sports, and cultural heritage.', 'Cultural Events', 'sparkles')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #c2410c, #ea580c);">
+            <i data-lucide="sparkles"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="smile"></i> Heritage Fest</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Pongal Thiruvizha &amp; Cultural Fest</h4>
+            <p>Vibrant campus heritage celebrations featuring folk arts, traditional games, and community unity.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="calendar"></i> Campus Festival</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 13: TI Metals Placement Drive -->
+        <div class="gallery-card" data-category="placements" onclick="openLightbox('TI Metals Campus Placement Drive', 'On-campus recruitment by Tube Investments of India (TI Group), offering direct core engineering technician appointments.', 'Campus Placements', 'briefcase')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+            <i data-lucide="briefcase"></i>
+            <span class="gallery-overlay-tag gold"><i data-lucide="check-circle-2"></i> 100% Placement</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>TI Metals Campus Recruitment Drive</h4>
+            <p>Annual on-campus placement sessions selecting mechanical, electrical, and civil diploma graduates.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="building"></i> Murugappa Group</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 14: Lucas TVS Campus Drive -->
+        <div class="gallery-card" data-category="placements" onclick="openLightbox('Lucas TVS On-Campus Interviews', 'TVS group campus recruitment selecting electrical, mechanical, and electronics engineers for production facilities.', 'Campus Placements', 'briefcase')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #15803d, #22c55e);">
+            <i data-lucide="briefcase"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="check"></i> Core Industry</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Lucas TVS Campus Drive</h4>
+            <p>Recruitment drive by TVS Group offering immediate appointment orders to final-year students.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="building"></i> TVS Group</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 15: Industrial Visits -->
+        <div class="gallery-card" data-category="placements" onclick="openLightbox('Industrial Exposure Visits & MoUs', 'Educational tours to core manufacturing plants in Trichy, Chennai, and Madurai for practical industrial understanding.', 'Industrial MoUs', 'factory')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #4338ca, #6366f1);">
+            <i data-lucide="building-2"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="external-link"></i> Industry Tour</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Industrial Study Visits &amp; MoUs</h4>
+            <p>Students visiting core thermal plants, fabrication units, and software IT campuses across Tamil Nadu.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Field Exposure</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 16: Annual Sports Meet -->
+        <div class="gallery-card" data-category="activities" onclick="openLightbox('Annual Sports Meet & Athletics', 'Inter-departmental track events, cricket, volleyball, football tournaments across the 12-acre expansive college grounds.', 'Physical Education', 'trophy')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #b91c1c, #ef4444);">
+            <i data-lucide="trophy"></i>
+            <span class="gallery-overlay-tag gold"><i data-lucide="award"></i> Sports Champion</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Annual Sports Day &amp; Athletics</h4>
+            <p>Field competitions, cricket trophies, and volleyball championships supervised by physical directors.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> College Playgrounds</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 17: NSS Rural Camp -->
+        <div class="gallery-card" data-category="activities" onclick="openLightbox('NSS Rural Service Camp in Rayavaram', 'Special 7-day social service camp by student volunteers aiding village sanitation, digital literacy, and water conservation.', 'Community Service', 'users')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #047857, #10b981);">
+            <i data-lucide="users"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="heart"></i> NSS Unit</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>NSS Rural Development Camp</h4>
+            <p>SPTC volunteers carrying out digital literacy drives and free health camps in surrounding rural hamlets.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> Rayavaram Villages</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 18: Blood Donation Drive -->
+        <div class="gallery-card" data-category="activities" onclick="openLightbox('Voluntary Blood Donation Drive', 'Joint blood donation campaign with Pudukkottai District Govt Hospital collecting over 150 units from student volunteers.', 'Social Welfare', 'heart')">
+          <div class="gallery-img-wrap" style="background: linear-gradient(135deg, #be123c, #f43f5e);">
+            <i data-lucide="shield-check"></i>
+            <span class="gallery-overlay-tag"><i data-lucide="heart"></i> Youth Red Cross</span>
+          </div>
+          <div class="gallery-card-body">
+            <h4>Voluntary Blood Donation Camp</h4>
+            <p>Over 150 student units donated in partnership with the Government District Headquarters Hospital.</p>
+            <div class="gallery-card-footer">
+              <span><i data-lucide="map-pin"></i> College Auditorium</span>
+              <span>Click to view details →</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ======================== LIGHTBOX MODAL ======================== -->
+  <div class="gallery-lightbox-modal" id="lightboxModal" onclick="closeLightbox(event)">
+    <div class="lightbox-content-box" onclick="event.stopPropagation()">
+      <div class="lightbox-visual-header" id="lightboxVisualHeader">
+        <div id="lightboxIconHolder"></div>
+        <button class="lightbox-close-btn" onclick="closeLightbox()">&times;</button>
+      </div>
+      <div class="lightbox-body">
+        <span class="dept-badge-pill gold" id="lightboxBadge" style="margin-bottom: 0.5rem; display: inline-flex;">Category</span>
+        <h3 id="lightboxTitle">Title</h3>
+        <p id="lightboxDesc">Description</p>
+        <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+          <button class="btn btn-primary btn-sm" onclick="closeLightbox()">Close Preview</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== FOOTER ======================== -->
+  <footer class="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+          <img src="/assets/logo.svg" alt="SPTC Logo" style="width: 44px; height: 44px;" loading="lazy" decoding="async">
+          <h4 style="margin: 0; padding: 0;">SPTC Rayavaram</h4>
+        </div>
+        <p>
+          Subramanian Polytechnic College is a leading technical diploma institution in Pudukkottai, affiliated with
+          DOTE Chennai (Code: 331) and approved by AICTE New Delhi.
+        </p>
+        <p style="font-size: 0.8rem; color: var(--color-accent-gold);">
+          Official Web Portal &amp; Cloud Student Fee Vault (Replacing Legacy Tally Desktop).
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Academic Wings</h4>
+        <ul class="footer-links">
+          <li><a href="/departments.html#cse">Computer Engineering (CSE)</a></li>
+          <li><a href="/departments.html#aiml">Artificial Intelligence &amp; ML (AI&amp;ML)</a></li>
+          <li><a href="/departments.html#mech">Mechanical Engineering (MECH)</a></li>
+          <li><a href="/departments.html#eee">Electrical &amp; Electronics (EEE)</a></li>
+          <li><a href="/departments.html#ece">Electronics &amp; Communication (ECE)</a></li>
+          <li><a href="/departments.html#civil">Civil Engineering (CIVIL)</a></li>
+          <li><a href="/departments.html#bme">Biomedical Engineering (BME)</a></li>
+          <li><a href="/departments.html#mlt">Medical Laboratory Tech (MLT)</a></li>
+          <li><a href="/departments.html#basic">Basic Engineering (1st Year)</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Quick Portals &amp; Media</h4>
+        <ul class="footer-links">
+          <li><a href="/departments.html"><i data-lucide="laptop"></i> All 9 Academic Departments</a></li>
+          <li><a href="/gallery.html"><i data-lucide="sparkles"></i> Campus &amp; Event Gallery</a></li>
+          <li><a href="/dashboard.html"><i data-lucide="graduation-cap"></i> Student Fees Dashboard</a></li>
+          <li><a href="/cashier-dashboard.html"><i data-lucide="briefcase"></i> Accounts &amp; Cashier Desk</a></li>
+          <li><a href="/login.html"><i data-lucide="lock"></i> Institutional Sign In</a></li>
+          <li><a href="/register.html"><i data-lucide="file-text"></i> Student Portal Registration</a></li>
+          <li><a href="/index.html#compliance"><i data-lucide="shield-check"></i> AICTE &amp; DOTE Compliance</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Campus Office</h4>
+        <p>Rayavaram, Pudukkottai District,<br>Tamil Nadu, India – 622 506</p>
+        <p>Ph: +91 6382391625<br>Email: principal@sptc.org.in</p>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© 2026 Subramanian Polytechnic College (SPTC), Rayavaram. All Rights Reserved. Affiliated to DOTE Chennai.</p>
+    </div>
+  </footer>
+
+  <!-- Admission Enquiry Modal -->
+  <div class="modal-overlay" id="admissionModal">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text"></i> Diploma Admission Enquiry (2026-27)</h3>
+        <button class="modal-close-btn" onclick="window.closeAdmissionModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="window.handleAdmissionSubmit(event)">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Student Name: *</label>
+            <input type="text" id="admName" class="form-control" placeholder="e.g. R. Karthik" required
+              style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Parent / Guardian Phone Number: *</label>
+            <input type="tel" id="admPhone" class="form-control" placeholder="e.g. 9842100000" required
+              style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box;">
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label style="display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.35rem;">Preferred Diploma Discipline: *</label>
+            <select id="admDept" class="form-control"
+              style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid var(--color-border); border-radius: 6px; box-sizing: border-box;">
+              <option value="Computer Engineering">Computer Engineering (CSE) - 60 Seats</option>
+              <option value="Artificial Intelligence & ML">Artificial Intelligence &amp; ML - 60 Seats</option>
+              <option value="Biomedical Engineering">Biomedical Engineering - 60 Seats</option>
+              <option value="Medical Laboratory Tech">Medical Laboratory Tech (MLT) - 60 Seats</option>
+              <option value="Mechanical Engineering">Mechanical Engineering - 120 Seats</option>
+              <option value="Electrical & Electronics">Electrical &amp; Electronics (EEE) - 60 Seats</option>
+              <option value="Electronics & Communication">Electronics &amp; Communication (ECE) - 60 Seats</option>
+              <option value="Civil Engineering">Civil Engineering - 60 Seats</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; padding: 0.75rem;">
+            <i data-lucide="send"></i> Submit Admission Enquiry
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide, Icons, and App Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
+  <script src="/js/data-store.js"></script>
+  <script src="/js/app.js"></script>
+
+  <script>
+    function filterGallery(cat, btn) {
+      document.querySelectorAll('.gallery-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.gallery-card');
+      cards.forEach(card => {
+        if (cat === 'all' || card.getAttribute('data-category') === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function openLightbox(title, desc, badge, iconName) {
+      const modal = document.getElementById('lightboxModal');
+      document.getElementById('lightboxTitle').textContent = title;
+      document.getElementById('lightboxDesc').textContent = desc;
+      document.getElementById('lightboxBadge').textContent = badge;
+      
+      const holder = document.getElementById('lightboxIconHolder');
+      if (holder) {
+        holder.innerHTML = `<i data-lucide="${iconName || 'sparkles'}" style="width: 64px; height: 64px;"></i>`;
+        if (window.initLucideIcons) window.initLucideIcons(holder);
+      }
+      modal.classList.add('active');
+    }
+
+    function closeLightbox() {
+      const modal = document.getElementById('lightboxModal');
+      if (modal) modal.classList.remove('active');
+    }
+  </script>
+</body>
+</html>

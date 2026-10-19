@@ -1,5 +1,54 @@
 // SPTC Data Store & API Client with Strict Authentication Controls
 
+// ============================================================================
+// REDIRECT LOOP PROTECTION & ROLE FALLBACK CIRCUIT BREAKER
+// ============================================================================
+const RedirectGuard = {
+  KEY: 'sptc_redirect_hops',
+  MAX_HOPS: 2,
+  WINDOW_MS: 4000,
+
+  recordHop(targetUrl) {
+    try {
+      const now = Date.now();
+      const raw = sessionStorage.getItem(this.KEY);
+      let list = raw ? JSON.parse(raw) : [];
+      // Clean up hops older than WINDOW_MS
+      list = list.filter(item => (now - item.time) < this.WINDOW_MS);
+      list.push({ path: targetUrl || window.location.pathname, time: now });
+      sessionStorage.setItem(this.KEY, JSON.stringify(list));
+
+      if (list.length > this.MAX_HOPS) {
+        console.warn('[RedirectGuard] Circuit breaker tripped! Potential redirect loop prevented:', list);
+        return false; // Loop detected!
+      }
+      return true; // Safe
+    } catch (e) {
+      return true;
+    }
+  },
+
+  clear() {
+    try {
+      sessionStorage.removeItem(this.KEY);
+    } catch (e) {}
+  },
+
+  isLooping() {
+    try {
+      const now = Date.now();
+      const raw = sessionStorage.getItem(this.KEY);
+      if (!raw) return false;
+      const list = JSON.parse(raw).filter(item => (now - item.time) < this.WINDOW_MS);
+      return list.length >= this.MAX_HOPS;
+    } catch (e) {
+      return false;
+    }
+  }
+};
+
+window.RedirectGuard = RedirectGuard;
+
 const API = {
   // Retrieve token from local session storage
   getToken() {
@@ -189,6 +238,47 @@ const API = {
     if (res.status === 401 || res.status === 403) {
       const err = await res.json().catch(() => ({}));
       return { error: err.error || 'Access denied.', unauthorized: true };
+    }
+    return await res.json();
+  },
+
+  // Protected: Staff Only - Paginated Past Transactions (20 rows per page default)
+  async getTransactions({ page = 1, limit = 20, search = '', paymentMode = '', regNo = '' } = {}) {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page);
+    if (limit) params.append('limit', limit);
+    if (search) params.append('search', search);
+    if (paymentMode) params.append('paymentMode', paymentMode);
+    if (regNo) params.append('regNo', regNo);
+
+    const res = await fetch(`/api/transactions?${params.toString()}`, {
+      headers: this.getAuthHeaders()
+    });
+    if (res.status === 401 || res.status === 403) {
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err.error || 'Access denied.', unauthorized: true };
+    }
+    return await res.json();
+  },
+
+  // Protected: Staff Only - Set / Adjust Student Total Fees per Year
+  async setStudentFees(regNo, feeData) {
+    const res = await fetch(`/api/students/${encodeURIComponent(regNo)}/set-fees`, {
+      method: 'POST',
+      headers: this.getAuthHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify(feeData)
+    });
+    return await res.json();
+  },
+
+  // Protected: Staff Only - Full Student Ledger and Payment History
+  async getStudentLedger(regNo) {
+    const res = await fetch(`/api/students/${encodeURIComponent(regNo)}/ledger`, {
+      headers: this.getAuthHeaders()
+    });
+    if (res.status === 401 || res.status === 403) {
+      const err = await res.json().catch(() => ({}));
+      return { success: false, error: err.error || 'Access denied.', unauthorized: true };
     }
     return await res.json();
   },

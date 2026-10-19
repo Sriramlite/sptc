@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/css/style.css?v=3.6">
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
   <link rel="stylesheet" href="/css/register-redesign.css?v=3.6">
 </head>
 <body>
@@ -25,14 +25,14 @@
       <div class="brand-showcase-header">
         <a href="/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
           <div class="brand-crest-box">
-            <img src="/assets/logo.svg" alt="SPTC Institutional Crest" class="brand-crest-img">
+            <img src="/assets/logo.svg" alt="SPTC Institutional Crest" class="brand-crest-img" loading="lazy" decoding="async">
           </div>
           <div class="brand-showcase-title">
             <h1>Subramanian Polytechnic College</h1>
             <p>Rayavaram, Pudukkottai District • Tamil Nadu – 622 506</p>
             <div class="brand-pill-badges">
-              <span class="brand-badge gold">🏛️ DOTE Code: 331</span>
-              <span class="brand-badge">⭐ AICTE Approved</span>
+              <span class="brand-badge gold"><i data-lucide="landmark"></i> DOTE Code: 331</span>
+              <span class="brand-badge"><i data-lucide="award"></i> AICTE Approved</span>
               <span class="brand-badge">Estd. 1983</span>
             </div>
           </div>
@@ -42,7 +42,7 @@
       <!-- Center Hero Showcase -->
       <div class="brand-showcase-hero">
         <div class="hero-super-badge">
-          <span>🎓</span> Student Self-Service &amp; Central Fees Ledger
+          <span><i data-lucide="graduation-cap"></i></span> Student Self-Service &amp; Central Fees Ledger
         </div>
         <h2>
           Activate Your Official <span class="gold-gradient-text">Student Ledger</span>
@@ -132,7 +132,7 @@
 
       <!-- Footer Info -->
       <div class="brand-showcase-footer">
-        <p>🏛️ Subramanian Polytechnic College • Rayavaram, Pudukkottai – 622 506</p>
+        <p><i data-lucide="landmark"></i> Subramanian Polytechnic College • Rayavaram, Pudukkottai – 622 506</p>
         <p>Admissions &amp; Accounts: +91 6382391625 / 04333-272226 • principal@sptc.org.in</p>
       </div>
     </aside>
@@ -166,14 +166,14 @@
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
             <div>
               <div class="auth-title-badge">
-                <span>📝</span> DOTE Student Enrollment
+                <span><i data-lucide="file-text"></i></span> DOTE Student Enrollment
               </div>
               <h2 style="font-size: 1.5rem; margin-top: 0.35rem;">Student Portal &amp; Fee Ledger Setup</h2>
               <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.2rem;">Complete the form below to initialize your semester ledger account.</p>
             </div>
             
             <button type="button" class="btn-autofill-demo" onclick="fillSampleRegistration()">
-              <span>⚡ Auto-Fill Sample Demo</span>
+              <span><i data-lucide="zap"></i> Auto-Fill Sample Demo</span>
             </button>
           </div>
         </div>
@@ -213,7 +213,7 @@
             <div class="register-section-block">
               <div class="register-section-header">
                 <div class="section-title-wrap">
-                  <div class="section-icon-badge">🎓</div>
+                  <div class="section-icon-badge"><i data-lucide="graduation-cap"></i></div>
                   <div>
                     <h3>Academic &amp; DOTE Credentials</h3>
                   </div>
@@ -228,7 +228,7 @@
                     <span style="font-size: 0.7rem; color: #2563eb; font-weight: 600;">8 Digits</span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">🆔</span>
+                    <span class="reg-input-icon"><i data-lucide="credit-card"></i></span>
                     <input type="text" id="regNo" class="reg-control" placeholder="e.g. 24206015" maxlength="10" required />
                   </div>
                   <span class="reg-hint">Official 8-digit Directorate of Technical Education Reg No.</span>
@@ -239,7 +239,7 @@
                     <span>Full Student Name <span class="req">*</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">👤</span>
+                    <span class="reg-input-icon"><i data-lucide="user"></i></span>
                     <input type="text" id="studentName" class="reg-control" placeholder="e.g. M. Manikandan" required />
                   </div>
                   <span class="reg-hint">As printed on 10th / SSLC marksheet</span>
@@ -252,7 +252,7 @@
                     <span>Department / Branch <span class="req">*</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">🏛️</span>
+                    <span class="reg-input-icon"><i data-lucide="landmark"></i></span>
                     <select id="department" class="reg-control" onchange="updateBranchBadge(this.value)" required>
                       <option value="">-- Choose Branch --</option>
                       <option value="Computer Engineering">Computer Engineering (CSE)</option>
@@ -275,7 +275,7 @@
                     <span>Year of Study <span class="req">*</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">📅</span>
+                    <span class="reg-input-icon"><i data-lucide="calendar"></i></span>
                     <select id="currentYear" class="reg-control" onchange="syncSemesterOptions(this.value)" required>
                       <option value="1">1st Year (Freshman)</option>
                       <option value="2">2nd Year (Lateral / Senior)</option>
@@ -289,7 +289,7 @@
                     <span>Current Semester <span class="req">*</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">📖</span>
+                    <span class="reg-input-icon"><i data-lucide="book-open"></i></span>
                     <select id="currentSemester" class="reg-control" required>
                       <option value="1">Semester 1</option>
                       <option value="2">Semester 2</option>
@@ -304,7 +304,7 @@
                     <span>Admission Quota <span class="req">*</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">📋</span>
+                    <span class="reg-input-icon"><i data-lucide="clipboard-list"></i></span>
                     <select id="quota" class="reg-control" required>
                       <option value="Government">Government Quota (Single Window)</option>
                       <option value="Management">Management Quota</option>
@@ -318,7 +318,7 @@
                     <span>Admission Ref No <span style="font-weight: 400; color: #94a3b8;">(Optional)</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">🔖</span>
+                    <span class="reg-input-icon"><i data-lucide="bookmark"></i></span>
                     <input type="text" id="admissionNo" class="reg-control" placeholder="e.g. SPTC/2026/045" />
                   </div>
                 </div>
@@ -329,7 +329,7 @@
             <div class="register-section-block">
               <div class="register-section-header">
                 <div class="section-title-wrap">
-                  <div class="section-icon-badge">🚌</div>
+                  <div class="section-icon-badge"><i data-lucide="bus"></i></div>
                   <div>
                     <h3>Campus Logistics &amp; Accommodation</h3>
                   </div>
@@ -346,7 +346,7 @@
                 <label class="residence-choice-card selected" id="cardDayScholar">
                   <input type="radio" name="residenceType" value="dayScholar" checked onchange="handleResidenceChange('dayScholar')" />
                   <div class="residence-choice-info">
-                    <h4>🚌 Day Scholar (Commuter)</h4>
+                    <h4 style="display: flex; align-items: center; gap: 0.4rem;"><i data-lucide="bus"></i> Day Scholar (Commuter)</h4>
                     <p>Commuting daily via College Bus or Personal Vehicle.</p>
                   </div>
                 </label>
@@ -354,7 +354,7 @@
                 <label class="residence-choice-card" id="cardHosteller">
                   <input type="radio" name="residenceType" value="hosteller" onchange="handleResidenceChange('hosteller')" />
                   <div class="residence-choice-info">
-                    <h4>🏢 Campus Hosteller</h4>
+                    <h4 style="display: flex; align-items: center; gap: 0.4rem;"><i data-lucide="building"></i> Campus Hosteller</h4>
                     <p>Residing in on-campus Subramanian Polytechnic Hostel.</p>
                   </div>
                 </label>
@@ -366,7 +366,7 @@
                   <span>Assigned College Bus Route:</span>
                 </label>
                 <div class="reg-input-wrapper">
-                  <span class="reg-input-icon">🚏</span>
+                  <span class="reg-input-icon"><i data-lucide="navigation"></i></span>
                   <select id="busRoute" class="reg-control">
                     <option value="Route 1 (Pudukkottai - Rayavaram)">Route 1: Pudukkottai Town Stand ⇄ Rayavaram</option>
                     <option value="Route 2 (Karaikudi - Rayavaram)">Route 2: Karaikudi New Stand ⇄ Rayavaram</option>
@@ -380,7 +380,7 @@
 
               <!-- Hostel Info Notice (shown when hosteller selected) -->
               <div id="hostelNotice" style="display: none; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: 8px; padding: 0.85rem 1rem; font-size: 0.825rem; color: #047857; margin-top: 0.85rem;">
-                ✅ <strong>Campus Hostel Selected:</strong> Your room allotment and monthly mess fee ledger will be automatically connected to your student dashboard.
+                <i data-lucide="check-circle-2"></i> <strong>Campus Hostel Selected:</strong> Your room allotment and monthly mess fee ledger will be automatically connected to your student dashboard.
               </div>
             </div>
 
@@ -388,7 +388,7 @@
             <div class="register-section-block">
               <div class="register-section-header">
                 <div class="section-title-wrap">
-                  <div class="section-icon-badge">📞</div>
+                  <div class="section-icon-badge"><i data-lucide="phone"></i></div>
                   <div>
                     <h3>Parent / Guardian Contact Details</h3>
                   </div>
@@ -402,7 +402,7 @@
                     <span>Parent / Guardian Name <span class="req">*</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">👨‍👧</span>
+                    <span class="reg-input-icon"><i data-lucide="users"></i></span>
                     <input type="text" id="parentName" class="reg-control" placeholder="e.g. K. Murugesan" required />
                   </div>
                 </div>
@@ -413,7 +413,7 @@
                     <span style="font-size: 0.7rem; color: #059669; font-weight: 600;">SMS/WhatsApp</span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">📱</span>
+                    <span class="reg-input-icon"><i data-lucide="smartphone"></i></span>
                     <input type="tel" id="parentPhone" class="reg-control" placeholder="10-digit number (e.g. 9842145678)" pattern="[0-9]{10}" maxlength="10" required />
                   </div>
                   <span class="reg-hint">Used for official fee due and receipt notifications</span>
@@ -424,7 +424,7 @@
                     <span>Student Email Address</span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">✉️</span>
+                    <span class="reg-input-icon"><i data-lucide="mail"></i></span>
                     <input type="email" id="email" class="reg-control" placeholder="e.g. student@gmail.com" />
                   </div>
                 </div>
@@ -435,7 +435,7 @@
             <div class="register-section-block">
               <div class="register-section-header">
                 <div class="section-title-wrap">
-                  <div class="section-icon-badge">🔐</div>
+                  <div class="section-icon-badge"><i data-lucide="lock"></i></div>
                   <div>
                     <h3>Portal Password &amp; Security PIN</h3>
                   </div>
@@ -450,7 +450,7 @@
                     <span style="font-size: 0.7rem; color: #64748b;">Min. 4 characters</span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">🔒</span>
+                    <span class="reg-input-icon"><i data-lucide="lock"></i></span>
                     <input type="password" id="password" class="reg-control" placeholder="e.g. DDMMYYYY or password" required minlength="4" />
                     <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('password', this)" title="Show/Hide Password">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -466,7 +466,7 @@
                     <span>Confirm Password / PIN <span class="req">*</span></span>
                   </label>
                   <div class="reg-input-wrapper">
-                    <span class="reg-input-icon">🔒</span>
+                    <span class="reg-input-icon"><i data-lucide="lock"></i></span>
                     <input type="password" id="confirmPassword" class="reg-control" placeholder="Re-enter password" required minlength="4" />
                     <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('confirmPassword', this)" title="Show/Hide Password">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -479,14 +479,14 @@
               </div>
 
               <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem; margin-top: 1rem; font-size: 0.8rem; color: #475569; display: flex; align-items: center; gap: 0.65rem;">
-                <span>💡</span>
+                <span><i data-lucide="lightbulb"></i></span>
                 <span><strong>Recommendation:</strong> Use a memorable PIN or date of birth (e.g. 15082005) so you can easily sign in from home or smartphone.</span>
               </div>
             </div>
 
             <!-- Notice Box -->
             <div style="background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 10px; padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.85rem; color: #1e40af; display: flex; align-items: flex-start; gap: 0.75rem;">
-              <span style="font-size: 1.25rem; flex-shrink: 0;">ℹ️</span>
+              <span style="font-size: 1.25rem; flex-shrink: 0;"><i data-lucide="info"></i></span>
               <div>
                 <strong>Automatic Fee Ledger Setup:</strong>
                 <p style="margin: 0.25rem 0 0 0; color: #1d4ed8; line-height: 1.4;">Upon registration, your official semester fee schedule will be automatically generated based on your department, year, and quota. You can inspect itemized breakdown and make instant payments directly on your dashboard.</p>
@@ -525,6 +525,8 @@
   </div>
 
   <!-- Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/data-store.js"></script>
   <script>
     // Sync Semester Dropdown with Year of Study
@@ -641,7 +643,7 @@
       document.getElementById('password').value = 'sptc2026';
       document.getElementById('confirmPassword').value = 'sptc2026';
 
-      showRegAlert('✨ Sample registration profile populated! Ready to submit.', false);
+      showRegAlert('<i data-lucide="sparkles"></i> Sample registration profile populated! Ready to submit.', false);
     }
 
     // Alert helper
@@ -651,11 +653,13 @@
 
       alertBox.style.display = 'flex';
       alertBox.className = `reg-alert-box ${isError ? 'error' : 'success'}`;
+      const icon = isError ? '<i data-lucide="alert-triangle"></i>' : '<i data-lucide="check-check"></i>';
       alertBox.innerHTML = `
-        <span style="font-size: 1.25rem;">${isError ? '⚠️' : '🎉'}</span>
+        <span style="font-size: 1.25rem;">${icon}</span>
         <div>${message}</div>
       `;
 
+      if (window.initLucideIcons) window.initLucideIcons(alertBox);
       alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 

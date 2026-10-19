@@ -6,7 +6,8 @@
   <title>Accounts &amp; Cashier Desk | Subramanian Polytechnic College (SPTC)</title>
   <meta name="description" content="Dedicated Accounts Office and Cashier Desk for Subramanian Polytechnic College, Rayavaram. Counter fee collection, legacy Tally migration, and daily cash-book.">
   <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
-  <link rel="stylesheet" href="/css/style.css?v=3.5">
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
+  <link rel="stylesheet" href="/css/cashier-redesign.css?v=1.0">
 </head>
 <body>
 
@@ -15,18 +16,18 @@
     <div class="container top-bar-inner">
       <div class="top-bar-left">
         <div class="top-bar-item">
-          📍 <span>Rayavaram, Pudukkottai – 622 506</span>
+          <i data-lucide="map-pin"></i> <span>Rayavaram, Pudukkottai – 622 506</span>
         </div>
         <div class="top-bar-item">
-          🏛️ <strong>DOTE Institution: 331</strong> | AICTE Approved
+          <i data-lucide="landmark"></i> <strong>DOTE Institution: 331</strong> | AICTE Approved
         </div>
         <div class="top-bar-item">
-          🔐 <span>Staff Administrative Session Active</span>
+          <i data-lucide="shield-check"></i> <span>Staff Administrative Session Active</span>
         </div>
       </div>
       <div class="top-bar-right">
         <div class="top-bar-item" style="color: #fce076; font-size: 0.775rem;">
-          💼 System: Cloud FMS (Migrated from Tally 9 Desktop PC)
+          <i data-lucide="briefcase"></i> System: Cloud FMS (Migrated from Tally 9 Desktop PC)
         </div>
       </div>
     </div>
@@ -35,20 +36,16 @@
   <!-- Dedicated Dashboard Navigation Header -->
   <header class="dashboard-header-dedicated">
     <div class="container dashboard-header-inner">
-      <a href="/" class="brand-link" style="display: flex; align-items: center; gap: 0.85rem;">
-        <img src="/assets/logo.svg" alt="SPTC Crest" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--color-accent-gold);">
-        <div>
-          <h1 style="font-size: 1.15rem; font-family: var(--font-heading); color: var(--color-primary); line-height: 1.2;">
-            Subramanian Polytechnic College
-          </h1>
-          <p style="font-size: 0.75rem; color: #64748b;">
-            Rayavaram • 💼 Accounts Office &amp; Cashier Counter Desk
-          </p>
+      <a href="/" class="brand-link">
+        <img src="/assets/logo.svg" alt="SPTC Crest" class="brand-logo-img" loading="lazy" decoding="async">
+        <div class="brand-text">
+          <h1 class="brand-name">Subramanian Polytechnic College</h1>
+          <p class="brand-sub">Rayavaram • <i data-lucide="briefcase"></i> Accounts Office &amp; Cashier Desk</p>
         </div>
       </a>
 
-      <div style="display: flex; align-items: center; gap: 0.75rem;">
-        <div id="cashierHeaderBadge" class="dashboard-user-card">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <div id="cashierHeaderBadge" class="dashboard-user-card hide-on-mobile">
           <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--color-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.85rem;">
             M
           </div>
@@ -61,15 +58,106 @@
           </div>
         </div>
 
-        <a href="/" class="btn btn-outline btn-sm" title="Go to College Main Web Portal">
-          🏛️ College Portal
+        <a href="/transactions.html" class="btn btn-outline btn-sm hide-on-mobile" title="View Full Past Transactions Journal (20 records per page)">
+          <i data-lucide="list"></i> All Transactions (20/pg)
         </a>
-        <button onclick="handleCashierLogout()" class="btn btn-sm btn-outline" style="border-color: #cbd5e1; color: #b91c1c;" title="Sign out from staff desk">
-          🚪 Logout
+        <a href="/" class="btn btn-outline btn-sm hide-on-mobile" title="Go to College Main Web Portal">
+          <i data-lucide="landmark"></i> College Home
+        </a>
+        <button onclick="handleCashierLogout()" class="btn btn-sm btn-outline hide-on-mobile" style="border-color: #cbd5e1; color: #b91c1c;" title="Sign out from staff desk">
+          <i data-lucide="log-out"></i> Logout
+        </button>
+
+        <!-- Mobile Navigation Hamburger Button -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false" onclick="window.toggleMobileMenu()">
+          <i data-lucide="menu" id="menuToggleIconOpen"></i>
+          <i data-lucide="x" id="menuToggleIconClose" style="display: none;"></i>
         </button>
       </div>
     </div>
   </header>
+
+  <!-- Mobile Navigation Drawer Backdrop & Drawer Panel (Direct Child of Body) -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="window.toggleMobileMenu(false)"></div>
+    <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+      <div class="mobile-drawer-header">
+        <div class="mobile-drawer-brand">
+          <img src="/assets/logo.svg" alt="SPTC Crest" class="mobile-drawer-logo" loading="lazy" decoding="async">
+          <div class="mobile-drawer-brand-text">
+            <strong>SPTC Accounts Desk</strong>
+            <small>Cashier Counter &amp; POS Portal</small>
+          </div>
+        </div>
+        <button class="mobile-drawer-close" aria-label="Close menu" onclick="window.toggleMobileMenu(false)">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+
+      <div class="mobile-drawer-body">
+        <div class="mobile-drawer-group-label">Accounts Staff</div>
+        <div style="padding: 0.75rem 1rem; background: #f8fafc; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #e2e8f0;">
+          <div style="font-weight: 700; color: #0a2558; font-size: 0.9rem;">M. Alagappan (Cashier)</div>
+          <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Senior Accounts Officer • SPTC Rayavaram</div>
+        </div>
+
+        <div class="mobile-drawer-group-label">Navigation Menu</div>
+        <ul class="mobile-nav-menu">
+          <li>
+            <a href="/" class="mobile-menu-item">
+              <i data-lucide="building"></i>
+              <span>College Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="/departments.html" class="mobile-menu-item">
+              <i data-lucide="laptop"></i>
+              <span>Academic Departments</span>
+              <span class="drawer-pill-tag">9 Wings</span>
+            </a>
+          </li>
+          <li>
+            <a href="/gallery.html" class="mobile-menu-item">
+              <i data-lucide="sparkles"></i>
+              <span>Campus &amp; Event Gallery</span>
+            </a>
+          </li>
+          <li>
+            <a href="/cashier-dashboard.html" class="mobile-menu-item active">
+              <i data-lucide="briefcase"></i>
+              <span>Accounts Counter POS Desk</span>
+              <span class="drawer-pill-tag gold">Active</span>
+            </a>
+          </li>
+          <li>
+            <a href="/transactions.html" class="mobile-menu-item">
+              <i data-lucide="list"></i>
+              <span>Past Transactions Ledger (20/pg)</span>
+            </a>
+          </li>
+          <li>
+            <a href="/verify.html" class="mobile-menu-item">
+              <i data-lucide="shield-check"></i>
+              <span>Verify Receipt Token</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mobile-drawer-group-label">Staff Actions</div>
+        <div class="mobile-drawer-actions">
+          <button onclick="handleCashierLogout()" class="btn btn-outline btn-block" style="color: #b91c1c; border-color: #fca5a5;">
+            <i data-lucide="log-out"></i> Sign Out from Staff Desk
+          </button>
+        </div>
+
+        <div class="mobile-drawer-footer">
+          <div><i data-lucide="map-pin"></i> Rayavaram, Pudukkottai – 622 506</div>
+          <div><i data-lucide="phone"></i> 04333-272226 / +91 6382391625</div>
+          <div style="color: var(--color-accent-gold); font-weight: 600; margin-top: 4px;">
+            <i data-lucide="landmark"></i> DOTE Code: 331 | AICTE Approved
+          </div>
+        </div>
+      </div>
+    </aside>
 
   <!-- Main Cashier Desk Container -->
   <main class="container" style="padding: 2rem 1.5rem 4rem;">
@@ -78,18 +166,21 @@
       <div>
         <span class="badge badge-gold" style="margin-bottom: 0.4rem; display: inline-block;">INSTITUTIONAL ACCOUNTS TERMINAL</span>
         <h2 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 0.25rem;">
-          SPTC Accounts &amp; Legacy Tally Migration Control
+          SPTC Accounts &amp; Cashier Management Desk
         </h2>
         <p style="font-size: 0.85rem; color: rgba(255,255,255,0.85);">
-          Record on-the-spot fee payments, import legacy Tally XML ledgers, audit daily cash-books, and issue digitally verified receipts.
+          Search students, configure annual fee schedules, manage payment history, record counter entries, and audit verified receipts.
         </p>
       </div>
-      <div style="display: flex; gap: 0.75rem;">
-        <button class="btn btn-gold btn-sm" onclick="document.getElementById('cashierStudentSelect').focus(); window.scrollTo({ top: 180, behavior: 'smooth' });">
-          💵 New Counter Entry
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <button class="btn btn-gold btn-sm" onclick="document.getElementById('studentSearchInput')?.focus(); window.scrollTo({ top: 160, behavior: 'smooth' });">
+          <i data-lucide="search"></i> Find Student Profile
         </button>
-        <button class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="Cashier.loadCashBookReport()">
-          🔄 Refresh Day Ledger
+        <a href="/transactions.html" class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);">
+          <i data-lucide="file-spreadsheet"></i> All Past Transactions (20/pg)
+        </a>
+        <button class="btn btn-outline btn-sm" style="color: #fff; border-color: rgba(255,255,255,0.4);" onclick="Cashier.init()">
+          <i data-lucide="refresh-cw"></i> Refresh Desk
         </button>
       </div>
     </div>
@@ -97,19 +188,26 @@
     <!-- Render Target for cashier.js -->
     <div id="cashierDeskContainer">
       <div style="text-align: center; padding: 4rem 1rem; color: #64748b;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⏳</div>
+        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;"><i data-lucide="loader-2" class="animate-spin"></i></div>
         <h3 style="color: var(--color-primary);">Initializing Cashier Counter Terminal...</h3>
         <p>Loading active student ledgers and daily reconciliation records...</p>
       </div>
     </div>
   </main>
 
+  <!-- ======================== STUDENT MANAGE & PAYMENT HISTORY MODAL ======================== -->
+  <div class="custom-modal-backdrop" id="studentManageModal" onclick="if(event.target === this) Cashier.closeStudentModal()">
+    <div id="studentModalContainer">
+      <!-- Populated dynamically by Cashier.renderStudentModal() -->
+    </div>
+  </div>
+
   <!-- ======================== VERIFIED RECEIPT MODAL ======================== -->
   <div class="custom-modal-backdrop" id="receiptModal">
     <div class="custom-modal receipt-modal-wrap" style="max-width: 820px;">
       <div class="modal-header">
-        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #0a2558;">
-          🏛️ Subramanian Polytechnic College – Official Fee Receipt
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #0a2558; display: flex; align-items: center; gap: 0.5rem;">
+          <i data-lucide="landmark"></i> Subramanian Polytechnic College – Official Fee Receipt
         </h3>
         <button class="modal-close" onclick="Receipts.closeReceiptModal()">&times;</button>
       </div>
@@ -121,7 +219,7 @@
           Close
         </button>
         <button class="btn btn-primary btn-sm" onclick="Receipts.printReceipt()">
-          🖨️ Print / Download Verified A4 PDF
+          <i data-lucide="printer"></i> Print / Download Verified A4 PDF
         </button>
       </div>
     </div>
@@ -136,6 +234,8 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/data-store.js"></script>
   <script src="/js/receipts.js"></script>
   <script src="/js/cashier.js"></script>
@@ -148,21 +248,81 @@
 
       // 1. Strict Server Session Verification
       const session = await API.verifySession();
-      if (!session || !session.authenticated || session.userType !== 'STAFF') {
+
+      // Case A: User is logged in as a STUDENT -> Never redirect in a loop! Show role fallback card.
+      if (session && session.authenticated && session.userType === 'STUDENT') {
+        RedirectGuard.clear();
         if (container) {
           container.innerHTML = `
-            <div style="text-align: center; padding: 4rem 1rem; color: #b91c1c;">
-              <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🛡️</div>
-              <h3 style="font-family: var(--font-heading); color: #b91c1c;">Administrative Staff Access Required</h3>
-              <p style="color: #64748b; margin-top: 0.5rem;">The Cashier Counter and Legacy Tally desk is restricted to authorized college accounts personnel. Redirecting to staff sign in...</p>
+            <div style="max-width: 600px; margin: 3rem auto; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 30px rgba(10,37,88,0.08);">
+              <div style="width: 64px; height: 64px; margin: 0 auto 1.25rem; border-radius: 50%; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i data-lucide="shield-alert"></i>
+              </div>
+              <span class="badge badge-gold" style="margin-bottom: 0.75rem;">ROLE RESTRICTION</span>
+              <h2 style="font-family: var(--font-heading); color: #0a2558; font-size: 1.45rem; margin-bottom: 0.5rem;">
+                Staff Authorization Required
+              </h2>
+              <p style="color: #64748b; font-size: 0.92rem; line-height: 1.55; margin-bottom: 1.75rem;">
+                You are currently signed in as student <strong style="color: #0a2558;">${session.profile.name}</strong> (DOTE Reg: <code>${session.profile.regNo}</code>).<br>
+                The Cashier Counter and Legacy Tally desk is restricted strictly to authorized college accounts staff.
+              </p>
+
+              <div style="display: flex; flex-direction: column; gap: 0.75rem; max-width: 360px; margin: 0 auto;">
+                <a href="/dashboard.html" class="btn btn-primary" style="justify-content: center;">
+                  <i data-lucide="graduation-cap"></i> Open My Student Fee Vault
+                </a>
+                <a href="/" class="btn btn-outline" style="justify-content: center;">
+                  <i data-lucide="building"></i> Return to College Home
+                </a>
+                <button type="button" onclick="handleSwitchToStaff()" class="btn btn-gold" style="justify-content: center; margin-top: 0.25rem;">
+                  <i data-lucide="log-out"></i> Sign In with Staff Account
+                </button>
+              </div>
             </div>
           `;
+          if (window.initLucideIcons) window.initLucideIcons(container);
         }
-        setTimeout(() => {
-          window.location.replace('/login.html?role=staff&redirect=' + encodeURIComponent(window.location.pathname) + '&reason=staff_required');
-        }, 700);
         return;
       }
+
+      // Case B: Not logged in at all -> Check loop limits before redirecting
+      if (!session || !session.authenticated || session.userType !== 'STAFF') {
+        const canRedirect = RedirectGuard.recordHop('/login.html');
+        if (container) {
+          container.innerHTML = `
+            <div style="max-width: 540px; margin: 3rem auto; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 2.5rem 2rem; text-align: center; box-shadow: 0 10px 30px rgba(10,37,88,0.08);">
+              <div style="width: 64px; height: 64px; margin: 0 auto 1.25rem; border-radius: 50%; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                <i data-lucide="lock"></i>
+              </div>
+              <h3 style="font-family: var(--font-heading); color: #0a2558; font-size: 1.35rem; margin-bottom: 0.5rem;">
+                Accounts Desk Authentication Required
+              </h3>
+              <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Please sign in with authorized accounts officer or cashier credentials.
+              </p>
+              <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+                <a href="/login.html?role=staff&reason=staff_required" class="btn btn-primary">
+                  <i data-lucide="log-in"></i> Staff Sign In
+                </a>
+                <a href="/" class="btn btn-outline">
+                  College Home
+                </a>
+              </div>
+            </div>
+          `;
+          if (window.initLucideIcons) window.initLucideIcons(container);
+        }
+
+        if (canRedirect) {
+          setTimeout(() => {
+            window.location.replace('/login.html?role=staff&reason=staff_required');
+          }, 800);
+        }
+        return;
+      }
+
+      // Successful staff verification: clear any redirect counter
+      RedirectGuard.clear();
 
       currentStaffSession = session;
 
@@ -186,6 +346,15 @@
 
       // 3. Initialize Cashier Module
       Cashier.init();
+    }
+
+    // Switch account from Student to Staff
+    async function handleSwitchToStaff() {
+      try {
+        await API.logout();
+      } catch (e) {}
+      RedirectGuard.clear();
+      window.location.replace('/login.html?role=staff&reason=staff_required');
     }
 
     // Strict Server-Side Logout

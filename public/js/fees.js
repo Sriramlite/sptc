@@ -31,11 +31,12 @@ const Fees = {
         }
         container.innerHTML = `
           <div style="text-align: center; padding: 4rem 1rem; color: #b91c1c;">
-            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚠️</div>
+            <div style="font-size: 2.5rem; margin-bottom: 0.75rem;"><i data-lucide="alert-triangle"></i></div>
             <h3 style="font-family: var(--font-heading); color: #b91c1c;">Unable to Load Student Records</h3>
             <p style="color: #64748b; margin-top: 0.5rem;">${data?.error || 'Student records could not be retrieved from institutional database.'}</p>
           </div>
         `;
+        if (window.initLucideIcons) window.initLucideIcons(container);
         return;
       }
 
@@ -60,7 +61,7 @@ const Fees = {
       bills.forEach(bill => {
         const isPaid = summary.outstandingBalance <= 0;
         const statusBadge = isPaid 
-          ? `<span class="badge badge-success">✓ PAID</span>`
+          ? `<span class="badge badge-success"><i data-lucide="check-circle-2"></i> PAID</span>`
           : `<span class="badge badge-warning">PENDING DUES</span>`;
 
         billsRows += `
@@ -104,15 +105,15 @@ const Fees = {
                 <span class="badge ${isTally ? 'badge-warning' : 'badge-success'}">
                   ${r.paymentMode}
                 </span>
-                ${isTally ? `<br><span class="receipt-tag-tally">📁 Migrated Tally PC</span>` : ''}
+                ${isTally ? `<br><span class="receipt-tag-tally"><i data-lucide="folder"></i> Migrated Tally PC</span>` : ''}
               </td>
               <td>
                 <div style="display: flex; gap: 0.4rem;">
                   <button class="btn btn-sm btn-primary" onclick="Receipts.showReceiptModal('${r.receiptNo}')">
-                    👁️ View Receipt
+                    <i data-lucide="eye"></i> View Receipt
                   </button>
                   <button class="btn btn-sm btn-outline" onclick="Receipts.showReceiptModal('${r.receiptNo}'); setTimeout(() => Receipts.printReceipt(), 400);">
-                    🖨️ PDF
+                    <i data-lucide="printer"></i> PDF
                   </button>
                 </div>
               </td>
@@ -134,12 +135,12 @@ const Fees = {
                 Admission No: ${student.admissionNo}
               </p>
               <div class="student-badges-row">
-                <span class="badge badge-gold">🎓 ${student.department}</span>
-                <span class="badge badge-white">📅 Year ${student.currentYear} (${student.currentSemester}th Sem)</span>
-                <span class="badge badge-white">🏛️ Quota: ${student.quota}</span>
-                <span class="badge badge-white">${student.isHosteller ? '🛏️ Hosteller' : '🚌 ' + student.busRoute}</span>
+                <span class="badge badge-gold"><i data-lucide="graduation-cap"></i> ${student.department}</span>
+                <span class="badge badge-white"><i data-lucide="calendar"></i> Year ${student.currentYear} (${student.currentSemester}th Sem)</span>
+                <span class="badge badge-white"><i data-lucide="landmark"></i> Quota: ${student.quota}</span>
+                <span class="badge badge-white">${student.isHosteller ? '<i data-lucide="bed"></i> Hosteller' : '<i data-lucide="bus"></i> ' + student.busRoute}</span>
                 ${student.concessionType && student.concessionType !== 'None' ? `
-                  <span class="badge badge-success">✨ Concession: ${student.concessionType}</span>
+                  <span class="badge badge-success"><i data-lucide="sparkles"></i> Concession: ${student.concessionType}</span>
                 ` : ''}
               </div>
             </div>
@@ -159,7 +160,7 @@ const Fees = {
               </div>
             ` : ''}
             <button class="btn btn-gold btn-sm" onclick="Fees.openPayFeesModal()">
-              💳 Pay Outstanding Fee
+              <i data-lucide="credit-card"></i> Pay Outstanding Fee
             </button>
             <span style="font-size: 0.75rem; opacity: 0.85;">Instant UPI &amp; Card Receipt</span>
           </div>
@@ -168,14 +169,14 @@ const Fees = {
         <!-- Metric Cards -->
         <div class="metrics-grid">
           <div class="metric-card billed">
-            <div class="metric-icon-wrap">📋</div>
+            <div class="metric-icon-wrap"><i data-lucide="clipboard-list"></i></div>
             <div class="metric-label">Total Course Billed</div>
             <div class="metric-value">₹${summary.totalBilled.toLocaleString('en-IN')}</div>
             <div class="metric-subtitle">Across 6 Semesters DOTE Curriculum</div>
           </div>
 
           <div class="metric-card paid">
-            <div class="metric-icon-wrap">✅</div>
+            <div class="metric-icon-wrap"><i data-lucide="check-circle-2"></i></div>
             <div class="metric-label">Total Fees Paid</div>
             <div class="metric-value" style="color: var(--color-success);">
               ₹${summary.totalPaid.toLocaleString('en-IN')}
@@ -184,7 +185,7 @@ const Fees = {
           </div>
 
           <div class="metric-card dues">
-            <div class="metric-icon-wrap">⚠️</div>
+            <div class="metric-icon-wrap"><i data-lucide="alert-triangle"></i></div>
             <div class="metric-label">Net Balance Due</div>
             <div class="metric-value" style="color: ${summary.outstandingBalance > 0 ? 'var(--color-danger)' : 'var(--color-success)'};">
               ₹${summary.outstandingBalance.toLocaleString('en-IN')}
@@ -195,7 +196,7 @@ const Fees = {
           </div>
 
           <div class="metric-card receipts">
-            <div class="metric-icon-wrap">🗄️</div>
+            <div class="metric-icon-wrap"><i data-lucide="archive"></i></div>
             <div class="metric-label">Receipts in Vault</div>
             <div class="metric-value" style="color: #9333ea;">${summary.receiptCount}</div>
             <div class="metric-subtitle">Old Tally + Current Web Vouchers</div>
@@ -211,7 +212,7 @@ const Fees = {
             </div>
             ${summary.outstandingBalance > 0 ? `
               <button class="btn btn-sm btn-gold" onclick="Fees.openPayFeesModal()">
-                💳 Pay Current Dues (₹${summary.outstandingBalance.toLocaleString('en-IN')})
+                <i data-lucide="credit-card"></i> Pay Current Dues (₹${summary.outstandingBalance.toLocaleString('en-IN')})
               </button>
             ` : ''}
           </div>
@@ -247,7 +248,7 @@ const Fees = {
               </p>
             </div>
             <span class="badge badge-gold" style="font-size: 0.8rem;">
-              📁 ${receipts.length} Official Receipts Archived
+              <i data-lucide="archive"></i> ${receipts.length} Official Receipts Archived
             </span>
           </div>
           <div class="table-responsive">
@@ -311,11 +312,11 @@ const Fees = {
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
               <label style="display: flex; align-items: center; gap: 0.5rem; border: 1.5px solid #cbd5e1; padding: 0.75rem; border-radius: 8px; cursor: pointer;">
                 <input type="radio" name="payMethod" value="UPI" checked />
-                <span>📱 <strong>UPI (GPay / PhonePe / Paytm)</strong></span>
+                <span style="display: flex; align-items: center; gap: 0.35rem;"><i data-lucide="smartphone"></i> <strong>UPI (GPay / PhonePe / Paytm)</strong></span>
               </label>
               <label style="display: flex; align-items: center; gap: 0.5rem; border: 1.5px solid #cbd5e1; padding: 0.75rem; border-radius: 8px; cursor: pointer;">
                 <input type="radio" name="payMethod" value="Debit / Credit Card" />
-                <span>💳 <strong>Debit / RuPay / Visa Card</strong></span>
+                <span style="display: flex; align-items: center; gap: 0.35rem;"><i data-lucide="credit-card"></i> <strong>Debit / RuPay / Visa Card</strong></span>
               </label>
             </div>
           </div>

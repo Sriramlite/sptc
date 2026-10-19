@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Subramanian Polytechnic College (SPTC) | Rayavaram, Pudukkottai | Official Portal & Fees System</title>
-  <meta name="description" content="Subramanian Polytechnic College (SPTC) in Rayavaram, Pudukkottai, Tamil Nadu. Established in 1983. AICTE Approved & DOTE Affiliated. Official web portal & cloud-based student fees management and receipt vault.">
+  <meta name="description"
+    content="Subramanian Polytechnic College (SPTC) in Rayavaram, Pudukkottai, Tamil Nadu. Established in 1983. AICTE Approved & DOTE Affiliated. Official web portal & cloud-based student fees management and receipt vault.">
   <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
-  <link rel="stylesheet" href="/css/style.css?v=3.6">
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
 </head>
+
 <body>
 
   <!-- ======================== 1. TOP ANNOUNCEMENT STRIP ======================== -->
@@ -15,21 +18,21 @@
     <div class="container top-bar-inner">
       <div class="top-bar-left">
         <div class="top-bar-item">
-          📍 <span>Rayavaram, Pudukkottai – 622 506</span>
+          <i data-lucide="map-pin"></i> <span>Rayavaram, Pudukkottai – 622 506</span>
         </div>
         <div class="top-bar-item">
-          📞 <span>04333-272226 / +91 6382391625</span>
+          <i data-lucide="phone"></i> <span>04333-272226 / +91 6382391625</span>
         </div>
         <div class="top-bar-item">
-          🏛️ <strong>DOTE: 331</strong> | AICTE Approved
+          <i data-lucide="landmark"></i> <strong>DOTE: 331</strong> | AICTE Approved
         </div>
       </div>
       <div class="top-bar-right">
-        <a href="/dashboard.html" style="color: #fce076; font-weight: 600;">🎓 Student Portal</a>
+        <a href="/departments.html" style="color: #fce076; font-weight: 600;"><i data-lucide="award"></i> Admissions 2026-27</a>
         <span style="color: rgba(255,255,255,0.3);">|</span>
-        <a href="/cashier-dashboard.html" style="color: #ffffff; font-weight: 600;">💼 Staff Desk</a>
+        <a href="/verify.html" style="color: #ffffff; font-weight: 600;"><i data-lucide="file-check-2"></i> Verify Receipt</a>
         <span style="color: rgba(255,255,255,0.3);">|</span>
-        <a href="/login.html" style="color: #93c5fd; font-weight: 600;">🔐 Login</a>
+        <a href="/login.html" style="color: #93c5fd; font-weight: 600;"><i data-lucide="lock"></i> Portal Login</a>
       </div>
     </div>
   </aside>
@@ -38,10 +41,10 @@
   <header class="main-header">
     <div class="container navbar">
       <a href="#home" class="brand-link" onclick="window.navigateTo('home', event)">
-        <img src="/assets/logo.svg" alt="SPTC Crest" class="brand-logo-img">
+        <img src="/assets/logo.svg" alt="SPTC Crest" class="brand-logo-img" loading="lazy" decoding="async">
         <div class="brand-text">
-          <h1>Subramanian Polytechnic College</h1>
-          <p>Rayavaram, Pudukkottai • Estd. 1983 (DOTE Code: 331)</p>
+          <h1 class="brand-name">Subramanian Polytechnic College</h1>
+          <p class="brand-sub">Rayavaram, Pudukkottai • Estd. 1983 (DOTE: 331)</p>
         </div>
       </a>
 
@@ -49,7 +52,8 @@
         <ul class="nav-links">
           <li><a href="#home" class="active" onclick="window.navigateTo('home', event)">Home</a></li>
           <li><a href="#about" onclick="window.navigateTo('about', event)">About</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Departments</a></li>
+          <li><a href="/departments.html">Departments</a></li>
+          <li><a href="/gallery.html">Gallery</a></li>
           <li><a href="#facilities" onclick="window.navigateTo('facilities', event)">Campus &amp; Bus</a></li>
           <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">Compliance</a></li>
           <li><a href="#contact" onclick="window.navigateTo('contact', event)">Contact</a></li>
@@ -57,33 +61,217 @@
       </nav>
 
       <div class="nav-actions">
-        <a href="/dashboard.html" class="btn btn-primary btn-sm">
-          🎓 Student Fees
-        </a>
         <button class="btn btn-gold btn-sm hide-on-mobile" onclick="window.openAdmissionModal()">
           Admission
         </button>
-        <div id="navbarAuthContainer" style="display: flex; align-items: center; gap: 0.5rem;">
-          <a href="/login.html" class="btn btn-sm btn-outline" style="border-color: #cbd5e1; color: var(--color-primary);">
-            Sign In
-          </a>
-          <a href="/register.html" class="btn btn-sm btn-gold hide-on-mobile">
-            Register
-          </a>
+        <div id="navbarAuthContainer" style="display: flex; align-items: center;">
+          <div class="portal-dropdown-wrapper" id="portalDropdownWrapper">
+            <button type="button" class="portal-btn hide-on-mobile" id="portalDropdownBtn" aria-haspopup="true" aria-expanded="false" onclick="window.handlePortalBtnClick(event)">
+              <i data-lucide="lock"></i>
+              <span>Portal</span>
+              <i data-lucide="chevron-down" class="portal-chevron"></i>
+            </button>
+
+            <div class="portal-dropdown-menu" id="portalDropdownMenu" role="menu">
+              <div class="portal-dropdown-columns">
+                <!-- 1. STUDENT OPTIONS -->
+                <div class="portal-col portal-col-student">
+                  <div class="portal-col-header">
+                    <span class="portal-col-badge student-badge">
+                      <i data-lucide="graduation-cap"></i> Student
+                    </span>
+                  </div>
+                  <p class="portal-col-desc">Fee dues, online digital payments &amp; verified receipts</p>
+                  <div class="portal-links-list">
+                    <a href="/dashboard.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="credit-card"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Student Fee Vault</span>
+                        <span class="portal-link-sub">Semester ledgers &amp; receipts</span>
+                      </div>
+                    </a>
+                    <a href="/login.html?role=student" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="log-in"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Student Sign In</span>
+                        <span class="portal-link-sub">DOTE Reg No &amp; DOB (PIN)</span>
+                      </div>
+                    </a>
+                    <a href="/register.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon student-bg">
+                        <i data-lucide="user-plus"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">New Registration</span>
+                        <span class="portal-link-sub">Activate student ledger</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- 2. STAFF / OFFICE OPTIONS -->
+                <div class="portal-col portal-col-staff">
+                  <div class="portal-col-header">
+                    <span class="portal-col-badge staff-badge">
+                      <i data-lucide="briefcase"></i> Staff
+                    </span>
+                  </div>
+                  <p class="portal-col-desc">Counter collection, legacy Tally migration &amp; audit</p>
+                  <div class="portal-links-list">
+                    <a href="/cashier-dashboard.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="calculator"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Office Accounts &amp; Cashier</span>
+                        <span class="portal-link-sub">Counter POS, Tally sync &amp; audit</span>
+                      </div>
+                    </a>
+                    <a href="/login.html?role=staff" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="shield-check"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Staff &amp; Faculty Login</span>
+                        <span class="portal-link-sub">Cashier, Principal &amp; HODs</span>
+                      </div>
+                    </a>
+                    <a href="/verify.html" class="portal-link-item" role="menuitem">
+                      <div class="portal-link-icon staff-bg">
+                        <i data-lucide="file-check-2"></i>
+                      </div>
+                      <div class="portal-link-info">
+                        <span class="portal-link-title">Verify Official Receipt</span>
+                        <span class="portal-link-sub">SHA-256 certificate check</span>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <!-- Mobile Navigation Hamburger Button -->
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false" onclick="window.toggleMobileMenu()">
+          <i data-lucide="menu" id="menuToggleIconOpen"></i>
+          <i data-lucide="x" id="menuToggleIconClose" style="display: none;"></i>
+        </button>
       </div>
     </div>
   </header>
+
+  <!-- Mobile Navigation Drawer Backdrop & Drawer Panel (Direct Child of Body) -->
+  <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="window.toggleMobileMenu(false)"></div>
+  <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+    <div class="mobile-drawer-header">
+      <div class="mobile-drawer-brand">
+        <img src="/assets/logo.svg" alt="SPTC Crest" class="mobile-drawer-logo" loading="lazy" decoding="async">
+        <div class="mobile-drawer-brand-text">
+          <strong>SPTC Rayavaram</strong>
+          <small>DOTE: 331 • AICTE Approved</small>
+        </div>
+      </div>
+      <button class="mobile-drawer-close" aria-label="Close menu" onclick="window.toggleMobileMenu(false)">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="mobile-drawer-body">
+      <div class="mobile-drawer-group-label">Navigation Menu</div>
+      <ul class="mobile-nav-menu">
+        <li>
+          <a href="#home" class="mobile-menu-item active" onclick="window.toggleMobileMenu(false); window.navigateTo('home', event)">
+            <i data-lucide="building"></i>
+            <span>Home</span>
+          </a>
+        </li>
+        <li>
+          <a href="#about" class="mobile-menu-item" onclick="window.toggleMobileMenu(false); window.navigateTo('about', event)">
+            <i data-lucide="info"></i>
+            <span>About SPTC</span>
+          </a>
+        </li>
+        <li>
+          <a href="/departments.html" class="mobile-menu-item">
+            <i data-lucide="laptop"></i>
+            <span>Academic Departments</span>
+            <span class="drawer-pill-tag">9 Wings</span>
+          </a>
+        </li>
+        <li>
+          <a href="/gallery.html" class="mobile-menu-item">
+            <i data-lucide="sparkles"></i>
+            <span>Campus &amp; Event Gallery</span>
+            <span class="drawer-pill-tag gold">Photos</span>
+          </a>
+        </li>
+        <li>
+          <a href="#facilities" class="mobile-menu-item" onclick="window.toggleMobileMenu(false); window.navigateTo('facilities', event)">
+            <i data-lucide="bus"></i>
+            <span>Campus &amp; Bus Routes</span>
+          </a>
+        </li>
+        <li>
+          <a href="#compliance" class="mobile-menu-item" onclick="window.toggleMobileMenu(false); window.navigateTo('compliance', event)">
+            <i data-lucide="shield-check"></i>
+            <span>AICTE &amp; DOTE Compliance</span>
+          </a>
+        </li>
+        <li>
+          <a href="#contact" class="mobile-menu-item" onclick="window.toggleMobileMenu(false); window.navigateTo('contact', event)">
+            <i data-lucide="phone"></i>
+            <span>Contact &amp; Location</span>
+          </a>
+        </li>
+      </ul>
+
+      <div class="mobile-drawer-group-label">Institutional Portals</div>
+      <div class="mobile-drawer-actions">
+        <a href="/dashboard.html" class="btn btn-primary btn-block">
+          <i data-lucide="graduation-cap"></i> Student Fees Vault
+        </a>
+        <a href="/cashier-dashboard.html" class="btn btn-outline btn-block">
+          <i data-lucide="briefcase"></i> Accounts &amp; Cashier POS Desk
+        </a>
+        <div class="mobile-auth-grid">
+          <a href="/login.html" class="btn btn-secondary">
+            <i data-lucide="lock"></i> Sign In
+          </a>
+          <a href="/register.html" class="btn btn-gold">
+            <i data-lucide="user-plus"></i> Register
+          </a>
+        </div>
+        <button class="btn btn-gold btn-block" onclick="window.toggleMobileMenu(false); window.openAdmissionModal();" style="margin-top: 0.5rem;">
+          <i data-lucide="file-text"></i> Online Admission Enquiry
+        </button>
+      </div>
+
+      <div class="mobile-drawer-footer">
+        <div><i data-lucide="map-pin"></i> Rayavaram, Pudukkottai – 622 506</div>
+        <div><i data-lucide="phone"></i> 04333-272226 / +91 6382391625</div>
+        <div style="color: var(--color-accent-gold); font-weight: 600; margin-top: 4px;">
+          <i data-lucide="landmark"></i> DOTE Code: 331 | AICTE Approved
+        </div>
+      </div>
+    </div>
+  </aside>
 
   <!-- ======================== 3. LIVE ANNOUNCEMENTS TICKER ======================== -->
   <div class="news-ticker-bar">
     <div class="container news-ticker-inner">
       <div class="ticker-badge-wrap">
-        <span class="ticker-label">📢 College Notice</span>
+        <span class="ticker-label"><i data-lucide="megaphone"></i> College Notice</span>
       </div>
       <div class="ticker-track">
         <div class="ticker-marquee">
-          Admissions Open for Diploma Courses 2026-27 (AI &amp; ML, CSE, Mechanical, EEE, ECE, Civil, Biomedical, MLT) • First Generation Graduate (FGG) Govt. Scholarship Fee Waivers Available • Principal: Dr. R. Ramasamy • New Online Student Fees Management &amp; Migrated Tally Receipt Vault is Now Fully Active • Campus Placements Ongoing with TI Metals &amp; Lucas TVS.
+          Admissions Open for Diploma Courses 2026-27 (AI &amp; ML, CSE, Mechanical, EEE, ECE, Civil, Biomedical, MLT) •
+          First Generation Graduate (FGG) Govt. Scholarship Fee Waivers Available • Principal: Dr. R. Ramasamy • New
+          Online Student Fees Management &amp; Migrated Tally Receipt Vault is Now Fully Active • Campus Placements
+          Ongoing with TI Metals &amp; Lucas TVS.
         </div>
       </div>
     </div>
@@ -95,25 +283,27 @@
     <div class="container hero-grid">
       <div class="hero-content">
         <div class="hero-badge-pill">
-          ⭐ DOTE Code: 331 • Approved by AICTE, New Delhi
+          <i data-lucide="award"></i> DOTE Code: 331 • Approved by AICTE, New Delhi
         </div>
         <h2 class="hero-title">
           Shaping Quality Engineers Through <span>Value-Based Education</span>
         </h2>
         <p class="hero-description">
-          Located on a serene 12-acre campus in Rayavaram, Subramanian Polytechnic College has empowered rural and semi-urban students across Pudukkottai and Sivaganga since 1983 with hands-on technical mastery and 100% placement support.
+          Located on a serene 12-acre campus in Rayavaram, Subramanian Polytechnic College has empowered rural and
+          semi-urban students across Pudukkottai and Sivaganga since 1983 with hands-on technical mastery and 100%
+          placement support.
         </p>
 
         <div class="hero-actions">
-          <a href="/dashboard.html" class="btn btn-gold">
-            💳 Access Student Fee Vault
-          </a>
-          <a href="/cashier-dashboard.html" class="btn btn-primary">
-            💼 Office Accounts / Tally Desk
-          </a>
-          <button class="btn btn-outline" style="border-color: rgba(255,255,255,0.5); color: #fff;" onclick="window.openAdmissionModal()">
-            📝 Online Admission Enquiry
+          <button class="btn btn-gold" onclick="window.openAdmissionModal()">
+            <i data-lucide="file-text"></i> Online Admission Enquiry
           </button>
+          <a href="/departments.html" class="btn btn-primary">
+            <i data-lucide="laptop"></i> Explore Academic Programs
+          </a>
+          <a href="/dashboard.html" class="btn btn-outline" style="border-color: rgba(255,255,255,0.6); color: #fff;">
+            <i data-lucide="credit-card"></i> Student Fee Vault
+          </a>
         </div>
 
         <div class="hero-stats-row">
@@ -136,53 +326,67 @@
         </div>
       </div>
 
-      <!-- Quick Fee Access Widget on Hero -->
-      <div class="hero-portal-card">
-        <div class="portal-card-header">
-          <div class="portal-card-icon">🏛️</div>
-          <div>
-            <h3>SPTC Cloud Portal Access</h3>
-            <p>Dedicated self-service hubs for students &amp; staff</p>
+      <!-- Admissions 2026-27 & Campus Spotlight Card -->
+      <div class="hero-portal-card admission-spotlight-card">
+        <div class="portal-card-header" style="margin-bottom: 1rem; padding-bottom: 0.85rem;">
+          <div class="portal-card-icon" style="background: linear-gradient(135deg, #0a2558, #1a56db);">
+            <i data-lucide="award"></i>
+          </div>
+          <div style="flex: 1;">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
+              <h3 style="margin: 0; font-size: 1.25rem; color: #0a2558;">Admissions 2026–27</h3>
+              <span class="spotlight-live-pill"><span class="pulse-dot"></span> Applications Open</span>
+            </div>
+            <p style="margin: 2px 0 0 0; font-size: 0.8rem; color: #64748b;">DOTE Code: 331 • Approved by AICTE, New Delhi</p>
           </div>
         </div>
 
-        <div style="font-size: 0.875rem; color: #475569; margin-bottom: 1.25rem; line-height: 1.5;">
-          Log in with your <strong>DOTE Registration Number</strong> to view term-by-term fee balances, apply government concessions, and download official verified PDF receipts (including records migrated from the legacy Tally desktop system).
+        <p style="font-size: 0.875rem; color: #334155; line-height: 1.5; margin-bottom: 1.15rem;">
+          Empowering future technocrats with industry-integrated diploma engineering programs, modern laboratories, and guaranteed placement training.
+        </p>
+
+        <!-- 4 Key Highlights Grid -->
+        <div class="spotlight-highlights-grid">
+          <div class="spotlight-item">
+            <div class="spotlight-item-icon blue"><i data-lucide="graduation-cap"></i></div>
+            <div class="spotlight-item-text">
+              <strong>6 Core Disciplines</strong>
+              <span>AI &amp; ML, CSE, Mech, EEE, ECE, Civil</span>
+            </div>
+          </div>
+
+          <div class="spotlight-item">
+            <div class="spotlight-item-icon gold"><i data-lucide="briefcase"></i></div>
+            <div class="spotlight-item-text">
+              <strong>100% Placement</strong>
+              <span>TI Metals, Lucas TVS, Apollo &amp; MNCs</span>
+            </div>
+          </div>
+
+          <div class="spotlight-item">
+            <div class="spotlight-item-icon green"><i data-lucide="shield-check"></i></div>
+            <div class="spotlight-item-text">
+              <strong>Govt. Scholarships</strong>
+              <span>First Graduate &amp; PMSS Fee Waivers</span>
+            </div>
+          </div>
+
+          <div class="spotlight-item">
+            <div class="spotlight-item-icon purple"><i data-lucide="bus"></i></div>
+            <div class="spotlight-item-text">
+              <strong>Campus Bus Routes</strong>
+              <span>Pudukkottai, Sivaganga &amp; Karaikudi</span>
+            </div>
+          </div>
         </div>
 
-        <!-- 3 Prominent Dedicated Portal Cards -->
-        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <a href="/dashboard.html" style="display: flex; align-items: center; justify-content: space-between; background: #eff6ff; border: 1.5px solid #bfdbfe; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.borderColor='#1a56db'" onmouseout="this.style.borderColor='#bfdbfe'">
-            <div>
-              <strong style="color: #0a2558; font-size: 0.9rem; display: block;">🎓 Student Fees Dashboard</strong>
-              <span style="font-size: 0.75rem; color: #64748b;">View semester ledgers &amp; download receipts</span>
-            </div>
-            <span style="color: #1a56db; font-size: 1.1rem; font-weight: bold;">→</span>
-          </a>
-
-          <a href="/login.html" style="display: flex; align-items: center; justify-content: space-between; background: #fdf4ff; border: 1.5px solid #f0abfc; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.borderColor='#c026d3'" onmouseout="this.style.borderColor='#f0abfc'">
-            <div>
-              <strong style="color: #701a75; font-size: 0.9rem; display: block;">🔐 Dedicated Login Portal</strong>
-              <span style="font-size: 0.75rem; color: #64748b;">Sign in with DOTE Reg No or Staff ID</span>
-            </div>
-            <span style="color: #c026d3; font-size: 1.1rem; font-weight: bold;">→</span>
-          </a>
-
-          <a href="/register.html" style="display: flex; align-items: center; justify-content: space-between; background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s;" onmouseover="this.style.borderColor='#16a34a'" onmouseout="this.style.borderColor='#bbf7d0'">
-            <div>
-              <strong style="color: #14532d; font-size: 0.9rem; display: block;">📝 New Student Registration</strong>
-              <span style="font-size: 0.75rem; color: #64748b;">Enroll DOTE Reg No &amp; activate ledger</span>
-            </div>
-            <span style="color: #16a34a; font-size: 1.1rem; font-weight: bold;">→</span>
-          </a>
-        </div>
-
-        <div style="display: flex; gap: 0.75rem;">
-          <a href="/cashier-dashboard.html" class="btn btn-outline" style="flex: 1; text-align: center; font-size: 0.85rem; justify-content: center;">
-            💼 Accounts / Cashier Desk
-          </a>
-          <a href="/login.html" class="btn btn-gold" style="font-size: 0.85rem; justify-content: center;">
-            Sign In
+        <!-- Quick CTAs -->
+        <div class="spotlight-actions-row">
+          <button class="btn btn-gold btn-block" onclick="window.openAdmissionModal()" style="font-weight: 700; font-size: 0.9rem; justify-content: center; box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);">
+            <i data-lucide="file-text"></i> Online Admission Enquiry
+          </button>
+          <a href="/departments.html" class="btn btn-outline btn-block" style="font-size: 0.85rem; justify-content: center; border-color: #cbd5e1; color: #0a2558;">
+            <i data-lucide="laptop"></i> View Academic Departments &amp; Labs →
           </a>
         </div>
       </div>
@@ -196,42 +400,55 @@
         <span class="section-tag">About Subramanian Polytechnic College</span>
         <h2 class="section-title">A Legacy of Technical Excellence in Rayavaram</h2>
         <p class="section-subtitle">
-          Established in the year 1983 by philanthropic trustees, SPTC has provided technical education and vocational skills to thousands of rural youth across Pudukkottai and surrounding districts.
+          Established in the year 1983 by philanthropic trustees, SPTC has provided technical education and vocational
+          skills to thousands of rural youth across Pudukkottai and surrounding districts.
         </p>
       </div>
 
       <div class="about-grid">
         <div>
-          <h3 style="font-family: var(--font-heading); font-size: 1.75rem; color: var(--color-primary); margin-bottom: 1rem;">
+          <h3
+            style="font-family: var(--font-heading); font-size: 1.75rem; color: var(--color-primary); margin-bottom: 1rem;">
             Empowering Rural Youth with Future-Ready Technical Skills
           </h3>
           <p style="color: var(--color-text-muted); margin-bottom: 1.25rem;">
-            Subramanian Polytechnic College is approved by AICTE, New Delhi, and operates under the Directorate of Technical Education (DOTE), Chennai. Situated in Rayavaram, Pudukkottai District, the college boasts high-end engineering workshops, computer labs, an Entrepreneurship Development Cell (EDC), and active student wings like NSS and Youth Red Cross.
+            Subramanian Polytechnic College is approved by AICTE, New Delhi, and operates under the Directorate of
+            Technical Education (DOTE), Chennai. Situated in Rayavaram, Pudukkottai District, the college boasts
+            high-end engineering workshops, computer labs, an Entrepreneurship Development Cell (EDC), and active
+            student wings like NSS and Youth Red Cross.
           </p>
           <div class="about-feature-grid">
-            <div style="background: #fff; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-accent-gold); box-shadow: var(--shadow-sm);">
+            <div
+              style="background: #fff; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-accent-gold); box-shadow: var(--shadow-sm);">
               <strong style="color: var(--color-primary);">MAM Palaniappa Chettiar Auditorium</strong>
-              <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Grand air-conditioned hall for national symposiums and convocation.</p>
+              <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Grand air-conditioned hall for national
+                symposiums and convocation.</p>
             </div>
-            <div style="background: #fff; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-secondary-blue); box-shadow: var(--shadow-sm);">
+            <div
+              style="background: #fff; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--color-secondary-blue); box-shadow: var(--shadow-sm);">
               <strong style="color: var(--color-primary);">Selva Vinayagar Temple</strong>
-              <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Spiritual focal point within campus promoting peace and moral values.</p>
+              <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Spiritual focal point within campus
+                promoting peace and moral values.</p>
             </div>
           </div>
         </div>
 
-        <div style="background: linear-gradient(135deg, #0a2558, #184294); border-radius: 16px; padding: 2.5rem; color: #fff; box-shadow: var(--shadow-lg);">
-          <h4 style="font-family: var(--font-heading); font-size: 1.4rem; color: var(--color-accent-gold); margin-bottom: 1.25rem;">
+        <div class="leadership-card">
+          <h4
+            style="font-family: var(--font-heading); font-size: 1.4rem; color: var(--color-accent-gold); margin-bottom: 1.25rem;">
             Governing Body &amp; Leadership
           </h4>
-          <ul style="list-style: none; font-size: 0.95rem; line-height: 2;">
-            <li>🏛️ <strong>President:</strong> Thiru. PL. Subramanian</li>
-            <li>🏛️ <strong>Secretary:</strong> Thiru. K. Subramanian</li>
-            <li>🎓 <strong>Principal:</strong> Thiru. R. Ramaswamy, M.E., M.B.A.</li>
-            <li>👥 <strong>Trustees:</strong> Thiru. PL. Nagappan, Thiru. K. Lakshmanan, Thiru. SP. Muthuraman, Thiru. AL. Muthuraman, Thiru. SP. Subramanian, Tmt. A. Vijaya Alagappan</li>
+          <ul>
+            <li><i data-lucide="building-2"></i> <div><strong>President:</strong> Thiru. PL. Subramanian</div></li>
+            <li><i data-lucide="building-2"></i> <div><strong>Secretary:</strong> Thiru. K. Subramanian</div></li>
+            <li><i data-lucide="graduation-cap"></i> <div><strong>Principal:</strong> Thiru. R. Ramaswamy, M.E., M.B.A.</div></li>
+            <li><i data-lucide="users"></i> <div><strong>Trustees:</strong> Thiru. PL. Nagappan, Thiru. K. Lakshmanan, Thiru. SP. Muthuraman, Thiru.
+              AL. Muthuraman, Thiru. SP. Subramanian, Tmt. A. Vijaya Alagappan</div></li>
           </ul>
-          <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.85rem; color: rgba(255,255,255,0.8);">
-            Mission: To provide quality technical engineering education primarily to the rural poor and make them industry-ready professionals.
+          <div
+            style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid rgba(255,255,255,0.2); font-size: 0.85rem; color: rgba(255,255,255,0.8);">
+            Mission: To provide quality technical engineering education primarily to the rural poor and make them
+            industry-ready professionals.
           </div>
         </div>
       </div>
@@ -240,256 +457,278 @@
 
   <!-- ACADEMIC DEPARTMENTS SECTION -->
   <section class="section" id="departments" style="background: #ffffff; padding: 4.5rem 0;">
-          <div class="container">
-            <div class="section-title-wrap">
-              <span class="section-tag">Programs Offered</span>
-              <h2 class="section-title">DOTE Approved 3-Year Diploma Disciplines</h2>
-              <p class="section-subtitle">
-                Comprehensive practical training with modern machinery, testing apparatus, and specialized CAD/CAM software.
-              </p>
-            </div>
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-tag">Programs Offered</span>
+        <h2 class="section-title">DOTE Approved 3-Year Diploma Disciplines</h2>
+        <p class="section-subtitle">
+          Comprehensive practical training with modern machinery, testing apparatus, and specialized CAD/CAM software.
+        </p>
+      </div>
 
-            <div class="dept-grid">
-              <!-- Dept 1 -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">💻</div>
-                  <h3>Computer Engineering</h3>
-                  <p>Software development, Python, Java, Database Management, Computer Networks, and Cloud Computing.</p>
-                  <ul class="dept-features">
-                    <li>High-Speed LAN Computing Lab</li>
-                    <li>Full-Stack Web &amp; Python Programming</li>
-                    <li>Hardware &amp; IoT Embedded Labs</li>
-                    <li>Annual Intake: 60 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept: AI & ML -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">🤖</div>
-                  <h3>Artificial Intelligence &amp; ML</h3>
-                  <p>Machine learning models, neural networks, computer vision, natural language processing, and data analytics.</p>
-                  <ul class="dept-features">
-                    <li>GPU-Accelerated AI Laboratory</li>
-                    <li>Python, TensorFlow &amp; PyTorch Stacks</li>
-                    <li>Predictive Modeling &amp; Big Data</li>
-                    <li>Annual Intake: 60 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept: Biomedical Engineering -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">🧬</div>
-                  <h3>Biomedical Engineering</h3>
-                  <p>Medical instrumentation, physiological monitoring systems, healthcare telemetry, and diagnostic equipment.</p>
-                  <ul class="dept-features">
-                    <li>Hospital Diagnostic &amp; Imaging Lab</li>
-                    <li>Biomedical Sensors &amp; Transducers</li>
-                    <li>Clinical Equipment Maintenance</li>
-                    <li>Annual Intake: 60 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept: Medical Laboratory Technology -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">🔬</div>
-                  <h3>Medical Laboratory Tech</h3>
-                  <p>Clinical biochemistry, hematology, medical microbiology, histopathology, and diagnostic laboratory operation.</p>
-                  <ul class="dept-features">
-                    <li>Sterile Pathology &amp; Culture Lab</li>
-                    <li>Automated Hematology Analyzers</li>
-                    <li>Clinical Biochemistry Reagents</li>
-                    <li>Annual Intake: 60 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept 2 -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">⚙️</div>
-                  <h3>Mechanical Engineering</h3>
-                  <p>Design, manufacturing, thermal engineering, CAD/CAM modeling, CNC programming, and industrial hydraulics.</p>
-                  <ul class="dept-features">
-                    <li>Heavy Machine Shop with CNC Lathes</li>
-                    <li>Automobile &amp; Thermal Power Lab</li>
-                    <li>Foundry &amp; Welding Workshops</li>
-                    <li>Annual Intake: 120 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept 3 -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">⚡</div>
-                  <h3>Electrical &amp; Electronics</h3>
-                  <p>Power generation, electrical machines, switchgear protection, solar renewable energy, and industrial wiring.</p>
-                  <ul class="dept-features">
-                    <li>AC/DC Electrical Machines Lab</li>
-                    <li>Power Electronics &amp; PLC Automation</li>
-                    <li>Renewable Solar Installation Lab</li>
-                    <li>Annual Intake: 60 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept 4 -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">📡</div>
-                  <h3>Electronics &amp; Communication</h3>
-                  <p>Semiconductor devices, microcontrollers, VLSI circuits, wireless RF telemetry, and digital signal processors.</p>
-                  <ul class="dept-features">
-                    <li>Microprocessor &amp; Embedded Lab</li>
-                    <li>Digital Communication &amp; DSP Kits</li>
-                    <li>PCB Design &amp; Fabrication Lab</li>
-                    <li>Annual Intake: 60 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept 5 -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">🏗️</div>
-                  <h3>Civil Engineering</h3>
-                  <p>Surveying, structural analysis, concrete testing, environmental engineering, and AutoCAD architectural drafting.</p>
-                  <ul class="dept-features">
-                    <li>Total Station GPS Surveying Lab</li>
-                    <li>Strength of Materials &amp; Concrete Lab</li>
-                    <li>Soil Mechanics &amp; Hydraulics</li>
-                    <li>Annual Intake: 60 Seats</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-
-              <!-- Dept 6 -->
-              <div class="dept-card">
-                <div>
-                  <div class="dept-icon">📐</div>
-                  <h3>Basic Engineering</h3>
-                  <p>Foundational engineering mathematics, applied physics, applied chemistry, and English communication skills.</p>
-                  <ul class="dept-features">
-                    <li>Modern Digital Language Lab</li>
-                    <li>Physics &amp; Chemistry Laboratories</li>
-                    <li>Engineering Drawing Hall</li>
-                    <li>First-Year Foundation Wing</li>
-                  </ul>
-                </div>
-                <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
-              </div>
-            </div>
+      <div class="dept-grid">
+        <!-- Dept 1 -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="laptop"></i></div>
+            <h3>Computer Engineering</h3>
+            <p>Software development, Python, Java, Database Management, Computer Networks, and Cloud Computing.</p>
+            <ul class="dept-features">
+              <li>High-Speed LAN Computing Lab</li>
+              <li>Full-Stack Web &amp; Python Programming</li>
+              <li>Hardware &amp; IoT Embedded Labs</li>
+              <li>Annual Intake: 60 Seats</li>
+            </ul>
           </div>
-        </section>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
 
-        <!-- CAMPUS FACILITIES & BUS ROUTES -->
-        <section class="section" id="facilities" style="padding: 4.5rem 0;">
-          <div class="container">
-            <div class="section-title-wrap">
-              <span class="section-tag">Campus Life &amp; Amenities</span>
-              <h2 class="section-title">World-Class Infrastructure on 12 Acres</h2>
-              <p class="section-subtitle">
-                Ensuring a safe, comfortable, and comprehensive educational journey for every day-scholar and hosteller.
-              </p>
-            </div>
-
-            <div class="facilities-grid">
-              <div class="facility-card">
-                <div class="facility-icon">📚</div>
-                <h4>Central Library</h4>
-                <p>Over 10,000 engineering titles, journals, national magazines, and high-speed digital e-learning portals.</p>
-              </div>
-
-              <div class="facility-card">
-                <div class="facility-icon">🚌</div>
-                <h4>College Bus Fleet</h4>
-                <p>Dedicated bus routes covering Pudukkottai town, Karaikudi, Thirumayam, Aranthangi, and Rayavaram.</p>
-              </div>
-
-              <div class="facility-card">
-                <div class="facility-icon">🛏️</div>
-                <h4>Boys &amp; Girls Hostels</h4>
-                <p>Hygienic vegetarian &amp; non-vegetarian mess, 24/7 security, purified RO water, and solar water heaters.</p>
-              </div>
-
-              <div class="facility-card">
-                <div class="facility-icon">🏆</div>
-                <h4>Sports &amp; Fitness</h4>
-                <p>Extensive playfields for Cricket, Football, Volleyball, and athletics, backed by seasoned physical directors.</p>
-              </div>
-            </div>
-
-            <!-- Bus Routes Table Snippet -->
-            <div style="background: #fff; border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; margin-top: 2.5rem; box-shadow: var(--shadow-sm);">
-              <h4 style="font-family: var(--font-heading); color: var(--color-primary); font-size: 1.15rem; margin-bottom: 0.75rem;">
-                🚌 Daily College Bus Routes &amp; Coverage (Rayavaram Junction):
-              </h4>
-              <div class="bus-routes-grid">
-                <div><strong>Route 1:</strong> Pudukkottai New Bus Stand ➔ Namnasamudram ➔ Rayavaram (Dept 8:15 AM)</div>
-                <div><strong>Route 2:</strong> Karaikudi Old Bus Stand ➔ Kottaiyur ➔ Kandanur ➔ Rayavaram (Dept 8:10 AM)</div>
-                <div><strong>Route 3:</strong> Thirumayam ➔ Konapet ➔ Kadiapatti ➔ Rayavaram (Dept 8:25 AM)</div>
-              </div>
-            </div>
+        <!-- Dept: AI & ML -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="bot"></i></div>
+            <h3>Artificial Intelligence &amp; ML</h3>
+            <p>Machine learning models, neural networks, computer vision, natural language processing, and data
+              analytics.</p>
+            <ul class="dept-features">
+              <li>GPU-Accelerated AI Laboratory</li>
+              <li>Python, TensorFlow &amp; PyTorch Stacks</li>
+              <li>Predictive Modeling &amp; Big Data</li>
+              <li>Annual Intake: 60 Seats</li>
+            </ul>
           </div>
-        </section>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
 
-        <!-- MANDATORY COMPLIANCE & DISCLOSURES -->
-        <section class="section" id="compliance" style="background: #f1f5f9; padding: 4.5rem 0;">
-          <div class="container">
-            <div class="section-title-wrap">
-              <span class="section-tag">Regulatory &amp; Statutory Cells</span>
-              <h2 class="section-title">AICTE &amp; DOTE Compliance Vault</h2>
-              <p class="section-subtitle">
-                Institutional transparency, mandatory disclosures, and 24x7 student safety committees.
-              </p>
-            </div>
-
-            <div class="compliance-grid">
-              <div style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📑</div>
-                <h4 style="font-size: 1rem; color: var(--color-primary);">AICTE EOA Reports</h4>
-                <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Approval Extension 2025-2026</p>
-                <a href="https://sptc.org.in/wp-content/uploads/2026/02/EOA-Report-2025-2026.pdf" target="_blank" class="btn btn-sm btn-outline" style="margin-top: 0.75rem;">Download PDF</a>
-              </div>
-
-              <div style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🛡️</div>
-                <h4 style="font-size: 1rem; color: var(--color-primary);">Anti-Ragging Squad</h4>
-                <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Zero Tolerance Policy (24/7 Helpline)</p>
-                <a href="https://sptc.org.in/wp-content/uploads/2025/01/ANTI-RAGGING-COMMITTEE.pdf" target="_blank" class="btn btn-sm btn-outline" style="margin-top: 0.75rem;">View Committee</a>
-              </div>
-
-              <div style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚖️</div>
-                <h4 style="font-size: 1rem; color: var(--color-primary);">Mandatory Disclosure</h4>
-                <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">DOTE Code 331 Governance Report</p>
-                <a href="https://sptc.org.in/wp-content/uploads/2026/03/331-MANDATORY-DISCLOSURE-2026-27-02-03-2026.pdf" target="_blank" class="btn btn-sm btn-outline" style="margin-top: 0.75rem;">View Report</a>
-              </div>
-
-              <div style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
-                <div style="font-size: 2rem; margin-bottom: 0.5rem;">📩</div>
-                <h4 style="font-size: 1rem; color: var(--color-primary);">Online Grievance Cell</h4>
-                <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Direct Redressal by Principal Office</p>
-                <button class="btn btn-sm btn-primary" style="margin-top: 0.75rem;" onclick="alert('Online Grievance Portal connected to principal@sptc.org.in. You can submit grievances anytime.')">Submit Grievance</button>
-              </div>
-            </div>
+        <!-- Dept: Biomedical Engineering -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="dna"></i></div>
+            <h3>Biomedical Engineering</h3>
+            <p>Medical instrumentation, physiological monitoring systems, healthcare telemetry, and diagnostic
+              equipment.</p>
+            <ul class="dept-features">
+              <li>Hospital Diagnostic &amp; Imaging Lab</li>
+              <li>Biomedical Sensors &amp; Transducers</li>
+              <li>Clinical Equipment Maintenance</li>
+              <li>Annual Intake: 60 Seats</li>
+            </ul>
           </div>
-        </section>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
+
+        <!-- Dept: Medical Laboratory Technology -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="microscope"></i></div>
+            <h3>Medical Laboratory Tech</h3>
+            <p>Clinical biochemistry, hematology, medical microbiology, histopathology, and diagnostic laboratory
+              operation.</p>
+            <ul class="dept-features">
+              <li>Sterile Pathology &amp; Culture Lab</li>
+              <li>Automated Hematology Analyzers</li>
+              <li>Clinical Biochemistry Reagents</li>
+              <li>Annual Intake: 60 Seats</li>
+            </ul>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
+
+        <!-- Dept 2 -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="cog"></i></div>
+            <h3>Mechanical Engineering</h3>
+            <p>Design, manufacturing, thermal engineering, CAD/CAM modeling, CNC programming, and industrial hydraulics.
+            </p>
+            <ul class="dept-features">
+              <li>Heavy Machine Shop with CNC Lathes</li>
+              <li>Automobile &amp; Thermal Power Lab</li>
+              <li>Foundry &amp; Welding Workshops</li>
+              <li>Annual Intake: 120 Seats</li>
+            </ul>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
+
+        <!-- Dept 3 -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="zap"></i></div>
+            <h3>Electrical &amp; Electronics</h3>
+            <p>Power generation, electrical machines, switchgear protection, solar renewable energy, and industrial
+              wiring.</p>
+            <ul class="dept-features">
+              <li>AC/DC Electrical Machines Lab</li>
+              <li>Power Electronics &amp; PLC Automation</li>
+              <li>Renewable Solar Installation Lab</li>
+              <li>Annual Intake: 60 Seats</li>
+            </ul>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
+
+        <!-- Dept 4 -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="radio"></i></div>
+            <h3>Electronics &amp; Communication</h3>
+            <p>Semiconductor devices, microcontrollers, VLSI circuits, wireless RF telemetry, and digital signal
+              processors.</p>
+            <ul class="dept-features">
+              <li>Microprocessor &amp; Embedded Lab</li>
+              <li>Digital Communication &amp; DSP Kits</li>
+              <li>PCB Design &amp; Fabrication Lab</li>
+              <li>Annual Intake: 60 Seats</li>
+            </ul>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
+
+        <!-- Dept 5 -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="hard-hat"></i></div>
+            <h3>Civil Engineering</h3>
+            <p>Surveying, structural analysis, concrete testing, environmental engineering, and AutoCAD architectural
+              drafting.</p>
+            <ul class="dept-features">
+              <li>Total Station GPS Surveying Lab</li>
+              <li>Strength of Materials &amp; Concrete Lab</li>
+              <li>Soil Mechanics &amp; Hydraulics</li>
+              <li>Annual Intake: 60 Seats</li>
+            </ul>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
+
+        <!-- Dept 6 -->
+        <div class="dept-card">
+          <div>
+            <div class="dept-icon"><i data-lucide="drafting-compass"></i></div>
+            <h3>Basic Engineering</h3>
+            <p>Foundational engineering mathematics, applied physics, applied chemistry, and English communication
+              skills.</p>
+            <ul class="dept-features">
+              <li>Modern Digital Language Lab</li>
+              <li>Physics &amp; Chemistry Laboratories</li>
+              <li>Engineering Drawing Hall</li>
+              <li>First-Year Foundation Wing</li>
+            </ul>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="window.openAdmissionModal()">Enquire Admission</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CAMPUS FACILITIES & BUS ROUTES -->
+  <section class="section" id="facilities" style="padding: 4.5rem 0;">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-tag">Campus Life &amp; Amenities</span>
+        <h2 class="section-title">World-Class Infrastructure on 12 Acres</h2>
+        <p class="section-subtitle">
+          Ensuring a safe, comfortable, and comprehensive educational journey for every day-scholar and hosteller.
+        </p>
+      </div>
+
+      <div class="facilities-grid">
+        <div class="facility-card">
+          <div class="facility-icon"><i data-lucide="book-open"></i></div>
+          <h4>Central Library</h4>
+          <p>Over 10,000 engineering titles, journals, national magazines, and high-speed digital e-learning portals.
+          </p>
+        </div>
+
+        <div class="facility-card">
+          <div class="facility-icon"><i data-lucide="bus"></i></div>
+          <h4>College Bus Fleet</h4>
+          <p>Dedicated bus routes covering Pudukkottai town, Karaikudi, Thirumayam, Aranthangi, and Rayavaram.</p>
+        </div>
+
+        <div class="facility-card">
+          <div class="facility-icon"><i data-lucide="bed"></i></div>
+          <h4>Boys &amp; Girls Hostels</h4>
+          <p>Hygienic vegetarian &amp; non-vegetarian mess, 24/7 security, purified RO water, and solar water heaters.
+          </p>
+        </div>
+
+        <div class="facility-card">
+          <div class="facility-icon"><i data-lucide="trophy"></i></div>
+          <h4>Sports &amp; Fitness</h4>
+          <p>Extensive playfields for Cricket, Football, Volleyball, and athletics, backed by seasoned physical
+            directors.</p>
+        </div>
+      </div>
+
+      <!-- Bus Routes Table Snippet -->
+      <div
+        style="background: #fff; border-radius: 12px; border: 1px solid var(--color-border); padding: 1.5rem; margin-top: 2.5rem; box-shadow: var(--shadow-sm);">
+        <h4
+          style="font-family: var(--font-heading); color: var(--color-primary); font-size: 1.15rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i data-lucide="bus"></i> Daily College Bus Routes &amp; Coverage (Rayavaram Junction):
+        </h4>
+        <div class="bus-routes-grid">
+          <div><strong>Route 1:</strong> Pudukkottai New Bus Stand &rarr; Namnasamudram &rarr; Rayavaram (Dept 8:15 AM)</div>
+          <div><strong>Route 2:</strong> Karaikudi Old Bus Stand &rarr; Kottaiyur &rarr; Kandanur &rarr; Rayavaram (Dept 8:10 AM)</div>
+          <div><strong>Route 3:</strong> Thirumayam &rarr; Konapet &rarr; Kadiapatti &rarr; Rayavaram (Dept 8:25 AM)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MANDATORY COMPLIANCE & DISCLOSURES -->
+  <section class="section" id="compliance" style="background: #f1f5f9; padding: 4.5rem 0;">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-tag">Regulatory &amp; Statutory Cells</span>
+        <h2 class="section-title">AICTE &amp; DOTE Compliance Vault</h2>
+        <p class="section-subtitle">
+          Institutional transparency, mandatory disclosures, and 24x7 student safety committees.
+        </p>
+      </div>
+
+      <div class="compliance-grid">
+        <div
+          style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
+          <div class="compliance-icon" style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="file-text"></i></div>
+          <h4 style="font-size: 1rem; color: var(--color-primary);">AICTE EOA Reports</h4>
+          <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Approval Extension 2025-2026</p>
+          <a href="https://sptc.org.in/wp-content/uploads/2026/02/EOA-Report-2025-2026.pdf" target="_blank"
+            class="btn btn-sm btn-outline" style="margin-top: 0.75rem;">Download PDF</a>
+        </div>
+
+        <div
+          style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
+          <div class="compliance-icon" style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="shield-check"></i></div>
+          <h4 style="font-size: 1rem; color: var(--color-primary);">Anti-Ragging Squad</h4>
+          <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Zero Tolerance Policy (24/7 Helpline)</p>
+          <a href="https://sptc.org.in/wp-content/uploads/2025/01/ANTI-RAGGING-COMMITTEE.pdf" target="_blank"
+            class="btn btn-sm btn-outline" style="margin-top: 0.75rem;">View Committee</a>
+        </div>
+
+        <div
+          style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
+          <div class="compliance-icon" style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="scale"></i></div>
+          <h4 style="font-size: 1rem; color: var(--color-primary);">Mandatory Disclosure</h4>
+          <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">DOTE Code 331 Governance Report</p>
+          <a href="https://sptc.org.in/wp-content/uploads/2026/03/331-MANDATORY-DISCLOSURE-2026-27-02-03-2026.pdf"
+            target="_blank" class="btn btn-sm btn-outline" style="margin-top: 0.75rem;">View Report</a>
+        </div>
+
+        <div
+          style="background: #fff; padding: 1.5rem; border-radius: 8px; border: 1px solid var(--color-border); text-align: center;">
+          <div class="compliance-icon" style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="inbox"></i></div>
+          <h4 style="font-size: 1rem; color: var(--color-primary);">Online Grievance Cell</h4>
+          <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">Direct Redressal by Principal Office</p>
+          <button class="btn btn-sm btn-primary" style="margin-top: 0.75rem;"
+            onclick="alert('Online Grievance Portal connected to principal@sptc.org.in. You can submit grievances anytime.')">Submit
+            Grievance</button>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- ======================== 6. CONTACT & LOCATION ======================== -->
   <section class="section" id="contact" style="background: #ffffff;">
@@ -497,44 +736,74 @@
       <div class="section-title-wrap">
         <span class="section-tag">Reach Us</span>
         <h2 class="section-title">Visit Subramanian Polytechnic College</h2>
-        <p class="section-subtitle">Located in Rayavaram, Pudukkottai District, easily reachable by public and private buses.</p>
+        <p class="section-subtitle">Located in Rayavaram, Pudukkottai District, easily reachable by public and private
+          buses.</p>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
-        <div style="background: #f8fafc; border: 1px solid var(--color-border); padding: 2.25rem; border-radius: 12px;">
-          <h3 style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--color-primary); margin-bottom: 1.25rem;">
-            Campus Address &amp; Key Contact
-          </h3>
-          <p style="margin-bottom: 1rem;">
-            <strong>Subramanian Polytechnic College</strong><br>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div style="margin-bottom: 1.25rem;">
+            <span class="badge badge-primary" style="margin-bottom: 0.5rem; display: inline-flex; align-items: center; gap: 0.35rem;">
+              <i data-lucide="map-pin"></i> Rayavaram Main Campus
+            </span>
+            <h3 style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--color-primary); line-height: 1.25; margin: 0;">
+              Campus Address &amp; Key Contact
+            </h3>
+          </div>
+
+          <p style="margin-bottom: 1.25rem; font-size: 0.92rem; line-height: 1.5; color: #334155;">
+            <strong style="color: var(--color-primary);">Subramanian Polytechnic College</strong><br>
             Rayavaram, Pudukkottai District,<br>
             Tamil Nadu, India – 622 506
           </p>
-          <p style="margin-bottom: 0.5rem;">
-            📞 <strong>Principal / Office:</strong> +91 6382391625, 04333-272226
-          </p>
-          <p style="margin-bottom: 0.5rem;">
-            ✉️ <strong>Official Email:</strong> principal@sptc.org.in, admin@sptc.org.in
-          </p>
-          <p style="margin-bottom: 1.5rem;">
-            🕒 <strong>Office Hours:</strong> Monday – Saturday: 9:00 AM – 4:00 PM
-          </p>
-          <button class="btn btn-gold" onclick="window.openAdmissionModal()">
-            Contact Admission Cell
+
+          <div class="contact-info-list">
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><i data-lucide="phone"></i></div>
+              <div class="contact-info-detail">
+                <span class="contact-info-label">Principal / Office Phones</span>
+                <span class="contact-info-text">+91 6382391625 / 04333-272226</span>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><i data-lucide="mail"></i></div>
+              <div class="contact-info-detail">
+                <span class="contact-info-label">Official Email</span>
+                <span class="contact-info-text">principal@sptc.org.in</span>
+              </div>
+            </div>
+
+            <div class="contact-info-item">
+              <div class="contact-info-icon"><i data-lucide="clock"></i></div>
+              <div class="contact-info-detail">
+                <span class="contact-info-label">Office &amp; Counter Hours</span>
+                <span class="contact-info-text">Mon – Sat: 9:00 AM – 4:00 PM</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-gold" style="width: 100%; justify-content: center;" onclick="window.openAdmissionModal()">
+            <i data-lucide="file-text"></i> <span>Contact Admission Cell</span>
           </button>
         </div>
 
-        <div style="background: #0a2558; color: #fff; padding: 2.25rem; border-radius: 12px; display: flex; flex-direction: column; justify-content: space-between;">
-          <div>
-            <h3 style="font-family: var(--font-heading); font-size: 1.35rem; color: var(--color-accent-gold); margin-bottom: 1rem;">
+        <div class="whatsapp-card">
+          <div class="whatsapp-card-content">
+            <div class="whatsapp-badge">
+              <i data-lucide="sparkles"></i> Direct Rayavaram Desk
+            </div>
+            <h3 class="whatsapp-card-title">
               Quick WhatsApp Admission Helpline
             </h3>
-            <p style="font-size: 0.95rem; color: rgba(255,255,255,0.85); margin-bottom: 1.5rem;">
-              Directly chat with our Rayavaram admission counselors for queries regarding course availability, fee concessions, hostel boarding, and bus routes.
+            <p class="whatsapp-card-desc">
+              Directly chat with our Rayavaram admission counselors for queries regarding course availability, fee
+              concessions, hostel boarding, and bus routes.
             </p>
           </div>
-          <a href="https://wa.me/916382391625?text=Hello%20SPTC%20Rayavaram,%20I%20would%20like%20to%20enquire%20about%20Diploma%20Admissions%20and%20Fee%20Structure." target="_blank" class="btn btn-gold" style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-            💬 Connect on WhatsApp (+91 6382391625)
+          <a href="https://wa.me/916382391625?text=Hello%20SPTC%20Rayavaram,%20I%20would%20like%20to%20enquire%20about%20Diploma%20Admissions%20and%20Fee%20Structure."
+            target="_blank" class="btn btn-gold whatsapp-action-btn">
+            <i data-lucide="message-circle"></i> <span>Connect on WhatsApp (+91 6382391625)</span>
           </a>
         </div>
       </div>
@@ -546,11 +815,12 @@
     <div class="container footer-grid">
       <div class="footer-col">
         <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
-          <img src="/assets/logo.svg" alt="SPTC Logo" style="width: 44px; height: 44px;">
+          <img src="/assets/logo.svg" alt="SPTC Logo" style="width: 44px; height: 44px;" loading="lazy" decoding="async">
           <h4 style="margin: 0; padding: 0;">SPTC Rayavaram</h4>
         </div>
         <p>
-          Subramanian Polytechnic College is a leading technical diploma institution in Pudukkottai, affiliated with DOTE Chennai (Code: 331) and approved by AICTE New Delhi.
+          Subramanian Polytechnic College is a leading technical diploma institution in Pudukkottai, affiliated with
+          DOTE Chennai (Code: 331) and approved by AICTE New Delhi.
         </p>
         <p style="font-size: 0.8rem; color: var(--color-accent-gold);">
           Official Web Portal &amp; Cloud Student Fee Vault (Replacing Legacy Tally Desktop).
@@ -560,26 +830,28 @@
       <div class="footer-col">
         <h4>Academic Wings</h4>
         <ul class="footer-links">
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Computer Engineering (CSE)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Artificial Intelligence &amp; ML (AI&amp;ML)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Mechanical Engineering (MECH)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electrical &amp; Electronics (EEE)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Electronics &amp; Communication (ECE)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Civil Engineering (CIVIL)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Biomedical Engineering (BME)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Medical Laboratory Tech (MLT)</a></li>
-          <li><a href="#departments" onclick="window.navigateTo('departments', event)">Basic Engineering (1st Year)</a></li>
+          <li><a href="/departments.html#cse">Computer Engineering (CSE)</a></li>
+          <li><a href="/departments.html#aiml">Artificial Intelligence &amp; ML (AI&amp;ML)</a></li>
+          <li><a href="/departments.html#mech">Mechanical Engineering (MECH)</a></li>
+          <li><a href="/departments.html#eee">Electrical &amp; Electronics (EEE)</a></li>
+          <li><a href="/departments.html#ece">Electronics &amp; Communication (ECE)</a></li>
+          <li><a href="/departments.html#civil">Civil Engineering (CIVIL)</a></li>
+          <li><a href="/departments.html#bme">Biomedical Engineering (BME)</a></li>
+          <li><a href="/departments.html#mlt">Medical Laboratory Tech (MLT)</a></li>
+          <li><a href="/departments.html#basic">Basic Engineering (1st Year)</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
-        <h4>Quick Portals</h4>
+        <h4>Quick Portals &amp; Media</h4>
         <ul class="footer-links">
-          <li><a href="/dashboard.html">🎓 Student Fees Dashboard</a></li>
-          <li><a href="/cashier-dashboard.html">💼 Accounts &amp; Cashier Desk</a></li>
-          <li><a href="/login.html">🔐 Institutional Sign In</a></li>
-          <li><a href="/register.html">📝 Student Portal Registration</a></li>
-          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)">AICTE &amp; DOTE Compliance</a></li>
+          <li><a href="/departments.html"><i data-lucide="laptop"></i> All 9 Academic Departments</a></li>
+          <li><a href="/gallery.html"><i data-lucide="sparkles"></i> Campus &amp; Event Gallery</a></li>
+          <li><a href="/dashboard.html"><i data-lucide="graduation-cap"></i> Student Fees Dashboard</a></li>
+          <li><a href="/cashier-dashboard.html"><i data-lucide="briefcase"></i> Accounts &amp; Cashier Desk</a></li>
+          <li><a href="/login.html"><i data-lucide="lock"></i> Institutional Sign In</a></li>
+          <li><a href="/register.html"><i data-lucide="file-text"></i> Student Portal Registration</a></li>
+          <li><a href="#compliance" onclick="window.navigateTo('compliance', event)"><i data-lucide="shield-check"></i> AICTE &amp; DOTE Compliance</a></li>
         </ul>
       </div>
 
@@ -601,7 +873,7 @@
   <div class="modal-overlay" id="receiptModal">
     <div class="modal-box">
       <div class="modal-header">
-        <h3>🏛️ Official Institutional Fee Receipt</h3>
+        <h3 style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="landmark"></i> Official Institutional Fee Receipt</h3>
         <button class="modal-close-btn" onclick="Receipts.closeReceiptModal()">&times;</button>
       </div>
       <div class="modal-body" id="receiptModalContent">
@@ -614,7 +886,7 @@
   <div class="modal-overlay" id="paymentModal">
     <div class="modal-box" style="max-width: 580px;">
       <div class="modal-header">
-        <h3>💳 Pay Student Fees Online</h3>
+        <h3 style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="credit-card"></i> Pay Student Fees Online</h3>
         <button class="modal-close-btn" onclick="Fees.closePaymentModal()">&times;</button>
       </div>
       <div class="modal-body" id="paymentModalContent">
@@ -628,47 +900,61 @@
     <div class="modal-box" style="max-width: 500px;">
       <div class="modal-header">
         <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-          <span>🔐</span> SPTC Institutional Portal Login
+          <i data-lucide="lock"></i> SPTC Institutional Portal Login
         </h3>
         <button class="modal-close-btn" onclick="window.closeLoginModal()">&times;</button>
       </div>
 
       <div class="modal-body">
         <!-- Dual Tab Switcher -->
-        <div class="login-tabs-nav" style="display: flex; gap: 0.5rem; background: #f1f5f9; padding: 4px; border-radius: 8px; margin-bottom: 1.5rem;">
-          <button type="button" class="login-tab-btn active" id="loginTabStudentBtn" onclick="window.switchLoginTab('student')" style="flex: 1; padding: 0.6rem 0.5rem; border-radius: 6px; font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; transition: all 0.2s;">
-            🎓 Student Portal
+        <div class="login-tabs-nav"
+          style="display: flex; gap: 0.5rem; background: #f1f5f9; padding: 4px; border-radius: 8px; margin-bottom: 1.5rem;">
+          <button type="button" class="login-tab-btn active" id="loginTabStudentBtn"
+            onclick="window.switchLoginTab('student')"
+            style="flex: 1; padding: 0.6rem 0.5rem; border-radius: 6px; font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+            <i data-lucide="graduation-cap"></i> Student Portal
           </button>
-          <button type="button" class="login-tab-btn" id="loginTabStaffBtn" onclick="window.switchLoginTab('staff')" style="flex: 1; padding: 0.6rem 0.5rem; border-radius: 6px; font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; transition: all 0.2s;">
-            👔 Staff &amp; Faculty
+          <button type="button" class="login-tab-btn" id="loginTabStaffBtn" onclick="window.switchLoginTab('staff')"
+            style="flex: 1; padding: 0.6rem 0.5rem; border-radius: 6px; font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
+            <i data-lucide="briefcase"></i> Staff &amp; Faculty
           </button>
         </div>
 
         <!-- 1. STUDENT LOGIN FORM -->
         <form id="studentLoginForm" onsubmit="window.handleStudentLoginSubmit(event)">
-          <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.825rem; color: #1e40af;">
-            ℹ️ Students can log in using their 8-digit <strong>DOTE Registration Number</strong> and Date of Birth (PIN) to access live fee dues and receipts.
+          <div
+            style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.825rem; color: #1e40af; display: flex; align-items: center; gap: 0.45rem;">
+            <i data-lucide="info"></i> <span>Students can log in using their 8-digit <strong>DOTE Registration Number</strong> and Date of Birth (PIN)
+            to access live fee dues and receipts.</span>
           </div>
 
           <div class="form-group">
             <label class="form-label">DOTE Registration Number:</label>
-            <input type="text" id="studentLoginRegNo" class="form-control" placeholder="e.g. 22201045" value="22201045" required />
+            <input type="text" id="studentLoginRegNo" class="form-control" placeholder="e.g. 22201045" value="22201045"
+              required />
           </div>
 
           <div class="form-group">
             <label class="form-label">Date of Birth / PIN (DDMMYYYY):</label>
-            <input type="password" id="studentLoginPin" class="form-control" placeholder="DDMMYYYY" value="12052005" required />
+            <input type="password" id="studentLoginPin" class="form-control" placeholder="DDMMYYYY" value="12052005"
+              required />
           </div>
 
           <!-- Quick Fill Student Pills -->
           <div style="margin-bottom: 1.25rem;">
-            <div style="font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 0.4rem;">1-CLICK DEMO TEST PROFILES:</div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 0.4rem;">1-CLICK DEMO TEST
+              PROFILES:</div>
             <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
-              <button type="button" class="demo-pill" onclick="window.quickFillStudent('22201045', '12052005')">K. Vignesh (CSE)</button>
-              <button type="button" class="demo-pill" onclick="window.quickFillStudent('22202018', '24082004')">M. Priya (ECE)</button>
-              <button type="button" class="demo-pill" onclick="window.quickFillStudent('23203009', '15112005')">S. Karthik (Mech)</button>
-              <button type="button" class="demo-pill" onclick="window.quickFillStudent('23204014', '02022006')">R. Anitha (EEE)</button>
-              <button type="button" class="demo-pill" onclick="window.quickFillStudent('24205003', '19072006')">A. Saravanan (Civil)</button>
+              <button type="button" class="demo-pill" onclick="window.quickFillStudent('22201045', '12052005')">K.
+                Vignesh (CSE)</button>
+              <button type="button" class="demo-pill" onclick="window.quickFillStudent('22202018', '24082004')">M. Priya
+                (ECE)</button>
+              <button type="button" class="demo-pill" onclick="window.quickFillStudent('23203009', '15112005')">S.
+                Karthik (Mech)</button>
+              <button type="button" class="demo-pill" onclick="window.quickFillStudent('23204014', '02022006')">R.
+                Anitha (EEE)</button>
+              <button type="button" class="demo-pill" onclick="window.quickFillStudent('24205003', '19072006')">A.
+                Saravanan (Civil)</button>
             </div>
           </div>
 
@@ -679,28 +965,37 @@
 
         <!-- 2. STAFF & FACULTY LOGIN FORM -->
         <form id="staffLoginForm" onsubmit="window.handleStaffLoginSubmit(event)" style="display: none;">
-          <div style="background: #fefce8; border: 1px solid #fef08a; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.825rem; color: #854d0e;">
-            🔒 Authorized Staff Desk for Cashiers, Principal, and Heads of Departments to access counter POS, Tally sync, and audit ledgers.
+          <div
+            style="background: #fefce8; border: 1px solid #fef08a; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.825rem; color: #854d0e; display: flex; align-items: center; gap: 0.45rem;">
+            <i data-lucide="shield-alert"></i> <span>Authorized Staff Desk for Cashiers, Principal, and Heads of Departments to access counter POS, Tally
+            sync, and audit ledgers.</span>
           </div>
 
           <div class="form-group">
             <label class="form-label">Employee Username or Official Email:</label>
-            <input type="text" id="staffLoginUsername" class="form-control" placeholder="e.g. cashier or principal@sptc.org.in" value="cashier" required />
+            <input type="text" id="staffLoginUsername" class="form-control"
+              placeholder="e.g. cashier or principal@sptc.org.in" value="cashier" required />
           </div>
 
           <div class="form-group">
             <label class="form-label">Staff Security Password:</label>
-            <input type="password" id="staffLoginPassword" class="form-control" placeholder="Enter password" value="sptc@cashier2026" required />
+            <input type="password" id="staffLoginPassword" class="form-control" placeholder="Enter password"
+              value="sptc@cashier2026" required />
           </div>
 
           <!-- Quick Fill Staff Pills -->
           <div style="margin-bottom: 1.25rem;">
-            <div style="font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 0.4rem;">1-CLICK DEMO STAFF ACCOUNTS:</div>
+            <div style="font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 0.4rem;">1-CLICK DEMO STAFF
+              ACCOUNTS:</div>
             <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
-              <button type="button" class="demo-pill" style="border-color: #d4af37;" onclick="window.quickFillStaff('cashier', 'sptc@cashier2026')">💼 Cashier (M. Alagappan)</button>
-              <button type="button" class="demo-pill" style="border-color: #0a2558;" onclick="window.quickFillStaff('principal', 'sptc@principal2026')">🏛️ Principal (R. Ramaswamy)</button>
-              <button type="button" class="demo-pill" onclick="window.quickFillStaff('hod_cse', 'sptc@cse2026')">💻 HOD CSE (Prof. Muthusamy)</button>
-              <button type="button" class="demo-pill" onclick="window.quickFillStaff('hod_mech', 'sptc@mech2026')">⚙️ HOD Mech (Prof. Ramesh)</button>
+              <button type="button" class="demo-pill" style="border-color: #d4af37;"
+                onclick="window.quickFillStaff('cashier', 'sptc@cashier2026')"><i data-lucide="briefcase"></i> Cashier (M. Alagappan)</button>
+              <button type="button" class="demo-pill" style="border-color: #0a2558;"
+                onclick="window.quickFillStaff('principal', 'sptc@principal2026')"><i data-lucide="landmark"></i> Principal (R. Ramaswamy)</button>
+              <button type="button" class="demo-pill" onclick="window.quickFillStaff('hod_cse', 'sptc@cse2026')"><i data-lucide="laptop"></i> HOD
+                CSE (Prof. Muthusamy)</button>
+              <button type="button" class="demo-pill" onclick="window.quickFillStaff('hod_mech', 'sptc@mech2026')"><i data-lucide="cog"></i>
+                HOD Mech (Prof. Ramesh)</button>
             </div>
           </div>
 
@@ -716,7 +1011,7 @@
   <div class="modal-overlay" id="admissionModal">
     <div class="modal-box" style="max-width: 500px;">
       <div class="modal-header">
-        <h3>📝 Diploma Admission Enquiry 2026-27</h3>
+        <h3 style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="file-text"></i> Diploma Admission Enquiry 2026-27</h3>
         <button class="modal-close-btn" onclick="window.closeAdmissionModal()">&times;</button>
       </div>
       <div class="modal-body">
@@ -733,7 +1028,8 @@
             <label class="form-label">Preferred Diploma Department:</label>
             <select id="admDept" class="form-control" required>
               <option value="Computer Engineering">Computer Engineering (CSE)</option>
-              <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence &amp; ML (AI&amp;ML)</option>
+              <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence &amp; ML (AI&amp;ML)
+              </option>
               <option value="Mechanical Engineering">Mechanical Engineering (MECH)</option>
               <option value="Electrical & Electronics">Electrical &amp; Electronics (EEE)</option>
               <option value="Electronics & Communication">Electronics &amp; Communication (ECE)</option>
@@ -759,10 +1055,13 @@
   </div>
 
   <!-- Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/data-store.js"></script>
   <script src="/js/receipts.js"></script>
   <script src="/js/fees.js"></script>
   <script src="/js/cashier.js"></script>
   <script src="/js/app.js"></script>
 </body>
+
 </html>

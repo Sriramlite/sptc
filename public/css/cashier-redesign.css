@@ -1,0 +1,577 @@
+/* ==========================================================================
+   SPTC Institutional Accounts & Cashier Desk Redesign Stylesheet
+   Subramanian Polytechnic College (Rayavaram) - Modern FMS Interface
+   ========================================================================== */
+
+:root {
+  --cashier-navy: #0a2558;
+  --cashier-navy-dark: #06183b;
+  --cashier-blue: #1a56db;
+  --cashier-gold: #d4af37;
+  --cashier-gold-light: #fdf6b2;
+  --cashier-bg: #f4f6fa;
+  --cashier-card-bg: #ffffff;
+  --cashier-border: #e2e8f0;
+  --cashier-text: #1e293b;
+  --cashier-muted: #64748b;
+  --cashier-green: #059669;
+  --cashier-red: #dc2626;
+}
+
+/* Page Layout Grid */
+.cashier-desk-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .cashier-desk-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Quick Metrics Row */
+.cashier-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+@media (max-width: 900px) {
+  .cashier-metrics-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .cashier-metrics-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cashier-metric-tile {
+  background: #ffffff;
+  border: 1px solid var(--cashier-border);
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(10, 37, 88, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cashier-metric-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 37, 88, 0.08);
+}
+
+.metric-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.35rem;
+}
+
+.metric-icon-blue { background: #eff6ff; color: #1d4ed8; }
+.metric-icon-green { background: #ecfdf5; color: #047857; }
+.metric-icon-gold { background: #fefce8; color: #b45309; }
+.metric-icon-red { background: #fef2f2; color: #dc2626; }
+
+.metric-data-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--cashier-muted);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.metric-data-value {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--cashier-navy);
+  line-height: 1.2;
+  margin-top: 0.2rem;
+}
+
+/* Card Styles */
+.cashier-box {
+  background: #ffffff;
+  border: 1px solid var(--cashier-border);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(10, 37, 88, 0.05);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.cashier-box-header {
+  padding: 1.15rem 1.4rem;
+  border-bottom: 1px solid var(--cashier-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+}
+
+.cashier-box-title {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cashier-navy);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.cashier-box-body {
+  padding: 1.25rem 1.4rem;
+}
+
+/* Student Search Controls */
+.student-search-bar {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.student-search-bar input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.6rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--cashier-border);
+  font-size: 0.925rem;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+}
+
+.student-search-bar input:focus {
+  background: #ffffff;
+  border-color: var(--cashier-blue);
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
+  outline: none;
+}
+
+.student-search-icon {
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--cashier-muted);
+  pointer-events: none;
+}
+
+.filter-pills-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.filter-pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  border: 1px solid var(--cashier-border);
+  background: #f1f5f9;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--cashier-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-pill:hover {
+  background: #e2e8f0;
+  color: var(--cashier-navy);
+}
+
+.filter-pill.active {
+  background: var(--cashier-navy);
+  color: #ffffff;
+  border-color: var(--cashier-navy);
+}
+
+/* Student Cards List */
+.students-scroll-list {
+  max-height: 640px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-right: 0.25rem;
+}
+
+.student-item-card {
+  background: #ffffff;
+  border: 1.5px solid var(--cashier-border);
+  border-radius: 10px;
+  padding: 1rem 1.15rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.student-item-card:hover {
+  border-color: var(--cashier-blue);
+  box-shadow: 0 4px 12px rgba(26, 86, 219, 0.08);
+  transform: translateX(3px);
+  background: #fbfcfe;
+}
+
+.student-avatar-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0a2558, #1e429f);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(10, 37, 88, 0.18);
+}
+
+.student-info-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.student-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.student-name-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--cashier-navy);
+}
+
+.student-reg-tag {
+  font-family: monospace;
+  font-size: 0.775rem;
+  background: #eef2ff;
+  color: #3730a3;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.student-meta-sub {
+  font-size: 0.785rem;
+  color: var(--cashier-muted);
+  margin-top: 0.25rem;
+}
+
+.student-fee-badge-group {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.balance-pill {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.balance-pill.due {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.balance-pill.settled {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+
+.manage-btn-trigger {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #f1f5f9;
+  color: var(--cashier-navy);
+  border: 1px solid #cbd5e1;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.student-item-card:hover .manage-btn-trigger {
+  background: var(--cashier-blue);
+  color: #ffffff;
+  border-color: var(--cashier-blue);
+}
+
+/* Past Transactions List (Up to 10 on Right Column) */
+.recent-txns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.recent-txn-card {
+  background: #f8fafc;
+  border: 1px solid var(--cashier-border);
+  border-radius: 9px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.recent-txn-card:hover {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.txn-student-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cashier-navy);
+  line-height: 1.25;
+}
+
+.txn-student-reg {
+  font-size: 0.75rem;
+  color: var(--cashier-muted);
+  margin-top: 0.15rem;
+}
+
+.txn-amount-val {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--cashier-green);
+  text-align: right;
+}
+
+.txn-mode-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
+}
+
+/* View More Button Container */
+.view-more-txns-wrap {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--cashier-border);
+  text-align: center;
+}
+
+.btn-view-more-txns {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #0a2558, #184294);
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(10, 37, 88, 0.15);
+  transition: all 0.2s ease;
+}
+
+.btn-view-more-txns:hover {
+  background: linear-gradient(135deg, #06183b, #0f3073);
+  box-shadow: 0 4px 14px rgba(10, 37, 88, 0.25);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Student Manage / History Modal */
+.student-manage-modal-dialog {
+  max-width: 880px;
+  width: 95%;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(10, 37, 88, 0.25);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.modal-header-hero {
+  background: linear-gradient(135deg, #071739 0%, #0a2558 60%, #163d8a 100%);
+  color: #ffffff;
+  padding: 1.5rem 1.75rem;
+  position: relative;
+  border-bottom: 3px solid var(--cashier-gold);
+}
+
+.modal-hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.modal-hero-close {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.25rem;
+  transition: background 0.15s ease;
+}
+
+.modal-hero-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.student-modal-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .student-modal-kpi-bar {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kpi-modal-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.kpi-modal-card .kpi-label {
+  font-size: 0.725rem;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.5px;
+}
+
+.kpi-modal-card .kpi-val {
+  font-family: var(--font-heading, inherit);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 0.2rem;
+}
+
+.modal-nav-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-bottom: 1.5px solid var(--cashier-border);
+  padding: 0 1.25rem;
+  overflow-x: auto;
+}
+
+.modal-tab-btn {
+  padding: 0.85rem 1.25rem;
+  border: none;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--cashier-muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.modal-tab-btn:hover {
+  color: var(--cashier-navy);
+}
+
+.modal-tab-btn.active {
+  color: var(--cashier-blue);
+  border-bottom-color: var(--cashier-blue);
+  background: #ffffff;
+}
+
+.modal-tab-content-area {
+  padding: 1.5rem 1.75rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.fee-calc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .fee-calc-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fee-net-preview-box {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#studentModalContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.custom-modal-backdrop.active .student-manage-modal-dialog {
+  transform: translateY(0);
+}
+
+.student-manage-modal-dialog {
+  transform: translateY(20px);
+  transition: transform var(--transition-smooth, 0.25s ease);
+}

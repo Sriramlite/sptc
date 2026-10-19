@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Past Transactions Ledger | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description" content="Comprehensive historical transactions ledger for Subramanian Polytechnic College Accounts & Cashier Desk. Paginated 20 records per page.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
+  <style>
+    .txn-page-header {
+      background: linear-gradient(135deg, #071739 0%, #0a2558 55%, #163d8a 100%);
+      color: #ffffff;
+      padding: 2rem 0;
+      border-bottom: 3px solid var(--color-accent-gold);
+    }
+    .txn-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(212, 175, 55, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--color-accent-gold-light);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .txn-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .txn-stat-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+    .txn-stat-card .label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .txn-stat-card .val {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 0.25rem;
+    }
+    .txn-filter-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+      padding: 1.25rem 1.5rem;
+      margin: -1.5rem auto 1.5rem;
+      position: relative;
+      z-index: 5;
+    }
+    .txn-filter-grid {
+      display: grid;
+      grid-template-columns: 2fr 1.2fr auto;
+      gap: 1rem;
+      align-items: center;
+    }
+    .mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .mode-cash { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .mode-upi { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .mode-dd { background: #fefce8; color: #b45309; border: 1px solid #fef08a; }
+    .mode-cheque { background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+    .mode-neft { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .mode-tally { background: #eef2ff; color: #4338ca; border: 1px solid #c7d2fe; }
+
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      background: #f8fafc;
+      border-top: 1px solid var(--color-border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .page-nav-btns {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .page-btn {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #0a2558;
+      font-size: 0.825rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .page-btn:hover:not(:disabled) {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      color: #1d4ed8;
+    }
+    .page-btn.active {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+    }
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 900px) {
+      .txn-stats-grid { grid-template-columns: 1fr; }
+      .txn-filter-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <aside class="top-bar">
+    <div class="container top-bar-inner">
+      <div class="top-bar-left">
+        <div class="top-bar-item"><i data-lucide="map-pin"></i> <span>Rayavaram, Pudukkottai – 622 506</span></div>
+        <div class="top-bar-item"><i data-lucide="landmark"></i> <strong>DOTE Institution: 331</strong> | AICTE Approved</div>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-bar-item" style="color: #fce076; font-size: 0.775rem;">
+          <i data-lucide="shield-check"></i> Cashier Session Active • 20 Rows / Page
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Navigation Header -->
+  <header class="dashboard-header-dedicated">
+    <div class="container dashboard-header-inner">
+      <a href="/cashier-dashboard.html" class="brand-link">
+        <img src="/assets/logo.svg" alt="SPTC Logo" class="brand-logo-img">
+        <div class="brand-text">
+          <h1 class="brand-name">Subramanian Polytechnic College</h1>
+          <p class="brand-sub">Rayavaram • <i data-lucide="book-open"></i> Historical Transactions Journal</p>
+        </div>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <a href="/cashier-dashboard.html" class="btn btn-primary btn-sm">
+          <i data-lucide="arrow-left"></i> Back to Cashier Desk
+        </a>
+        <a href="/" class="btn btn-outline btn-sm hide-on-mobile">
+          <i data-lucide="building"></i> College Home
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner Header -->
+  <section class="txn-page-header">
+    <div class="container">
+      <div class="txn-badge-pill">
+        <i data-lucide="file-spreadsheet"></i> Complete Fee Journal &amp; Audit Trail
+      </div>
+      <h2 style="font-family: var(--font-heading); font-size: 1.85rem; font-weight: 800; margin-bottom: 0.4rem;">
+        All Past Transactions &amp; Receipts Ledger
+      </h2>
+      <p style="font-size: 0.95rem; color: rgba(255,255,255,0.85); max-width: 720px; line-height: 1.5;">
+        Browse the complete collection journal across all payment modes (Cash, UPI, DD, Cheques, and Migrated Tally 9 desktop records). Paginated strictly by <strong>20 rows per page</strong> with live filtering.
+      </p>
+
+      <div class="txn-stats-grid">
+        <div class="txn-stat-card">
+          <div class="label">Total Historical Revenue</div>
+          <div class="val" id="statTotalRevenue">₹0</div>
+        </div>
+        <div class="txn-stat-card">
+          <div class="label">Total Transactions Logged</div>
+          <div class="val" id="statTotalTxns">0</div>
+        </div>
+        <div class="txn-stat-card">
+          <div class="label">Current View</div>
+          <div class="val" id="statPageView" style="color: var(--color-accent-gold-light);">Page 1</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Area -->
+  <main class="container" style="padding-bottom: 4rem;">
+    <!-- Filter Card -->
+    <div class="txn-filter-card">
+      <div class="txn-filter-grid">
+        <div style="position: relative;">
+          <input type="text" id="txnSearchInput" class="form-control" placeholder="Search by Student Name, DOTE Reg No, Receipt No, or Ref No..." oninput="TxnJournal.onSearchInput(this.value)" style="padding-left: 2.25rem;">
+          <span style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: #64748b;">
+            <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+          </span>
+        </div>
+
+        <div>
+          <select id="txnModeFilter" class="form-control" onchange="TxnJournal.onModeFilter(this.value)">
+            <option value="ALL">All Payment Modes</option>
+            <option value="Cash at Counter">Cash at Counter</option>
+            <option value="Office Counter QR UPI">Office Counter QR UPI</option>
+            <option value="Demand Draft">Demand Draft (DD)</option>
+            <option value="Bank Cheque">Bank Cheque</option>
+            <option value="NEFT">Bank NEFT / RTGS</option>
+            <option value="Tally">Legacy Tally Migrated</option>
+            <option value="Online">Student Online Portal</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn btn-outline btn-sm" onclick="TxnJournal.resetFilters()" title="Reset search & filters">
+            <i data-lucide="rotate-ccw"></i> Reset
+          </button>
+          <a href="/cashier-dashboard.html" class="btn btn-gold btn-sm">
+            <i data-lucide="banknote"></i> Collect New Fee
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transactions Table Card -->
+    <div class="data-table-card">
+      <div class="card-header-flex" style="background: #ffffff; padding: 1rem 1.5rem; border-bottom: 1.5px solid #e2e8f0;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <h3 style="font-size: 1.1rem; margin: 0; color: #0a2558;">
+            <i data-lucide="list"></i> Transactions Log (20 records per page)
+          </h3>
+          <span id="filteredCountBadge" class="badge badge-primary">0 Found</span>
+        </div>
+        <div id="tableTopSummary" style="font-size: 0.825rem; color: #64748b;">
+          Loading records...
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="custom-table" id="txnTable">
+          <thead>
+            <tr>
+              <th>Receipt No</th>
+              <th>Date</th>
+              <th>Student Name &amp; Reg No</th>
+              <th>Department</th>
+              <th>Amount (₹)</th>
+              <th>Payment Mode</th>
+              <th>Reference / Source</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="txnTableBody">
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 3rem; color: #64748b;">
+                <i data-lucide="loader-2" class="animate-spin" style="width: 28px; height: 28px; margin-bottom: 0.5rem;"></i>
+                <div>Loading historical transaction records...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="pagination-bar" id="paginationBar">
+        <div style="font-size: 0.85rem; color: #64748b;" id="paginationInfo">
+          Showing 0 to 0 of 0 records
+        </div>
+        <div class="page-nav-btns" id="pageNavBtns">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ======================== VERIFIED RECEIPT MODAL ======================== -->
+  <div class="custom-modal-backdrop" id="receiptModal">
+    <div class="custom-modal receipt-modal-wrap" style="max-width: 820px;">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #0a2558; display: flex; align-items: center; gap: 0.5rem;">
+          <i data-lucide="landmark"></i> Subramanian Polytechnic College – Official Fee Receipt
+        </h3>
+        <button class="modal-close" onclick="Receipts.closeReceiptModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="receiptModalContent">
+        <!-- Rendered dynamically by receipts.js -->
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 0.75rem; padding: 1rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0;">
+        <button class="btn btn-outline btn-sm" onclick="Receipts.closeReceiptModal()">
+          Close
+        </button>
+        <button class="btn btn-primary btn-sm" onclick="Receipts.printReceipt()">
+          <i data-lucide="printer"></i> Print / Download Verified A4 PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="main-footer">
+    <div class="container footer-bottom" style="border-top: none; padding-top: 0;">
+      <p>© 2026 Subramanian Polytechnic College, Rayavaram, Pudukkottai – 622 506. (DOTE Code: 331).</p>
+      <p style="margin-top: 0.25rem; font-size: 0.775rem;">Official Accounts Department Journal • Verified Transaction Archive</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
+  <script src="/js/data-store.js"></script>
+  <script src="/js/receipts.js"></script>
+  <script>
+    const TxnJournal = {
+      currentPage: 1,
+      pageSize: 20, // Exactly 20 rows per page as requested!
+      currentSearch: '',
+      currentMode: 'ALL',
+      searchDebounceTimer: null,
+
+      async init() {
+        // Guard: Verify staff authorization
+        const session = await API.verifySession();
+        if (!session || !session.authenticated || session.userType !== 'STAFF') {
+          alert('Staff authentication required to view financial transaction ledger.');
+          window.location.replace('/login.html?role=staff&reason=staff_required');
+          return;
+        }
+
+        // Check if student regNo was passed in query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const regNoParam = urlParams.get('regNo');
+        if (regNoParam) {
+          this.currentSearch = regNoParam;
+          document.getElementById('txnSearchInput').value = regNoParam;
+        }
+
+        await this.loadTransactions();
+      },
+
+      async loadTransactions() {
+        const tbody = document.getElementById('txnTableBody');
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 2.5rem; color: #64748b;">
+              <i data-lucide="loader-2" class="animate-spin" style="width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+              <div>Fetching transaction records for Page ${this.currentPage}...</div>
+            </td>
+          </tr>
+        `;
+        if (window.initLucideIcons) window.initLucideIcons(tbody);
+
+        try {
+          const res = await API.getTransactions({
+            page: this.currentPage,
+            limit: this.pageSize,
+            search: this.currentSearch,
+            paymentMode: this.currentMode
+          });
+
+          if (!res || !res.success) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 2.5rem; color: #dc2626;">
+                  Failed to load transaction records. ${res?.error || ''}
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          this.renderTransactions(res);
+        } catch (err) {
+          console.error('Error fetching transactions:', err);
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 2.5rem; color: #dc2626;">
+                Network error while loading transactions.
+              </td>
+            </tr>
+          `;
+        }
+      },
+
+      renderTransactions(data) {
+        const tbody = document.getElementById('txnTableBody');
+        const countBadge = document.getElementById('filteredCountBadge');
+        const statRev = document.getElementById('statTotalRevenue');
+        const statTxns = document.getElementById('statTotalTxns');
+        const statPage = document.getElementById('statPageView');
+        const topSummary = document.getElementById('tableTopSummary');
+        const paginationInfo = document.getElementById('paginationInfo');
+        const pageNavBtns = document.getElementById('pageNavBtns');
+
+        const { transactions, total, page, limit, totalPages, totalAmount } = data;
+
+        // Update stats
+        if (countBadge) countBadge.textContent = `${total} Total`;
+        if (statRev) statRev.textContent = `₹${(totalAmount || 0).toLocaleString('en-IN')}`;
+        if (statTxns) statTxns.textContent = total.toLocaleString('en-IN');
+        if (statPage) statPage.textContent = `Page ${page} of ${totalPages}`;
+        if (topSummary) topSummary.textContent = `Page Total: ₹${transactions.reduce((acc, r) => acc + (r.amount || 0), 0).toLocaleString('en-IN')} | All Filtered: ₹${(totalAmount || 0).toLocaleString('en-IN')}`;
+
+        if (!transactions || transactions.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 3rem; color: #64748b;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔍</div>
+                <strong style="color: #0a2558;">No transaction records found</strong>
+                <p style="font-size: 0.85rem; margin-top: 0.25rem;">Try adjusting your search terms or filter selection.</p>
+              </td>
+            </tr>
+          `;
+          if (paginationInfo) paginationInfo.textContent = 'Showing 0 records';
+          if (pageNavBtns) pageNavBtns.innerHTML = '';
+          return;
+        }
+
+        let rowsHtml = '';
+        transactions.forEach(t => {
+          const modeBadgeClass = this.getModeBadgeClass(t.paymentMode);
+          const formattedAmount = (t.amount || 0).toLocaleString('en-IN');
+
+          rowsHtml += `
+            <tr>
+              <td>
+                <a href="javascript:void(0)" onclick="Receipts.showReceiptModal('${t.receiptNo}')" style="font-weight: 700; color: #1a56db; text-decoration: none;" title="View Official Receipt">
+                  ${t.receiptNo}
+                </a>
+              </td>
+              <td style="white-space: nowrap; font-size: 0.825rem; color: #475569;">
+                ${t.date || 'N/A'}
+              </td>
+              <td>
+                <div style="font-weight: 700; color: #0a2558; font-size: 0.875rem;">
+                  ${t.studentName}
+                </div>
+                <div style="font-size: 0.75rem; color: #64748b;">
+                  Reg: <code>${t.regNo}</code>
+                </div>
+              </td>
+              <td style="font-size: 0.825rem; color: #334155;">
+                ${t.department || 'Diploma'}
+              </td>
+              <td>
+                <strong style="font-size: 0.95rem; color: #059669;">
+                  ₹${formattedAmount}
+                </strong>
+              </td>
+              <td>
+                <span class="mode-badge ${modeBadgeClass}">
+                  ${t.paymentMode || 'Counter'}
+                </span>
+              </td>
+              <td style="font-size: 0.775rem; color: #64748b; max-width: 220px;">
+                <div style="font-weight: 600; color: #334155;">${t.transactionRef || 'N/A'}</div>
+                <div style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${t.source || ''}">${t.source || ''}</div>
+              </td>
+              <td style="text-align: right; white-space: nowrap;">
+                <button class="btn btn-outline btn-sm" onclick="Receipts.showReceiptModal('${t.receiptNo}')" style="padding: 0.3rem 0.6rem; font-size: 0.775rem;">
+                  <i data-lucide="file-text"></i> Receipt
+                </button>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = rowsHtml;
+        if (window.initLucideIcons) window.initLucideIcons(tbody);
+
+        // Update pagination controls
+        const startIdx = (page - 1) * limit + 1;
+        const endIdx = Math.min(page * limit, total);
+        if (paginationInfo) {
+          paginationInfo.textContent = `Showing ${startIdx} to ${endIdx} of ${total} records (Page ${page} of ${totalPages} • 20 rows/page)`;
+        }
+
+        // Render page buttons
+        if (pageNavBtns) {
+          let btnHtml = `
+            <button class="page-btn" onclick="TxnJournal.goToPage(1)" ${page === 1 ? 'disabled' : ''} title="First Page">
+              ««
+            </button>
+            <button class="page-btn" onclick="TxnJournal.goToPage(${page - 1})" ${page === 1 ? 'disabled' : ''}>
+              « Prev
+            </button>
+          `;
+
+          // Generate page range
+          const maxVisiblePages = 5;
+          let startP = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+          let endP = Math.min(totalPages, startP + maxVisiblePages - 1);
+          if (endP - startP + 1 < maxVisiblePages) {
+            startP = Math.max(1, endP - maxVisiblePages + 1);
+          }
+
+          for (let p = startP; p <= endP; p++) {
+            btnHtml += `
+              <button class="page-btn ${p === page ? 'active' : ''}" onclick="TxnJournal.goToPage(${p})">
+                ${p}
+              </button>
+            `;
+          }
+
+          btnHtml += `
+            <button class="page-btn" onclick="TxnJournal.goToPage(${page + 1})" ${page === totalPages ? 'disabled' : ''}>
+              Next »
+            </button>
+            <button class="page-btn" onclick="TxnJournal.goToPage(${totalPages})" ${page === totalPages ? 'disabled' : ''} title="Last Page">
+              »»
+            </button>
+          `;
+
+          pageNavBtns.innerHTML = btnHtml;
+        }
+      },
+
+      getModeBadgeClass(mode) {
+        if (!mode) return 'mode-cash';
+        const m = mode.toLowerCase();
+        if (m.includes('cash')) return 'mode-cash';
+        if (m.includes('upi') || m.includes('gpay') || m.includes('phonepe') || m.includes('paytm')) return 'mode-upi';
+        if (m.includes('draft') || m.includes('dd')) return 'mode-dd';
+        if (m.includes('cheque')) return 'mode-cheque';
+        if (m.includes('neft') || m.includes('rtgs')) return 'mode-neft';
+        if (m.includes('tally')) return 'mode-tally';
+        return 'mode-upi';
+      },
+
+      goToPage(p) {
+        this.currentPage = p;
+        this.loadTransactions();
+        window.scrollTo({ top: 320, behavior: 'smooth' });
+      },
+
+      onSearchInput(val) {
+        clearTimeout(this.searchDebounceTimer);
+        this.searchDebounceTimer = setTimeout(() => {
+          this.currentSearch = val.trim();
+          this.currentPage = 1;
+          this.loadTransactions();
+        }, 300);
+      },
+
+      onModeFilter(mode) {
+        this.currentMode = mode;
+        this.currentPage = 1;
+        this.loadTransactions();
+      },
+
+      resetFilters() {
+        document.getElementById('txnSearchInput').value = '';
+        document.getElementById('txnModeFilter').value = 'ALL';
+        this.currentSearch = '';
+        this.currentMode = 'ALL';
+        this.currentPage = 1;
+        this.loadTransactions();
+      }
+    };
+
+    window.TxnJournal = TxnJournal;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      TxnJournal.init();
+    });
+  </script>
+</body>
+</html>

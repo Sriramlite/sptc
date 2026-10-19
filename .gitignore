@@ -4,4 +4,4 @@ Thumbs.db
 data/sessions.json
 data/*.tmp*
 *.log
-
+scratch/

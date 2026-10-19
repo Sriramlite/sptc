@@ -970,6 +970,192 @@ app.get('/api/reports/cash-book', requireStaff, (req, res) => {
   });
 });
 
+// ============================================================================
+// CASHIER REDESIGN APIS: PAGINATED TRANSACTIONS, SET FEES & STUDENT LEDGER
+// ============================================================================
+
+// A. Paginated Past Transactions (Staff Only - Default 20 rows per page)
+app.get('/api/transactions', requireStaff, (req, res) => {
+  const db = loadDb();
+  const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 20);
+  const search = (req.query.search || '').trim().toLowerCase();
+  const paymentMode = (req.query.paymentMode || '').trim();
+  const regNoFilter = (req.query.regNo || '').trim();
+
+  // Map receipts with student details
+  let list = db.receipts.map(r => {
+    const student = db.students.find(s => s.regNo === r.regNo);
+    return {
+      ...r,
+      studentName: student ? student.name : 'Unknown Student',
+      department: student ? student.department : 'SPTC Diploma',
+      currentYear: student ? student.currentYear : 1
+    };
+  });
+
+  // Sort newest first
+  list.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  // Filter by student regNo if requested
+  if (regNoFilter) {
+    list = list.filter(r => r.regNo === regNoFilter);
+  }
+
+  // Filter by payment mode if requested
+  if (paymentMode && paymentMode !== 'ALL') {
+    list = list.filter(r => r.paymentMode && r.paymentMode.toLowerCase().includes(paymentMode.toLowerCase()));
+  }
+
+  // Filter by search query (Name, RegNo, ReceiptNo, TxnRef, Department)
+  if (search) {
+    list = list.filter(r => 
+      (r.studentName && r.studentName.toLowerCase().includes(search)) ||
+      (r.regNo && r.regNo.toLowerCase().includes(search)) ||
+      (r.receiptNo && r.receiptNo.toLowerCase().includes(search)) ||
+      (r.transactionRef && r.transactionRef.toLowerCase().includes(search)) ||
+      (r.department && r.department.toLowerCase().includes(search)) ||
+      (r.paymentMode && r.paymentMode.toLowerCase().includes(search))
+    );
+  }
+
+  const total = list.length;
+  const totalAmount = list.reduce((sum, r) => sum + (r.amount || 0), 0);
+  const totalPages = Math.ceil(total / limit) || 1;
+  const startIndex = (page - 1) * limit;
+  const paginatedTransactions = list.slice(startIndex, startIndex + limit);
+
+  res.json({
+    success: true,
+    transactions: paginatedTransactions,
+    total,
+    page,
+    limit,
+    totalPages,
+    totalAmount
+  });
+});
+
+// B. Set / Adjust Total Fees per Year / Semester (Staff Only)
+app.post('/api/students/:regNo/set-fees', requireStaff, (req, res) => {
+  const { regNo } = req.params;
+  const {
+    annualFee,
+    tuitionFee,
+    labFee,
+    busFee,
+    hostelFee,
+    concession,
+    academicYear,
+    semester,
+    dueDate
+  } = req.body;
+
+  const db = loadDb();
+  const student = db.students.find(s => s.regNo === regNo);
+  if (!student) {
+    return res.status(404).json({ success: false, error: `Student with Reg No ${regNo} not found.` });
+  }
+
+  const yr = academicYear || `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`;
+  const sem = semester || `Year ${student.currentYear} Annual Fee`;
+
+  // Calculate parsed components
+  const parsedTuition = tuitionFee !== undefined ? parseFloat(tuitionFee) : (annualFee !== undefined ? parseFloat(annualFee) : 15000);
+  const parsedLab = labFee !== undefined ? parseFloat(labFee) : 3500;
+  const parsedBus = busFee !== undefined ? parseFloat(busFee) : (student.isHosteller ? 0 : 5000);
+  const parsedHostel = hostelFee !== undefined ? parseFloat(hostelFee) : (student.isHosteller ? 16000 : 0);
+  const parsedConcession = concession !== undefined ? parseFloat(concession) : (student.concessionAmount || 0);
+
+  const netPayable = Math.max(0, parsedTuition + parsedLab + parsedBus + parsedHostel - parsedConcession);
+
+  // Check if an existing bill exists for this student & semester, or create new
+  let bill = db.feeBilledItems.find(b => b.regNo === regNo && (b.semester === sem || b.id === `BILL-${regNo}-ANNUAL`));
+  if (bill) {
+    bill.academicYear = yr;
+    bill.semester = sem;
+    bill.tuitionFee = parsedTuition;
+    bill.labFee = parsedLab;
+    bill.busFee = parsedBus;
+    bill.hostelFee = parsedHostel;
+    bill.concession = parsedConcession;
+    bill.netPayable = netPayable;
+    if (dueDate) bill.dueDate = dueDate;
+  } else {
+    bill = {
+      id: `BILL-${regNo}-Y${student.currentYear}-${Date.now().toString().slice(-4)}`,
+      regNo: regNo,
+      academicYear: yr,
+      semester: sem,
+      tuitionFee: parsedTuition,
+      labFee: parsedLab,
+      busFee: parsedBus,
+      hostelFee: parsedHostel,
+      concession: parsedConcession,
+      netPayable: netPayable,
+      dueDate: dueDate || `${new Date().getFullYear()}-12-31`
+    };
+    db.feeBilledItems.push(bill);
+  }
+
+  // Update student concession record if passed
+  if (concession !== undefined) {
+    student.concessionAmount = parsedConcession;
+  }
+
+  saveDb(db);
+
+  // Recalculate full totals
+  const studentBills = db.feeBilledItems.filter(b => b.regNo === regNo);
+  const studentReceipts = db.receipts.filter(r => r.regNo === regNo);
+  const totalBilled = studentBills.reduce((acc, b) => acc + (b.netPayable || 0), 0);
+  const totalPaid = studentReceipts.reduce((acc, r) => acc + (r.amount || 0), 0);
+  const balanceDue = Math.max(0, totalBilled - totalPaid);
+
+  res.json({
+    success: true,
+    message: `Total fees updated successfully for ${student.name}.`,
+    bill,
+    summary: {
+      totalBilled,
+      totalPaid,
+      balanceDue,
+      concessionAmount: parsedConcession
+    }
+  });
+});
+
+// C. Detailed Student Ledger & Complete Payment History (Staff Only)
+app.get('/api/students/:regNo/ledger', requireStaff, (req, res) => {
+  const { regNo } = req.params;
+  const db = loadDb();
+  const student = db.students.find(s => s.regNo === regNo);
+  if (!student) {
+    return res.status(404).json({ success: false, error: 'Student not found.' });
+  }
+
+  const bills = db.feeBilledItems.filter(b => b.regNo === regNo);
+  const receipts = db.receipts.filter(r => r.regNo === regNo);
+  receipts.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const totalBilled = bills.reduce((acc, b) => acc + (b.netPayable || 0), 0);
+  const totalPaid = receipts.reduce((acc, r) => acc + (r.amount || 0), 0);
+  const balanceDue = Math.max(0, totalBilled - totalPaid);
+
+  res.json({
+    success: true,
+    student,
+    bills,
+    receipts,
+    summary: {
+      totalBilled,
+      totalPaid,
+      balanceDue,
+      receiptCount: receipts.length
+    }
+  });
+});
+
 // 10. Public Verification Endpoint for QR Code
 app.get('/api/verify/:hash', (req, res) => {
   const { hash } = req.params;
@@ -1100,12 +1286,13 @@ app.get('/student-dashboard', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-app.get('/cashier', (req, res) => {
+app.get(['/cashier', '/cashier-dashboard', '/cashier-dashboard.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'cashier-dashboard.html'));
 });
 
-app.get('/cashier-dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'cashier-dashboard.html'));
+// Dedicated Transactions Journal Page (Paginated 20 rows per page)
+app.get(['/transactions', '/transactions.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'transactions.html'));
 });
 
 // Dedicated Public Receipt Verification Route (Scanned via QR Code on phones or paper)

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <!-- Stylesheets -->
-  <link rel="stylesheet" href="/css/style.css?v=3.6">
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
   <link rel="stylesheet" href="/css/login-redesign.css?v=3.6">
 </head>
 <body>
@@ -25,14 +25,14 @@
       <div class="brand-showcase-header">
         <a href="/" style="display: flex; align-items: center; gap: 1rem; text-decoration: none;">
           <div class="brand-crest-box">
-            <img src="/assets/logo.svg" alt="SPTC Institutional Crest" class="brand-crest-img">
+            <img src="/assets/logo.svg" alt="SPTC Institutional Crest" class="brand-crest-img" loading="lazy" decoding="async">
           </div>
           <div class="brand-showcase-title">
             <h1>Subramanian Polytechnic College</h1>
             <p>Rayavaram, Pudukkottai District • Tamil Nadu – 622 506</p>
             <div class="brand-pill-badges">
-              <span class="brand-badge gold">🏛️ DOTE Code: 331</span>
-              <span class="brand-badge">⭐ AICTE Approved</span>
+              <span class="brand-badge gold"><i data-lucide="landmark"></i> DOTE Code: 331</span>
+              <span class="brand-badge"><i data-lucide="award"></i> AICTE Approved</span>
               <span class="brand-badge">Estd. 1983</span>
             </div>
           </div>
@@ -42,7 +42,7 @@
       <!-- Center Hero Showcase -->
       <div class="brand-showcase-hero">
         <div class="hero-super-badge">
-          <span>✨</span> Central Fees Ledger &amp; Digital Receipts Vault
+          <span><i data-lucide="sparkles"></i></span> Central Fees Ledger &amp; Digital Receipts Vault
         </div>
         <h2>
           Transparent Student Fees &amp; <span class="gold-gradient-text">Verified Digital Receipts</span>
@@ -118,10 +118,10 @@
       <!-- Footer Info -->
       <div class="brand-showcase-footer">
         <div>
-          📞 Accounts Desk: <strong style="color: #ffffff;">+91 6382391625</strong> / 04333-272226
+          <i data-lucide="phone"></i> Accounts Desk: <strong style="color: #ffffff;">+91 6382391625</strong> / 04333-272226
         </div>
         <div>
-          ✉️ <a href="mailto:accounts@sptc.org.in">accounts@sptc.org.in</a>
+          <i data-lucide="mail"></i> <a href="mailto:accounts@sptc.org.in">accounts@sptc.org.in</a>
         </div>
       </div>
     </aside>
@@ -163,11 +163,11 @@
         <!-- Segmented Role Selector -->
         <div class="auth-segmented-tabs" role="tablist">
           <button type="button" id="tabStudent" class="segmented-tab-btn active" onclick="switchLoginRole('STUDENT')" role="tab" aria-selected="true">
-            <span class="tab-icon">🎓</span>
+            <span class="tab-icon"><i data-lucide="graduation-cap"></i></span>
             <span>Student Portal</span>
           </button>
           <button type="button" id="tabStaff" class="segmented-tab-btn" onclick="switchLoginRole('STAFF')" role="tab" aria-selected="false">
-            <span class="tab-icon">💼</span>
+            <span class="tab-icon"><i data-lucide="briefcase"></i></span>
             <span>Staff &amp; Cashier Desk</span>
           </button>
         </div>
@@ -247,7 +247,7 @@
           <div class="demo-accounts-card">
             <div class="demo-card-title">
               <h4>
-                <span>⚡</span> 1-Click Demo Accounts (Fast Testing)
+                <span><i data-lucide="zap"></i></span> 1-Click Demo Accounts (Fast Testing)
               </h4>
               <span class="demo-pill-badge-tag">Student Vault</span>
             </div>
@@ -363,14 +363,14 @@
           <div class="demo-accounts-card">
             <div class="demo-card-title">
               <h4>
-                <span>⚡</span> 1-Click Staff Accounts
+                <span><i data-lucide="zap"></i></span> 1-Click Staff Accounts
               </h4>
               <span class="demo-pill-badge-tag" style="background: #fdf4ff; color: #a21caf; border-color: #f0abfc;">Staff Access</span>
             </div>
             <div class="demo-chips-grid">
               <button type="button" class="demo-chip-btn" onclick="fillStaff('cashier', 'sptc@cashier2026')">
                 <div class="demo-chip-header">
-                  <span>💼 Cashier</span>
+                  <span><i data-lucide="briefcase"></i> Cashier</span>
                   <span style="color: #059669; font-size: 0.65rem;">Active Desk</span>
                 </div>
                 <div class="demo-chip-sub">M. Alagappan • Senior Accounts</div>
@@ -378,7 +378,7 @@
 
               <button type="button" class="demo-chip-btn" onclick="fillStaff('principal', 'sptc@principal2026')">
                 <div class="demo-chip-header">
-                  <span>🎓 Principal</span>
+                  <span><i data-lucide="graduation-cap"></i> Principal</span>
                   <span style="color: #7c3aed; font-size: 0.65rem;">Admin</span>
                 </div>
                 <div class="demo-chip-sub">Thiru. R. Ramaswamy</div>
@@ -386,7 +386,7 @@
 
               <button type="button" class="demo-chip-btn" onclick="fillStaff('hod_cse', 'sptc@cse2026')">
                 <div class="demo-chip-header">
-                  <span>💻 HOD CSE</span>
+                  <span><i data-lucide="laptop"></i> HOD CSE</span>
                   <span style="color: #2563eb; font-size: 0.65rem;">Department</span>
                 </div>
                 <div class="demo-chip-sub">Prof. S. Muthusamy</div>
@@ -394,7 +394,7 @@
 
               <button type="button" class="demo-chip-btn" onclick="fillStaff('hod_mech', 'sptc@mech2026')">
                 <div class="demo-chip-header">
-                  <span>⚙️ HOD Mech</span>
+                  <span><i data-lucide="cog"></i> HOD Mech</span>
                   <span style="color: #ea580c; font-size: 0.65rem;">Department</span>
                 </div>
                 <div class="demo-chip-sub">Prof. K. Rajasekaran</div>
@@ -418,7 +418,7 @@
     <div class="custom-modal" style="max-width: 440px;">
       <div class="modal-header">
         <h3 style="font-family: var(--font-heading); font-size: 1.15rem; color: #0a2558; display: flex; align-items: center; gap: 0.5rem;">
-          <span>🔑</span> Student Portal PIN Guide
+          <span><i data-lucide="key"></i></span> Student Portal PIN Guide
         </h3>
         <button class="modal-close" onclick="closePinModal()">&times;</button>
       </div>
@@ -443,7 +443,9 @@
     </div>
   </div>
 
-  <!-- Client Data Store & Auth Logic -->
+  <!-- Lucide Icons & Client Data Store -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
   <script src="/js/data-store.js"></script>
   <script>
     let currentRole = 'STUDENT';
@@ -471,20 +473,73 @@
       showAlert('Access Denied: You do not have permission to view that page.', 'error');
     }
 
+    // Function to logout current student and switch to staff form cleanly
+    window.handleLogoutAndSwitchToStaff = async function() {
+      try {
+        await API.logout();
+      } catch (e) {}
+      RedirectGuard.clear();
+      window.location.replace('/login.html?role=staff&reason=staff_required');
+    };
+
     // Check if user is already signed in (skip if explicitly logged out)
     if (reason !== 'logged_out') {
       API.verifySession().then(res => {
         if (res && res.authenticated) {
+          const isTargetingStaff = redirectUrl && (redirectUrl.includes('cashier') || redirectUrl.includes('staff'));
+
+          // Fallback 1: Prevent loop if student is trying to access staff-only cashier desk
+          if (res.userType === 'STUDENT' && isTargetingStaff) {
+            RedirectGuard.clear();
+            switchLoginRole('STAFF');
+            showAlert(`
+              <div style="text-align: left; line-height: 1.45;">
+                <strong style="color: #92400e;">Staff Authorization Required:</strong><br>
+                You are currently signed in as student <strong>${res.profile.name}</strong> (DOTE Reg: <code>${res.profile.regNo}</code>). The Accounts / Cashier Desk is restricted to staff.
+                <div style="margin-top: 0.85rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <a href="/dashboard.html" class="btn btn-sm btn-primary" style="text-decoration: none;">
+                    Open My Student Fee Vault
+                  </a>
+                  <a href="/" class="btn btn-sm btn-outline" style="text-decoration: none;">
+                    College Home
+                  </a>
+                  <button type="button" onclick="handleLogoutAndSwitchToStaff()" class="btn btn-sm btn-gold">
+                    Sign Out &amp; Staff Login
+                  </button>
+                </div>
+              </div>
+            `, 'warning');
+            return; // STOP! Never redirect student to cashier-dashboard!
+          }
+
+          // Fallback 2: Check circuit breaker against rapid bouncing
+          if (!RedirectGuard.recordHop(redirectUrl || window.location.pathname)) {
+            RedirectGuard.clear();
+            showAlert(`
+              <div style="text-align: left;">
+                <strong>Navigation Paused:</strong> A redirect loop was prevented.<br>
+                You are securely logged in as <strong>${res.profile.name}</strong> (${res.userType}).
+                <div style="margin-top: 0.75rem; display: flex; gap: 0.5rem;">
+                  <a href="${res.userType === 'STAFF' ? '/cashier-dashboard.html' : '/dashboard.html'}" class="btn btn-sm btn-primary">Go to Dashboard</a>
+                  <a href="/" class="btn btn-sm btn-outline">College Home</a>
+                </div>
+              </div>
+            `, 'warning');
+            return;
+          }
+
+          // Safe redirect: role is compatible
           showAlert(`Welcome back, ${res.profile.name}! Redirecting to your active portal...`, 'success');
           setTimeout(() => {
-            if (redirectUrl && redirectUrl.startsWith('/')) {
+            RedirectGuard.clear();
+            if (redirectUrl && redirectUrl.startsWith('/') && !isTargetingStaff) {
               window.location.href = redirectUrl;
             } else if (res.userType === 'STAFF') {
               window.location.href = '/cashier-dashboard.html';
             } else {
               window.location.href = '/dashboard.html';
             }
-          }, 800);
+          }, 700);
         }
       }).catch(() => {});
     }
@@ -566,11 +621,12 @@
       alertBox.className = `auth-context-alert ${type}`;
       alertBox.style.display = 'block';
       
-      let icon = '⚠️';
-      if (type === 'success') icon = '✅';
-      if (type === 'error') icon = '🛑';
+      let icon = '<i data-lucide="alert-triangle"></i>';
+      if (type === 'success') icon = '<i data-lucide="check-circle-2"></i>';
+      if (type === 'error') icon = '<i data-lucide="x-circle"></i>';
 
-      alertBox.innerHTML = `<strong>${icon}</strong> ${message}`;
+      alertBox.innerHTML = `<strong>${icon}</strong> <span>${message}</span>`;
+      if (window.initLucideIcons) window.initLucideIcons(alertBox);
     }
 
     async function handleLoginSubmit(event, role) {
