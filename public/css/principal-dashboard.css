@@ -453,9 +453,9 @@
   backdrop-filter: blur(4px);
   z-index: 99999;
   display: none;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 1.25rem;
+  padding: 2rem 1.25rem;
   overflow-y: auto;
 }
 
@@ -536,10 +536,20 @@
   pointer-events: none !important;
 }
 
+.principal-modal-dialog form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .principal-modal-body {
   padding: 1.5rem;
   overflow-y: auto;
   flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .principal-modal-footer {

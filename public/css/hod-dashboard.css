@@ -349,9 +349,10 @@
   backdrop-filter: blur(4px);
   z-index: 1000;
   display: none;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 1rem;
+  padding: 2rem 1rem;
+  overflow-y: auto;
 }
 
 .modal-overlay.active {
@@ -364,7 +365,9 @@
   width: 100%;
   max-width: 680px;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 20px 40px rgba(7, 23, 57, 0.25);
   border: 1px solid #cbd5e1;
   animation: modalSlideIn 0.22s ease;
@@ -389,6 +392,7 @@
   align-items: center;
   background: #f8fafc;
   border-radius: 14px 14px 0 0;
+  flex-shrink: 0;
 }
 
 .hod-modal-header h3 {
@@ -402,8 +406,20 @@
   gap: 0.5rem;
 }
 
+.hod-modal-dialog form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .hod-modal-body {
   padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
 }
 
 .hod-modal-footer {
@@ -413,6 +429,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.65rem;
+  flex-shrink: 0;
   border-radius: 0 0 14px 14px;
 }
 
