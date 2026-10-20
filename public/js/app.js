@@ -406,9 +406,9 @@ window.closeAdmissionModal = function () {
 
 window.handleAdmissionSubmit = async function (e) {
   e.preventDefault();
-  const nameInput = document.getElementById('admName');
-  const phoneInput = document.getElementById('admPhone');
-  const deptInput = document.getElementById('admDept');
+  const nameInput = document.getElementById('admName') || document.getElementById('admCandidateName');
+  const phoneInput = document.getElementById('admPhone') || document.getElementById('admCandidatePhone');
+  const deptInput = document.getElementById('admDept') || document.getElementById('admCandidateDept');
   const form = e.target;
   const submitBtn = form.querySelector('button[type="submit"]');
 

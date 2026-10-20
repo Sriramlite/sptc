@@ -99,14 +99,20 @@ function generateReceiptHash(receiptNo, regNo, amount, date) {
   return crypto.createHash('sha256').update(`${receiptNo}-${regNo}-${amount}-${date}-SPTC-RAYAVARAM`).digest('hex').substring(0, 16);
 }
 
-// ======================== SERVER-SIDE SESSION STORE ========================
+// ======================== SERVER-SIDE SESSION STORE (VERCEL COMPATIBLE) ========================
+const AUTH_SECRET = process.env.SESSION_SECRET || process.env.JWT_SECRET || 'SPTC_RAYAVARAM_SECURE_AUTH_2026_DOTE_331_SECRET_KEY';
+
 const SessionManager = {
-  sessions: new Map(), // token -> sessionObj
+  sessions: new Map(), // token -> sessionObj (in-memory fast cache)
+  revokedTokens: new Set(),
 
   init() {
     try {
-      if (fs.existsSync(SESSIONS_FILE)) {
-        const raw = fs.readFileSync(SESSIONS_FILE, 'utf-8');
+      const fileToRead = fs.existsSync(path.join(os.tmpdir(), 'sptc_sessions.json')) 
+        ? path.join(os.tmpdir(), 'sptc_sessions.json') 
+        : (fs.existsSync(SESSIONS_FILE) ? SESSIONS_FILE : null);
+      if (fileToRead) {
+        const raw = fs.readFileSync(fileToRead, 'utf-8');
         const data = JSON.parse(raw);
         const now = Date.now();
         for (const [token, session] of Object.entries(data)) {
@@ -131,55 +137,103 @@ const SessionManager = {
       fs.writeFileSync(tmpFile, JSON.stringify(obj, null, 2), 'utf-8');
       fs.renameSync(tmpFile, SESSIONS_FILE);
     } catch (e) {
-      console.error('[AUTH] Error persisting sessions:', e.message);
+      // In serverless (Vercel) read-only filesystem, fallback gracefully to OS temp dir
+      try {
+        const tmpPath = path.join(os.tmpdir(), 'sptc_sessions.json');
+        const obj = Object.fromEntries(this.sessions);
+        fs.writeFileSync(tmpPath, JSON.stringify(obj, null, 2), 'utf-8');
+      } catch (err) {}
+    }
+  },
+
+  signPayload(payload) {
+    const raw = Buffer.from(JSON.stringify(payload)).toString('base64url');
+    const sig = crypto.createHmac('sha256', AUTH_SECRET).update(raw).digest('base64url');
+    return `sptc_${raw}.${sig}`;
+  },
+
+  verifySignedToken(token) {
+    if (!token || typeof token !== 'string' || !token.startsWith('sptc_')) return null;
+    const body = token.substring(5);
+    const dotIdx = body.lastIndexOf('.');
+    if (dotIdx === -1) return null;
+    const raw = body.substring(0, dotIdx);
+    const sig = body.substring(dotIdx + 1);
+    const expectedSig = crypto.createHmac('sha256', AUTH_SECRET).update(raw).digest('base64url');
+    if (sig.length !== expectedSig.length) return null;
+    try {
+      if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expectedSig))) {
+        return null;
+      }
+      const session = JSON.parse(Buffer.from(raw, 'base64url').toString('utf-8'));
+      if (session.expiresAt && session.expiresAt < Date.now()) {
+        return null;
+      }
+      return session;
+    } catch (e) {
+      return null;
     }
   },
 
   createSession(profile, userType, role, req) {
-    // Cryptographically secure 256-bit token
-    const token = crypto.randomBytes(32).toString('hex');
     const now = Date.now();
-    const session = {
-      token,
+    const id = profile.regNo || profile.id || profile.username;
+    const sessionData = {
       userType,
       role,
-      id: profile.regNo || profile.id || profile.username,
+      id,
+      department: profile.department || '',
       profile,
       createdAt: new Date(now).toISOString(),
-      expiresAt: now + (24 * 60 * 60 * 1000), // 24-hour validity
+      expiresAt: now + (7 * 24 * 60 * 60 * 1000), // 7-day validity
       lastActive: new Date(now).toISOString(),
       ip: req?.ip || req?.socket?.remoteAddress || 'unknown',
       userAgent: req?.headers['user-agent'] || 'unknown'
     };
 
-    this.sessions.set(token, session);
+    // Cryptographic self-contained signed token for Vercel Serverless
+    const token = this.signPayload(sessionData);
+    sessionData.token = token;
+
+    this.sessions.set(token, sessionData);
     this.persist();
-    return session;
+    return sessionData;
   },
 
   get(token) {
     if (!token) return null;
-    const session = this.sessions.get(token);
-    if (!session) return null;
+    if (this.revokedTokens.has(token)) return null;
 
-    if (session.expiresAt && session.expiresAt < Date.now()) {
-      this.sessions.delete(token);
-      this.persist();
-      return null;
+    // 1. Check in-memory session map
+    let session = this.sessions.get(token);
+    if (session) {
+      if (session.expiresAt && session.expiresAt < Date.now()) {
+        this.sessions.delete(token);
+        this.persist();
+        return null;
+      }
+      session.lastActive = new Date().toISOString();
+      return session;
     }
 
-    session.lastActive = new Date().toISOString();
-    return session;
+    // 2. Stateless cryptographic verification (solves Vercel serverless multi-instance auth)
+    const verified = this.verifySignedToken(token);
+    if (verified) {
+      verified.lastActive = new Date().toISOString();
+      this.sessions.set(token, verified);
+      return verified;
+    }
+
+    return null;
   },
 
   destroy(token) {
     if (!token) return false;
+    this.revokedTokens.add(token);
     const existed = this.sessions.delete(token);
-    if (existed) {
-      this.persist();
-      console.log(`[AUTH] Session ${token.substring(0, 8)}... invalidated.`);
-    }
-    return existed;
+    this.persist();
+    console.log(`[AUTH] Session ${token.substring(0, 12)}... invalidated.`);
+    return true;
   },
 
   cleanup() {

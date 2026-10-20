@@ -1975,7 +1975,8 @@ body.mobile-nav-open {
 }
 
 .modal-box,
-.custom-modal {
+.custom-modal,
+.modal-dialog {
   background: #ffffff;
   border-radius: var(--radius-xl);
   width: 100%;
@@ -1988,7 +1989,8 @@ body.mobile-nav-open {
 }
 
 .modal-overlay.active .modal-box,
-.custom-modal-backdrop.active .custom-modal {
+.custom-modal-backdrop.active .custom-modal,
+.modal-overlay.active .modal-dialog {
   transform: translateY(0);
 }
 
