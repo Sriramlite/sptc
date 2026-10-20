@@ -404,6 +404,8 @@
   text-decoration: none;
   transition: all 0.2s ease;
   border: 1px solid var(--auth-border-subtle);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btn-back-portal:hover {
@@ -423,6 +425,8 @@
   padding: 0.35rem 0.75rem;
   border-radius: 9999px;
   border: 1px solid #a7f3d0;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .status-dot {
