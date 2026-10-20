@@ -12,7 +12,7 @@ const Cashier = {
   recentTransactions: [],
   cashBookReport: null,
   activeStudentLedger: null,
-  activeModalTab: 'feeSetup', // 'feeSetup' | 'history' | 'quickPay'
+  activeModalTab: 'quickPay', // 'quickPay' | 'history' | 'feeSetup'
 
   async init() {
     await this.loadAllStudents();
@@ -612,7 +612,7 @@ const Cashier = {
       }
 
       this.activeStudentLedger = ledger;
-      this.activeModalTab = 'feeSetup';
+      this.activeModalTab = 'quickPay';
       this.renderStudentModal();
     } catch (err) {
       console.error('Error fetching student ledger:', err);
@@ -702,10 +702,10 @@ const Cashier = {
         <nav class="modal-nav-tabs">
           <button 
             type="button" 
-            class="modal-tab-btn ${this.activeModalTab === 'feeSetup' ? 'active' : ''}" 
-            onclick="Cashier.switchModalTab('feeSetup')"
+            class="modal-tab-btn ${this.activeModalTab === 'quickPay' ? 'active' : ''}" 
+            onclick="Cashier.switchModalTab('quickPay')"
           >
-            <i data-lucide="sliders"></i> Set Total Fees Per Year
+            <i data-lucide="banknote"></i> Collect Payment Now
           </button>
           <button 
             type="button" 
@@ -716,10 +716,10 @@ const Cashier = {
           </button>
           <button 
             type="button" 
-            class="modal-tab-btn ${this.activeModalTab === 'quickPay' ? 'active' : ''}" 
-            onclick="Cashier.switchModalTab('quickPay')"
+            class="modal-tab-btn ${this.activeModalTab === 'feeSetup' ? 'active' : ''}" 
+            onclick="Cashier.switchModalTab('feeSetup')"
           >
-            <i data-lucide="banknote"></i> Collect Payment Now
+            <i data-lucide="sliders"></i> Set Total Fees Per Year
           </button>
         </nav>
 

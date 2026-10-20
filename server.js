@@ -2207,6 +2207,20 @@ app.get(['/verify', '/verify/:hash'], (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'verify.html'));
 });
 
+// Dedicated Facilities & Placements Page
+app.get(['/facilities', '/facilities.html', '/placements', '/placements.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'facilities.html'));
+});
+
+// Dedicated Departments & Gallery Pages
+app.get(['/departments', '/departments.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'departments.html'));
+});
+
+app.get(['/gallery', '/gallery.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'gallery.html'));
+});
+
 // Fallback to index.html for main site navigation
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
