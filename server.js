@@ -1939,7 +1939,234 @@ app.post('/api/auth/register-student', (req, res) => {
   });
 });
 
+// Helper for department code normalization
+function getDeptCode(deptName = '') {
+  const d = deptName.toLowerCase();
+  if (d.includes('computer') || d.includes('cse')) return 'CSE';
+  if (d.includes('artificial') || d.includes('ai')) return 'AI&ML';
+  if (d.includes('mechanical') || d.includes('mech')) return 'MECH';
+  if (d.includes('electrical') || d.includes('eee')) return 'EEE';
+  if (d.includes('electronics & communication') || d.includes('ece')) return 'ECE';
+  if (d.includes('civil')) return 'CIVIL';
+  if (d.includes('biomedical') || d.includes('bme')) return 'BME';
+  if (d.includes('medical') || d.includes('mlt') || d.includes('dmlt')) return 'MLT';
+  return 'GEN';
+}
+
+// ======================== ADMISSION ENQUIRY & MANAGEMENT APIS ========================
+
+// 1. Submit New Admission Enquiry (Public: from Website Modal or Walk-In)
+app.post('/api/admissions', (req, res) => {
+  const { studentName, phone, email, department, quota, residenceType, notes, enquirySource } = req.body;
+
+  if (!studentName || !studentName.trim()) {
+    return res.status(400).json({ error: 'Student candidate full name is required.' });
+  }
+
+  const cleanPhone = (phone || '').replace(/\D/g, '');
+  if (!cleanPhone || cleanPhone.length < 10) {
+    return res.status(400).json({ error: 'A valid 10-digit mobile contact number is required.' });
+  }
+
+  if (!department || !department.trim()) {
+    return res.status(400).json({ error: 'Preferred diploma discipline is required.' });
+  }
+
+  const db = loadDb();
+  if (!Array.isArray(db.admissions)) {
+    db.admissions = [];
+  }
+
+  const nextSeq = db.admissions.length + 1;
+  const enquiryId = `ADM-2026-${String(nextSeq).padStart(4, '0')}`;
+
+  const newEnquiry = {
+    id: enquiryId,
+    studentName: studentName.trim(),
+    phone: cleanPhone,
+    email: (email || '').trim(),
+    department: department.trim(),
+    deptCode: getDeptCode(department),
+    quota: quota || 'Government',
+    residenceType: residenceType || 'Day Scholar (College Bus Needed)',
+    academicYear: '2026-2027',
+    status: 'Pending',
+    submittedAt: new Date().toISOString(),
+    assignedStaff: 'Unassigned',
+    notes: (notes || '').trim(),
+    followUpDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    enquirySource: enquirySource || 'Website Modal'
+  };
+
+  db.admissions.unshift(newEnquiry);
+  saveDb(db);
+
+  console.log(`[ADMISSION] New enquiry recorded: ${enquiryId} for ${newEnquiry.studentName} (${newEnquiry.department})`);
+
+  res.status(201).json({
+    success: true,
+    message: 'Admission enquiry recorded successfully! Our admission office will contact you shortly.',
+    id: enquiryId,
+    enquiry: newEnquiry
+  });
+});
+
+// 2. Get All Admission Enquiries (Protected: Accessible by ALL Staff Roles)
+app.get('/api/admissions', requireStaff, (req, res) => {
+  const db = loadDb();
+  const admissions = db.admissions || [];
+
+  const stats = {
+    total: admissions.length,
+    pending: admissions.filter(a => a.status === 'Pending').length,
+    contacted: admissions.filter(a => a.status === 'Contacted').length,
+    admitted: admissions.filter(a => a.status === 'Admitted').length,
+    cancelled: admissions.filter(a => a.status === 'Cancelled' || a.status === 'Rejected').length,
+    byDept: {}
+  };
+
+  admissions.forEach(a => {
+    const dept = a.department || 'Other';
+    stats.byDept[dept] = (stats.byDept[dept] || 0) + 1;
+  });
+
+  res.json({
+    success: true,
+    total: admissions.length,
+    stats,
+    admissions
+  });
+});
+
+// 3. Update Admission Enquiry Status / Notes (Protected: Staff Only)
+app.put('/api/admissions/:id', requireStaff, (req, res) => {
+  const { id } = req.params;
+  const { status, notes, assignedStaff, followUpDate, quota, residenceType } = req.body;
+
+  const db = loadDb();
+  const enquiry = (db.admissions || []).find(a => a.id === id);
+
+  if (!enquiry) {
+    return res.status(404).json({ error: 'Admission enquiry not found.' });
+  }
+
+  if (status) enquiry.status = status;
+  if (notes !== undefined) enquiry.notes = notes;
+  if (assignedStaff !== undefined) enquiry.assignedStaff = assignedStaff;
+  if (followUpDate !== undefined) enquiry.followUpDate = followUpDate;
+  if (quota) enquiry.quota = quota;
+  if (residenceType) enquiry.residenceType = residenceType;
+
+  enquiry.updatedAt = new Date().toISOString();
+  enquiry.updatedBy = `${req.user.profile?.name || req.user.id} (${req.user.role || 'STAFF'})`;
+
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: 'Admission enquiry updated successfully.',
+    enquiry
+  });
+});
+
+// 4. One-Click Enroll Admitted Candidate into DOTE Student Ledger (Protected: Staff Only)
+app.post('/api/admissions/:id/enroll', requireStaff, (req, res) => {
+  const { id } = req.params;
+  const db = loadDb();
+  const enquiry = (db.admissions || []).find(a => a.id === id);
+
+  if (!enquiry) {
+    return res.status(404).json({ error: 'Admission enquiry not found.' });
+  }
+
+  if (enquiry.enrolledRegNo) {
+    return res.status(400).json({ error: `Candidate is already enrolled with Reg No ${enquiry.enrolledRegNo}.` });
+  }
+
+  const randSuffix = Math.floor(1000 + Math.random() * 9000);
+  const newRegNo = `2420${randSuffix}`;
+  const isHosteller = (enquiry.residenceType || '').toLowerCase().includes('hostel');
+
+  const newStudent = {
+    regNo: newRegNo,
+    name: enquiry.studentName,
+    admissionNo: `SPTC/2026/${Math.floor(100 + Math.random() * 900)}`,
+    department: enquiry.department,
+    deptCode: enquiry.deptCode || getDeptCode(enquiry.department),
+    currentYear: 1,
+    currentSemester: 1,
+    quota: enquiry.quota || 'Government',
+    isHosteller: isHosteller,
+    busRoute: isHosteller ? 'None (Hosteller)' : 'Route 1 (Pudukkottai - Rayavaram)',
+    parentName: 'Parent / Guardian',
+    parentPhone: enquiry.phone,
+    email: enquiry.email || `${newRegNo}@sptc.org.in`,
+    pin: 'sptc2026',
+    concessionType: 'None',
+    concessionAmount: 0,
+    status: 'Active',
+    enrolledBy: `${req.user.profile?.name || req.user.id} (Admission Office)`
+  };
+
+  db.students.push(newStudent);
+
+  // Generate initial Semester 1 fee assessment
+  const baseTuition = newStudent.quota === 'Management' ? 16000 : 12500;
+  const busCost = isHosteller ? 0 : 4500;
+  const hostelCost = isHosteller ? 13500 : 0;
+  const netDue = baseTuition + 2500 + 1200 + busCost + hostelCost;
+
+  db.feeBilledItems.push({
+    id: `BILL-${newRegNo}-SEM1`,
+    regNo: newRegNo,
+    academicYear: '2026-2027',
+    semester: 'Semester 1',
+    tuitionFee: baseTuition,
+    labFee: 2500,
+    examFee: 1200,
+    busFee: busCost,
+    hostelFee: hostelCost,
+    concession: 0,
+    netPayable: netDue,
+    dueDate: '2026-12-31'
+  });
+
+  enquiry.status = 'Admitted';
+  enquiry.enrolledRegNo = newRegNo;
+  enquiry.enrolledAt = new Date().toISOString();
+  enquiry.enrolledBy = `${req.user.profile?.name || req.user.id}`;
+
+  saveDb(db);
+
+  res.json({
+    success: true,
+    message: `Candidate enrolled successfully as Student Reg No ${newRegNo} in DOTE Ledger!`,
+    student: newStudent,
+    enquiry
+  });
+});
+
+// 5. Delete Admission Enquiry (Protected: Staff Only)
+app.delete('/api/admissions/:id', requireStaff, (req, res) => {
+  const { id } = req.params;
+  const db = loadDb();
+  const idx = (db.admissions || []).findIndex(a => a.id === id);
+
+  if (idx === -1) {
+    return res.status(404).json({ error: 'Admission enquiry not found.' });
+  }
+
+  db.admissions.splice(idx, 1);
+  saveDb(db);
+
+  res.json({ success: true, message: 'Enquiry deleted successfully.' });
+});
+
 // Dedicated HTML Page Routes
+app.get(['/admissions', '/admissions-dashboard', '/admissions-dashboard.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admissions-dashboard.html'));
+});
+
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });

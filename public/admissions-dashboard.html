@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admission Management Dashboard | Subramanian Polytechnic College (SPTC)</title>
+  <meta name="description" content="Centralized Admission Management Portal for Subramanian Polytechnic College, Rayavaram. Manage diploma admission enquiries across all engineering disciplines.">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/css/style.css?v=4.3">
+  <link rel="stylesheet" href="/css/admissions-dashboard.css?v=1.0">
+</head>
+<body class="adm-body">
+
+  <!-- ======================== TOP BANNER & STAFF NAV ======================== -->
+  <header class="adm-header-banner">
+    <div class="adm-header-inner">
+      <div class="adm-brand-block">
+        <a href="/" class="adm-brand-crest" title="Return to College Home">
+          <img src="/assets/logo.svg" alt="SPTC Institutional Crest">
+        </a>
+        <div class="adm-brand-text">
+          <h1>SPTC Central Admission Management Portal</h1>
+          <p>
+            <span>Subramanian Polytechnic College, Rayavaram (DOTE: 331)</span>
+            <span>•</span>
+            <span style="color: #fef08a; font-weight: 600;">Academic Year 2026–2027</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="adm-header-actions">
+        <div class="adm-staff-pill" id="staffProfilePill">
+          <span class="adm-role-badge" id="staffRoleBadge">STAFF</span>
+          <span id="staffNameDisplay" style="font-weight: 600;">Loading...</span>
+        </div>
+
+        <button type="button" class="btn-adm-outline" id="btnBackRoleDashboard" onclick="goToRoleDashboard()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span id="backDashboardText">Role Dashboard</span>
+        </button>
+
+        <button type="button" class="btn-adm-outline" onclick="handleStaffLogout()" style="border-color: rgba(239, 68, 68, 0.4); color: #fca5a5;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================== MAIN DASHBOARD CONTAINER ======================== -->
+  <main class="adm-container">
+
+    <!-- KPI STATS SUMMARY -->
+    <div class="adm-stats-grid">
+      <div class="adm-stat-card">
+        <div class="adm-stat-icon-wrap blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="adm-stat-label">Total Enquiries</div>
+          <div class="adm-stat-val" id="statTotal">-</div>
+        </div>
+      </div>
+
+      <div class="adm-stat-card">
+        <div class="adm-stat-icon-wrap amber">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div class="adm-stat-label">Pending Callback</div>
+          <div class="adm-stat-val" id="statPending" style="color: #d97706;">-</div>
+        </div>
+      </div>
+
+      <div class="adm-stat-card">
+        <div class="adm-stat-icon-wrap cyan">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="adm-stat-label">In Counseling</div>
+          <div class="adm-stat-val" id="statContacted" style="color: #0284c7;">-</div>
+        </div>
+      </div>
+
+      <div class="adm-stat-card">
+        <div class="adm-stat-icon-wrap green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div>
+          <div class="adm-stat-label">Confirmed Admitted</div>
+          <div class="adm-stat-val" id="statAdmitted" style="color: #059669;">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS & FILTER BAR -->
+    <div class="adm-toolbar-card">
+      <div class="adm-toolbar-row">
+        <!-- Search -->
+        <div class="adm-search-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchInput" class="adm-search-input" placeholder="Search by Candidate Name, Phone, or Enquiry ID..." oninput="handleSearchFilter()">
+        </div>
+
+        <!-- Filter Dropdowns & Pills -->
+        <div class="adm-filter-group">
+          <!-- Department Filter -->
+          <select id="deptFilter" class="adm-select" onchange="handleSearchFilter()">
+            <option value="ALL">All Disciplines (8 Branches)</option>
+            <option value="Computer Engineering">Computer Engineering (CSE)</option>
+            <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence &amp; ML (AI&amp;ML)</option>
+            <option value="Mechanical Engineering">Mechanical Engineering (MECH)</option>
+            <option value="Electrical & Electronics Engineering">Electrical &amp; Electronics (EEE)</option>
+            <option value="Electronics & Communication Engineering">Electronics &amp; Communication (ECE)</option>
+            <option value="Civil Engineering">Civil Engineering (CIVIL)</option>
+            <option value="Biomedical Engineering">Biomedical Engineering (BME)</option>
+            <option value="Medical Laboratory Technology">Medical Laboratory Tech (MLT)</option>
+          </select>
+
+          <!-- Status Pills -->
+          <div class="adm-status-pills">
+            <button type="button" class="adm-status-pill-btn active" onclick="setStatusFilter('ALL', this)">All</button>
+            <button type="button" class="adm-status-pill-btn" onclick="setStatusFilter('Pending', this)">Pending</button>
+            <button type="button" class="adm-status-pill-btn" onclick="setStatusFilter('Contacted', this)">Contacted</button>
+            <button type="button" class="adm-status-pill-btn" onclick="setStatusFilter('Admitted', this)">Admitted</button>
+          </div>
+
+          <!-- Walk-in Entry Button -->
+          <button type="button" class="btn-adm-gold" onclick="openWalkInModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>New Walk-In Candidate</span>
+          </button>
+
+          <!-- Export CSV -->
+          <button type="button" class="btn-adm-outline" onclick="exportAdmissionsCSV()" style="background: #ffffff; color: #334155; border-color: #cbd5e1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Export CSV</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENQUIRIES DATA TABLE CARD -->
+    <div class="adm-table-card">
+      <div class="adm-table-header">
+        <h2>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span>Diploma Admission Enquiries (2026–27)</span>
+        </h2>
+        <div style="font-size: 0.85rem; color: #64748b;">
+          Showing <strong id="showingCount">0</strong> candidate enquiries
+        </div>
+      </div>
+
+      <div class="adm-table-responsive">
+        <table class="adm-table">
+          <thead>
+            <tr>
+              <th>Enquiry ID</th>
+              <th>Candidate &amp; Parent Contact</th>
+              <th>Preferred Discipline</th>
+              <th>Quota &amp; Residence</th>
+              <th>Source &amp; Date</th>
+              <th>Status</th>
+              <th>Assigned / Notes</th>
+              <th style="text-align: right;">Staff Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admissionsTableBody">
+            <tr>
+              <td colspan="8" style="text-align: center; padding: 3rem;">
+                <span class="loading-spinner-sm" style="display: inline-block; width: 24px; height: 24px; border: 3px solid #0a2558; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+                <p style="margin-top: 0.75rem; color: #64748b;">Loading admission enquiries...</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ======================== MODAL: ADD WALK-IN ENQUIRY ======================== -->
+  <div class="adm-modal-overlay" id="walkInModal">
+    <div class="adm-modal-box">
+      <div class="adm-modal-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <line x1="19" y1="8" x2="19" y2="14"></line>
+            <line x1="22" y1="11" x2="16" y2="11"></line>
+          </svg>
+          Record Campus Walk-In Admission
+        </h3>
+        <button type="button" class="adm-modal-close" onclick="closeWalkInModal()">&times;</button>
+      </div>
+
+      <div class="adm-modal-body">
+        <form onsubmit="handleWalkInSubmit(event)">
+          <div class="adm-form-group">
+            <label class="adm-form-label">Student Full Name: *</label>
+            <input type="text" id="walkInName" class="adm-form-control" placeholder="e.g. R. Karthik" required>
+          </div>
+
+          <div class="adm-form-row-2">
+            <div class="adm-form-group">
+              <label class="adm-form-label">Parent / Contact Phone: *</label>
+              <input type="tel" id="walkInPhone" class="adm-form-control" placeholder="10-digit mobile" required>
+            </div>
+            <div class="adm-form-group">
+              <label class="adm-form-label">Candidate Email (Optional):</label>
+              <input type="email" id="walkInEmail" class="adm-form-control" placeholder="e.g. karthik@gmail.com">
+            </div>
+          </div>
+
+          <div class="adm-form-group">
+            <label class="adm-form-label">Preferred Diploma Discipline: *</label>
+            <select id="walkInDept" class="adm-form-control" required>
+              <option value="Computer Engineering">Computer Engineering (CSE) - 60 Seats</option>
+              <option value="Artificial Intelligence and Machine Learning">Artificial Intelligence &amp; ML - 60 Seats</option>
+              <option value="Mechanical Engineering">Mechanical Engineering (MECH) - 120 Seats</option>
+              <option value="Electrical & Electronics Engineering">Electrical &amp; Electronics (EEE) - 60 Seats</option>
+              <option value="Electronics & Communication Engineering">Electronics &amp; Communication (ECE) - 60 Seats</option>
+              <option value="Civil Engineering">Civil Engineering (CIVIL) - 60 Seats</option>
+              <option value="Biomedical Engineering">Biomedical Engineering (BME) - 60 Seats</option>
+              <option value="Medical Laboratory Technology">Medical Laboratory Tech (MLT) - 60 Seats</option>
+            </select>
+          </div>
+
+          <div class="adm-form-row-2">
+            <div class="adm-form-group">
+              <label class="adm-form-label">Admission Quota:</label>
+              <select id="walkInQuota" class="adm-form-control">
+                <option value="Government">Government Quota (DOTE)</option>
+                <option value="Management">Management Quota</option>
+              </select>
+            </div>
+            <div class="adm-form-group">
+              <label class="adm-form-label">Residence Requirement:</label>
+              <select id="walkInResidence" class="adm-form-control">
+                <option value="Day Scholar (College Bus Needed)">Day Scholar (College Bus)</option>
+                <option value="Hosteller">Hosteller (Boarding)</option>
+                <option value="Self Conveyance">Self Conveyance</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="adm-form-group">
+            <label class="adm-form-label">Campus Counseling Remarks / 10th Marks:</label>
+            <textarea id="walkInNotes" class="adm-form-control" rows="3" placeholder="e.g. 10th marks 415/500, parent enquired about Route 1 bus timings and hostel mess facilities."></textarea>
+          </div>
+
+          <button type="submit" class="btn-adm-gold" style="width: 100%; justify-content: center; padding: 0.85rem;">
+            Record Walk-In Candidate
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================== MODAL: UPDATE STATUS & NOTES ======================== -->
+  <div class="adm-modal-overlay" id="updateStatusModal">
+    <div class="adm-modal-box">
+      <div class="adm-modal-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          Update Admission Status &amp; Counseling Notes
+        </h3>
+        <button type="button" class="adm-modal-close" onclick="closeUpdateModal()">&times;</button>
+      </div>
+
+      <div class="adm-modal-body">
+        <form onsubmit="handleUpdateStatusSubmit(event)">
+          <input type="hidden" id="editEnquiryId">
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700;">Candidate</div>
+            <div id="editCandidateSummary" style="font-size: 0.95rem; font-weight: 700; color: #0a2558; margin-top: 0.2rem;">-</div>
+          </div>
+
+          <div class="adm-form-group">
+            <label class="adm-form-label">Admission Pipeline Status: *</label>
+            <select id="editStatus" class="adm-form-control" required>
+              <option value="Pending">Pending (Awaiting Initial Contact)</option>
+              <option value="Contacted">Contacted (In Counseling / Follow-up)</option>
+              <option value="Admitted">Admitted (Seat Token Issued / Verified)</option>
+              <option value="Cancelled">Cancelled / Not Interested</option>
+            </select>
+          </div>
+
+          <div class="adm-form-group">
+            <label class="adm-form-label">Counselor / Staff Assigned:</label>
+            <input type="text" id="editStaff" class="adm-form-control" placeholder="e.g. Principal Office / HOD CSE">
+          </div>
+
+          <div class="adm-form-group">
+            <label class="adm-form-label">Next Follow-Up Date:</label>
+            <input type="date" id="editFollowUpDate" class="adm-form-control">
+          </div>
+
+          <div class="adm-form-group">
+            <label class="adm-form-label">Internal Counseling Notes / Remarks:</label>
+            <textarea id="editNotes" class="adm-form-control" rows="3" placeholder="Enter details of conversation with parent, fee waiver discussions, or seat reservation token."></textarea>
+          </div>
+
+          <button type="submit" class="btn-adm-gold" style="width: 100%; justify-content: center; padding: 0.85rem;">
+            Save Status &amp; Notes
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lucide & Dashboard Scripts -->
+  <script src="/js/lucide.min.js"></script>
+  <script src="/js/icons.js"></script>
+  <script>
+    // State Store
+    let allAdmissions = [];
+    let currentStaffSession = null;
+    let selectedStatusFilter = 'ALL';
+
+    // ==================== AUTH GUARD ====================
+    function checkAuth() {
+      try {
+        const raw = localStorage.getItem('sptc_auth_session');
+        if (!raw) {
+          window.location.href = '/login.html?redirect=/admissions-dashboard.html';
+          return null;
+        }
+        const session = JSON.parse(raw);
+        if (session.userType !== 'STAFF' && !session.role || session.userType === 'STUDENT') {
+          alert('Access denied. The Central Admission Management Portal is restricted to college staff and faculty.');
+          window.location.href = '/login.html';
+          return null;
+        }
+        currentStaffSession = session;
+        renderStaffHeader(session);
+        return session;
+      } catch (e) {
+        window.location.href = '/login.html';
+        return null;
+      }
+    }
+
+    function renderStaffHeader(session) {
+      const nameEl = document.getElementById('staffNameDisplay');
+      const badgeEl = document.getElementById('staffRoleBadge');
+      const backText = document.getElementById('backDashboardText');
+
+      const profileName = session.profile?.name || session.profile?.username || session.id || 'Staff';
+      const role = (session.role || session.profile?.role || 'STAFF').toUpperCase();
+
+      if (nameEl) nameEl.textContent = profileName;
+      if (badgeEl) badgeEl.textContent = role;
+
+      if (backText) {
+        if (role === 'PRINCIPAL') backText.textContent = 'Principal Dashboard';
+        else if (role === 'HOD') backText.textContent = 'HOD Dashboard';
+        else if (role === 'CASHIER') backText.textContent = 'Cashier Desk';
+        else backText.textContent = 'Role Dashboard';
+      }
+    }
+
+    function goToRoleDashboard() {
+      if (!currentStaffSession) {
+        window.location.href = '/';
+        return;
+      }
+      const role = (currentStaffSession.role || '').toUpperCase();
+      if (role === 'PRINCIPAL') window.location.href = '/principal-dashboard.html';
+      else if (role === 'HOD') window.location.href = '/hod-dashboard.html';
+      else if (role === 'CASHIER') window.location.href = '/cashier-dashboard.html';
+      else window.location.href = '/principal-dashboard.html';
+    }
+
+    function handleStaffLogout() {
+      if (confirm('Are you sure you want to log out of the Admission Portal?')) {
+        localStorage.removeItem('sptc_auth_session');
+        window.location.href = '/login.html';
+      }
+    }
+
+    // ==================== API FETCH ====================
+    async function loadAdmissionsData() {
+      try {
+        const token = currentStaffSession?.token || '';
+        const res = await fetch('/api/admissions', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          alert('Your staff session has expired. Please sign in again.');
+          window.location.href = '/login.html?redirect=/admissions-dashboard.html';
+          return;
+        }
+
+        const data = await res.json();
+        if (data.success && Array.isArray(data.admissions)) {
+          allAdmissions = data.admissions;
+          renderStats(data.stats);
+          renderTable();
+        } else {
+          showEmptyState('Could not load admission enquiries. Please try again.');
+        }
+      } catch (err) {
+        console.error('Failed to load admissions:', err);
+        showEmptyState('Network error occurred while fetching admissions.');
+      }
+    }
+
+    function renderStats(stats) {
+      document.getElementById('statTotal').textContent = stats?.total || allAdmissions.length;
+      document.getElementById('statPending').textContent = stats?.pending || allAdmissions.filter(a => a.status === 'Pending').length;
+      document.getElementById('statContacted').textContent = stats?.contacted || allAdmissions.filter(a => a.status === 'Contacted').length;
+      document.getElementById('statAdmitted').textContent = stats?.admitted || allAdmissions.filter(a => a.status === 'Admitted').length;
+    }
+
+    // ==================== TABLE RENDERING ====================
+    function renderTable() {
+      const tbody = document.getElementById('admissionsTableBody');
+      const countEl = document.getElementById('showingCount');
+      if (!tbody) return;
+
+      const filtered = getFilteredAdmissions();
+      if (countEl) countEl.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8">
+              <div class="adm-empty-state">
+                <div class="adm-empty-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </div>
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 1.1rem; color: #1e293b;">No matching admission enquiries found</h3>
+                <p style="margin: 0; font-size: 0.85rem;">Try adjusting your search terms or filter criteria.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(item => {
+        const statusClass = (item.status || 'Pending').toLowerCase();
+        const dateStr = item.submittedAt ? new Date(item.submittedAt).toLocaleDateString('en-IN', {
+          day: '2-digit', month: 'short', year: 'numeric'
+        }) : '-';
+
+        const cleanPhone = (item.phone || '').replace(/\D/g, '');
+        const waLink = `https://wa.me/91${cleanPhone}?text=Greetings%20from%20Subramanian%20Polytechnic%20College%20(SPTC)%20Rayavaram.%20Regarding%20admission%20enquiry%20for%20${encodeURIComponent(item.studentName)}`;
+
+        const isEnrolled = !!item.enrolledRegNo;
+
+        return `
+          <tr>
+            <td>
+              <span class="adm-id-badge">${escapeHtml(item.id)}</span>
+            </td>
+            <td>
+              <div class="adm-candidate-info">
+                <span class="adm-candidate-name">${escapeHtml(item.studentName)}</span>
+                <span class="adm-candidate-phone">
+                  <a href="tel:${cleanPhone}" class="btn-contact-call" title="Call Parent">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    ${cleanPhone}
+                  </a>
+                  <a href="${waLink}" target="_blank" rel="noopener" class="btn-contact-wa" title="Message via WhatsApp">
+                    WA
+                  </a>
+                </span>
+              </div>
+            </td>
+            <td>
+              <span class="adm-dept-badge">
+                <strong>${escapeHtml(item.deptCode || 'DIPLOMA')}</strong> • ${escapeHtml(item.department)}
+              </span>
+            </td>
+            <td>
+              <div style="font-weight: 600; color: #334155;">${escapeHtml(item.quota || 'Government')}</div>
+              <div style="font-size: 0.775rem; color: #64748b;">${escapeHtml(item.residenceType || 'Day Scholar')}</div>
+            </td>
+            <td>
+              <div style="font-weight: 600;">${dateStr}</div>
+              <div class="adm-source-badge">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
+                ${escapeHtml(item.enquirySource || 'Website')}
+              </div>
+            </td>
+            <td>
+              <span class="adm-status-badge ${statusClass}">
+                ${escapeHtml(item.status || 'Pending')}
+              </span>
+              ${isEnrolled ? `<div style="margin-top: 0.25rem; font-size: 0.725rem; color: #059669; font-weight: 700;">Reg: ${item.enrolledRegNo}</div>` : ''}
+            </td>
+            <td>
+              <div style="font-weight: 600; font-size: 0.8rem; color: #0a2558;">${escapeHtml(item.assignedStaff || 'Unassigned')}</div>
+              <div style="font-size: 0.75rem; color: #64748b; max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(item.notes || 'No notes entered')}">
+                ${escapeHtml(item.notes || '—')}
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <div class="adm-actions-cell" style="justify-content: flex-end;">
+                <button type="button" class="btn-action-sm blue" onclick="openUpdateModal('${item.id}')" title="Update status, assigned staff and counseling notes">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  Update
+                </button>
+
+                ${!isEnrolled ? `
+                  <button type="button" class="btn-action-sm green" onclick="enrollCandidate('${item.id}')" title="One-Click enroll student into DOTE Ledger with automatic Reg No">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    Enroll
+                  </button>
+                ` : `
+                  <span style="font-size: 0.75rem; color: #059669; font-weight: 700;">✓ Enrolled</span>
+                `}
+
+                <button type="button" class="btn-action-sm danger" onclick="deleteAdmission('${item.id}')" title="Delete enquiry">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Helper Filter
+    function getFilteredAdmissions() {
+      const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const dept = document.getElementById('deptFilter')?.value || 'ALL';
+
+      return allAdmissions.filter(item => {
+        // Status filter
+        if (selectedStatusFilter !== 'ALL' && item.status !== selectedStatusFilter) {
+          return false;
+        }
+
+        // Dept filter
+        if (dept !== 'ALL' && item.department !== dept) {
+          return false;
+        }
+
+        // Search text
+        if (q) {
+          const matchName = (item.studentName || '').toLowerCase().includes(q);
+          const matchPhone = (item.phone || '').includes(q);
+          const matchId = (item.id || '').toLowerCase().includes(q);
+          const matchNotes = (item.notes || '').toLowerCase().includes(q);
+          if (!matchName && !matchPhone && !matchId && !matchNotes) return false;
+        }
+
+        return true;
+      });
+    }
+
+    function handleSearchFilter() {
+      renderTable();
+    }
+
+    function setStatusFilter(status, btn) {
+      selectedStatusFilter = status;
+      document.querySelectorAll('.adm-status-pill-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderTable();
+    }
+
+    function showEmptyState(msg) {
+      const tbody = document.getElementById('admissionsTableBody');
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2.5rem; color: #64748b;">${msg}</td></tr>`;
+      }
+    }
+
+    // ==================== WALK-IN MODAL HANDLERS ====================
+    function openWalkInModal() {
+      const modal = document.getElementById('walkInModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeWalkInModal() {
+      const modal = document.getElementById('walkInModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    async function handleWalkInSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('walkInName').value.trim();
+      const phone = document.getElementById('walkInPhone').value.trim();
+      const email = document.getElementById('walkInEmail').value.trim();
+      const dept = document.getElementById('walkInDept').value;
+      const quota = document.getElementById('walkInQuota').value;
+      const residence = document.getElementById('walkInResidence').value;
+      const notes = document.getElementById('walkInNotes').value.trim();
+
+      try {
+        const res = await fetch('/api/admissions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            studentName: name,
+            phone: phone,
+            email: email,
+            department: dept,
+            quota: quota,
+            residenceType: residence,
+            notes: notes,
+            enquirySource: 'Campus Walk-In'
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`Candidate ${name} recorded with Enquiry ID: ${data.id}`);
+          closeWalkInModal();
+          e.target.reset();
+          loadAdmissionsData();
+        } else {
+          alert(data.error || 'Failed to record walk-in candidate.');
+        }
+      } catch (err) {
+        alert('Network error while saving walk-in candidate.');
+      }
+    }
+
+    // ==================== UPDATE MODAL HANDLERS ====================
+    function openUpdateModal(id) {
+      const enquiry = allAdmissions.find(a => a.id === id);
+      if (!enquiry) return;
+
+      document.getElementById('editEnquiryId').value = enquiry.id;
+      document.getElementById('editCandidateSummary').textContent = `${enquiry.studentName} (${enquiry.id}) • ${enquiry.department}`;
+      document.getElementById('editStatus').value = enquiry.status || 'Pending';
+      document.getElementById('editStaff').value = enquiry.assignedStaff || '';
+      document.getElementById('editFollowUpDate').value = enquiry.followUpDate || '';
+      document.getElementById('editNotes').value = enquiry.notes || '';
+
+      const modal = document.getElementById('updateStatusModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeUpdateModal() {
+      const modal = document.getElementById('updateStatusModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    async function handleUpdateStatusSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('editEnquiryId').value;
+      const status = document.getElementById('editStatus').value;
+      const staff = document.getElementById('editStaff').value.trim();
+      const followUp = document.getElementById('editFollowUpDate').value;
+      const notes = document.getElementById('editNotes').value.trim();
+
+      try {
+        const token = currentStaffSession?.token || '';
+        const res = await fetch(`/api/admissions/${encodeURIComponent(id)}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            status: status,
+            assignedStaff: staff,
+            followUpDate: followUp,
+            notes: notes
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          closeUpdateModal();
+          loadAdmissionsData();
+        } else {
+          alert(data.error || 'Failed to update admission enquiry.');
+        }
+      } catch (err) {
+        alert('Network error while updating admission enquiry.');
+      }
+    }
+
+    // ==================== 1-CLICK ENROLL CANDIDATE ====================
+    async function enrollCandidate(id) {
+      const enquiry = allAdmissions.find(a => a.id === id);
+      if (!enquiry) return;
+
+      const confirmMsg = `Are you sure you want to officially enroll candidate ${enquiry.studentName} into ${enquiry.department}?\n\nThis will generate an official DOTE Student Register Number and setup their initial semester fee ledger.`;
+      if (!confirm(confirmMsg)) return;
+
+      try {
+        const token = currentStaffSession?.token || '';
+        const res = await fetch(`/api/admissions/${encodeURIComponent(id)}/enroll`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          alert(`🎉 SUCCESS!\n\nCandidate ${enquiry.studentName} has been enrolled!\n\nOfficial DOTE Reg No: ${data.student?.regNo}\nSemester 1 fee ledger initialized with Net Payable: ₹${data.student?.admissionNo ? 'Assessed' : 'Assessed'}.\n\nThe student can now sign in using their Reg No.`);
+          loadAdmissionsData();
+        } else {
+          alert(data.error || 'Failed to enroll student.');
+        }
+      } catch (err) {
+        alert('Network error during candidate enrollment.');
+      }
+    }
+
+    // ==================== DELETE ENQUIRY ====================
+    async function deleteAdmission(id) {
+      if (!confirm(`Are you sure you want to delete enquiry ${id}?`)) return;
+
+      try {
+        const token = currentStaffSession?.token || '';
+        const res = await fetch(`/api/admissions/${encodeURIComponent(id)}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          loadAdmissionsData();
+        } else {
+          alert(data.error || 'Failed to delete enquiry.');
+        }
+      } catch (err) {
+        alert('Network error during deletion.');
+      }
+    }
+
+    // ==================== EXPORT CSV ====================
+    function exportAdmissionsCSV() {
+      const filtered = getFilteredAdmissions();
+      if (!filtered || filtered.length === 0) {
+        alert('No admission records to export.');
+        return;
+      }
+
+      const headers = ['Enquiry ID', 'Student Name', 'Parent Phone', 'Email', 'Discipline', 'Dept Code', 'Quota', 'Residence', 'Status', 'Assigned Staff', 'Enrolled RegNo', 'Submission Date', 'Notes'];
+      const rows = filtered.map(item => [
+        `"${item.id || ''}"`,
+        `"${(item.studentName || '').replace(/"/g, '""')}"`,
+        `"${item.phone || ''}"`,
+        `"${item.email || ''}"`,
+        `"${item.department || ''}"`,
+        `"${item.deptCode || ''}"`,
+        `"${item.quota || ''}"`,
+        `"${item.residenceType || ''}"`,
+        `"${item.status || ''}"`,
+        `"${(item.assignedStaff || '').replace(/"/g, '""')}"`,
+        `"${item.enrolledRegNo || ''}"`,
+        `"${item.submittedAt ? item.submittedAt.split('T')[0] : ''}"`,
+        `"${(item.notes || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `SPTC_Admissions_Report_2026_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Initial Load
+    document.addEventListener('DOMContentLoaded', () => {
+      if (checkAuth()) {
+        loadAdmissionsData();
+      }
+    });
+  </script>
+</body>
+</html>

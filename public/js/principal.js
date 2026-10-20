@@ -1025,7 +1025,6 @@ const Principal = {
       </div>
     `;
   },
-  },
 
   handleStudentSearch(val) {
     this.state.filters.studentSearch = val;

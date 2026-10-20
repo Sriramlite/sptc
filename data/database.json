@@ -601,8 +601,26 @@
       "email": "24503134@sptc.org.in",
       "concessionType": "First Generation Graduate (FGG)",
       "concessionAmount": 0,
-      "status": "Post Final Year",
+      "status": "Active",
       "enrolledBy": "HOD (Computer Engineering)"
+    },
+    {
+      "regNo": "24203514",
+      "name": "M. Manikandan",
+      "admissionNo": "SPTC/2026/727",
+      "department": "Computer Engineering",
+      "deptCode": "CSE",
+      "currentYear": 1,
+      "currentSemester": 1,
+      "quota": "Government",
+      "isHosteller": false,
+      "busRoute": "Route 1 (Pudukkottai - Rayavaram)",
+      "parentName": "K. Murugesan",
+      "parentPhone": "9842145678",
+      "email": "mani_3514@gmail.com",
+      "pin": "sptc2026",
+      "concessionType": "None",
+      "concessionAmount": 0
     }
   ],
   "feeBilledItems": [
@@ -1064,6 +1082,19 @@
       "concession": 0,
       "netPayable": 30500,
       "dueDate": "2026-12-31"
+    },
+    {
+      "id": "BILL-24203514-S1",
+      "regNo": "24203514",
+      "semester": "Semester 1",
+      "academicYear": "2025-2026",
+      "tuitionFee": 14000,
+      "labFee": 3500,
+      "busFee": 6500,
+      "hostelFee": 0,
+      "concession": 0,
+      "netPayable": 24000,
+      "dueDate": "2026-11-30"
     }
   ],
   "receipts": [
@@ -1660,6 +1691,40 @@
       },
       "verificationHash": "0afa09eb5637f2d7",
       "remarks": "Online fee payment by student via SPTC web portal"
+    },
+    {
+      "receiptNo": "SPTC/REC/2026-27/0009",
+      "regNo": "24203514",
+      "billId": "BILL-24203514-SEM1",
+      "date": "2026-10-20",
+      "amount": 24000,
+      "paymentMode": "UPI",
+      "transactionRef": "UPI/WEB/77580306",
+      "academicYear": "2026-2027",
+      "semester": "Semester 1",
+      "source": "SPTC Student Online Payment Gateway",
+      "breakdown": {
+        "Fee Collection Credit": 24000
+      },
+      "verificationHash": "aa9d1cc8816e7862",
+      "remarks": "Online fee payment by student via SPTC web portal"
+    },
+    {
+      "receiptNo": "SPTC/REC/2026-27/0010",
+      "regNo": "22202018",
+      "billId": "BILL-22202018-SEM6",
+      "date": "2026-10-20",
+      "amount": 1000,
+      "paymentMode": "Cash at Counter",
+      "transactionRef": "CTR-925966",
+      "academicYear": "2026-2027",
+      "semester": "Semester 6",
+      "source": "SPTC Accounts Office Counter (Officer: M. Alagappan)",
+      "breakdown": {
+        "Fee Collection Credit": 1000
+      },
+      "verificationHash": "bdd298bb4295e3b0",
+      "remarks": "Counter fee collection"
     }
   ],
   "staff": [

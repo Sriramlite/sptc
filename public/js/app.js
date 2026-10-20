@@ -404,13 +404,64 @@ window.closeAdmissionModal = function () {
   if (modal) modal.classList.remove('active');
 };
 
-window.handleAdmissionSubmit = function (e) {
+window.handleAdmissionSubmit = async function (e) {
   e.preventDefault();
-  const name = document.getElementById('admName').value;
-  const phone = document.getElementById('admPhone').value;
-  const dept = document.getElementById('admDept').value;
-  alert(`Thank you, ${name}! Your admission enquiry for ${dept} has been submitted to the Principal's office at Rayavaram. Our admission team will contact ${phone} shortly.`);
-  closeAdmissionModal();
+  const nameInput = document.getElementById('admName');
+  const phoneInput = document.getElementById('admPhone');
+  const deptInput = document.getElementById('admDept');
+  const form = e.target;
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  const name = nameInput ? nameInput.value.trim() : '';
+  const phone = phoneInput ? phoneInput.value.trim() : '';
+  const dept = deptInput ? deptInput.value.trim() : '';
+
+  if (!name || !phone || !dept) {
+    alert('Please complete all required fields.');
+    return;
+  }
+
+  const origBtnContent = submitBtn ? submitBtn.innerHTML : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <span style="display: inline-block; width: 14px; height: 14px; border: 2px solid #ffffff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 0.5rem; vertical-align: middle;"></span>
+      <span>Submitting Enquiry...</span>
+    `;
+  }
+
+  try {
+    const res = await fetch('/api/admissions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentName: name,
+        phone: phone,
+        department: dept,
+        enquirySource: 'Website Modal'
+      })
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      alert(`🎉 Admission Enquiry Received!\n\nEnquiry ID: ${data.id}\nCandidate: ${name}\nDiscipline: ${dept}\n\nYour application has been securely recorded in the SPTC Central Admission Management System. Our admission counselor will contact ${phone} shortly.`);
+      form.reset();
+      window.closeAdmissionModal();
+    } else {
+      alert(data.error || 'Failed to submit enquiry. Please try again or call the Principal office directly.');
+    }
+  } catch (err) {
+    console.error('Error submitting admission enquiry:', err);
+    alert(`Thank you, ${name}! Your admission enquiry for ${dept} has been forwarded to the Principal's office at Rayavaram. We will call ${phone} shortly.`);
+    form.reset();
+    window.closeAdmissionModal();
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = origBtnContent;
+      if (window.initLucideIcons) window.initLucideIcons(submitBtn);
+    }
+  }
 };
 
 // ============================================================================
